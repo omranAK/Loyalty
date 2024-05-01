@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
-import 'package:http/http.dart';
 import '../models/response_model.dart';
 import '../storage/cache_manager.dart';
 import 'server_config.dart';
@@ -21,12 +20,11 @@ class ExternalService {
     //     // "lang": CacheManager.getLang() ?? "ar",
     //   };
     // } else {
-      headerMap = {
-        "Authorization":
-            'Bearer${token}',
-        //HttpHeaders.contentTypeHeader: 'application/json',
-        // "lang": CacheManager.getLang() ?? "ar",
-      };
+    headerMap = {
+      "Authorization": 'Bearer${token}',
+      //HttpHeaders.contentTypeHeader: 'application/json',
+      // "lang": CacheManager.getLang() ?? "ar",
+    };
     //}
   }
 
@@ -41,11 +39,10 @@ class ExternalService {
         queryParameters: queryParameters,
       );
     }
-      headerMap = {
-        'Accept': 'application/json',
-        'Authorization':
-        'Bearer ${CacheManager.getToken()}'        ,
-      };
+    headerMap = {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ${CacheManager.getToken()}',
+    };
     try {
       var response = await http.get(uri, headers: headerMap);
 
@@ -53,7 +50,7 @@ class ExternalService {
         dynamic data = jsonDecode(response.body);
         return ResponseModel.fromJson(data);
       } else {
-        return ResponseModel(status: 500, message: 'Server error' );
+        return ResponseModel(status: 500, message: 'Server error');
       }
     } on TimeoutException catch (e) {
       if (kDebugMode) {
@@ -75,16 +72,13 @@ class ExternalService {
     uri = Uri.parse(ServerConfig.mainApiUrl + urlService);
 
     try {
-      var response = await http.post(uri, body: body,headers: {
-        'Accept': 'application/json'
-
-      });
+      var response = await http
+          .post(uri, body: body, headers: {'Accept': 'application/json'});
 
       if (response.statusCode != 500) {
         dynamic data = jsonDecode(response.body);
 
-        if (response.statusCode == 200) {
-        }
+        if (response.statusCode == 200) {}
         return ResponseModel.fromJson(data);
       } else {
         return ResponseModel(status: 500, message: 'something wrong');
@@ -104,24 +98,24 @@ class ExternalService {
     }
     return ResponseModel(status: 500, message: 'Something Wrong');
   }
+
   ////////////////////////////////////////////////////////////////////////////////////////
   Future<ResponseModel> postDataMap1(body, String urlService) async {
     uri = Uri.parse(ServerConfig.mainApiUrl + urlService);
 
     try {
-      var response = await http.post(uri, body: body,headers: {
+      var response = await http.post(uri, body: body, headers: {
         'Accept': 'application/json',
-        'Authorization':'Bearer ${CacheManager.getToken()}'});
+        'Authorization': 'Bearer ${CacheManager.getToken()}'
+      });
       if (response.statusCode != 500) {
         dynamic data = jsonDecode(response.body);
 
         if (response.statusCode == 200) {
-         print ("tooooooooooooooooooken"+"${CacheManager.getToken()}");
+          print("tooooooooooooooooooken" + "${CacheManager.getToken()}");
         }
         return ResponseModel.fromJson(data);
-      }
-     else {
-
+      } else {
         return ResponseModel(status: 500, message: 'something wrong');
       }
     } on TimeoutException catch (e) {
@@ -135,12 +129,12 @@ class ExternalService {
     } on Error catch (e) {
       if (kDebugMode) {
         print('General Error: $e');
-
       }
     }
-    print ("tooooooooooooooooooken"+"${CacheManager.getToken()}");
+    print("tooooooooooooooooooken" + "${CacheManager.getToken()}");
     return ResponseModel(status: 500, message: 'Something Wrong');
   }
+
   //////////////////////////////////////////////////////////////////////////////////
   Future<ResponseModel> postData(Map body, String endPoint) async {
     // print(body);
@@ -149,9 +143,10 @@ class ExternalService {
     try {
       var response = await http.post(
         uri,
-        headers:{
-        'Accept': 'application/json',
-        'Authorization': 'Bearer ${CacheManager.getToken()}'},  // headers: {"lang": "ar"},
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${CacheManager.getToken()}'
+        }, // headers: {"lang": "ar"},
         body: body,
       );
 
@@ -177,6 +172,7 @@ class ExternalService {
     //   return ResponseModel(status: "Socket", message: [], returnedCode: 500);
     // }
   }
+
   // TODO try{}catch{}
   // post data to server as form data without application/json header
   Future<ResponseModel> postFormData(

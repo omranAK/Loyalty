@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 import '../models/response_model.dart';
 
 class GeneralController {

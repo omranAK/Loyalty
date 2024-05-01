@@ -1,8 +1,4 @@
-import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
-
-
-
 
 //import '../model/user_model.dart';
 
@@ -13,9 +9,9 @@ class CacheManager {
   static String errorMessage = "ErrorMessage";
   static String loginModelKey = "LoginModel";
   static String lookupKey = "LookUp";
-  static String UserModellKey = "UserModel";
-  static String UserLoginModellKey = "UserModel";
-  static String LangKey = "LANG";
+  static String userModellKey = "UserModel";
+  static String userLoginModellKey = "UserModel";
+  static String langKey = "LANG";
 
   CacheManager() {
     init();
@@ -46,7 +42,7 @@ class CacheManager {
   // }
 
   static String? getUserLoginModel() {
-    return _preferences.getString(UserLoginModellKey);
+    return _preferences.getString(userLoginModellKey);
   }
 
   static Future setValueList(String data) async {
@@ -94,10 +90,10 @@ class CacheManager {
   }
 
   static Future setLang(String? data) async {
-    await _preferences.setString(LangKey, data!);
+    await _preferences.setString(langKey, data!);
   }
 
   static String? getLang() {
-    return _preferences.getString(LangKey);
+    return _preferences.getString(langKey);
   }
 }
