@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'package:loyalty_system_mobile/data/models/user_setting_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 //import '../model/user_model.dart';
@@ -5,13 +7,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 class CacheManager {
   static const String key = "VALUE_LIST_KEY";
   static const String tokenKey = "VALUE_TOKEN";
-  static late SharedPreferences _preferences;
+  static SharedPreferences? _preferences;
   static String errorMessage = "ErrorMessage";
   static String loginModelKey = "LoginModel";
   static String lookupKey = "LookUp";
   static String userModellKey = "UserModel";
   static String userLoginModellKey = "UserModel";
   static String langKey = "LANG";
+  static String pointsKey = "pointsKey";
+  static String roleIdKey = "roleId";
 
   CacheManager() {
     init();
@@ -22,32 +26,41 @@ class CacheManager {
   }
 
   static clearSharedPreferences() {
-    _preferences.clear();
-    _preferences.remove(tokenKey);
+    _preferences!.clear();
+    _preferences!.remove(userModellKey);
+    _preferences!.remove(tokenKey);
   }
 
-  // static UserModel getUserModel() {
-  //   Map<String, dynamic> json1 =
-  //       json.decode(_preferences.getString(UserModellKey)!);
-  //   UserModel userModel = UserModel.fromJson(json1);
-  //   return userModel;
-  // }
-  //
-  // static Future setUserModel(UserModel data) async {
-  //   await _preferences.setString(UserModellKey, json.encode(data));
-  // }
-  //
+  static UserSetting getUserModel() {
+    Map<String, dynamic> json1 =
+        json.decode(_preferences!.getString(userModellKey)!);
+
+    // Map<String, dynamic> valueMap = json.decode(json1) as Map<String, dynamic>;
+    UserSetting userModel = UserSetting.fromJson(json1);
+    return userModel;
+
+    // String s = _preferences!.getString(userModellKey)!;
+    // print(json.decode(s));
+    // Map<String, dynamic> sss = {};
+    // UserSetting userModel = UserSetting.fromJson(sss);
+    // return userModel;
+  }
+
+  static Future setUserModel(UserSetting data) async {
+    await _preferences!.setString(userModellKey, json.encode(data));
+  }
+
   // static Future setUserLoginModel(UserModel data) async {
   //   await _preferences.setString(UserLoginModellKey, json.encode(data));
   // }
 
-  static String? getUserLoginModel() {
-    return _preferences.getString(userLoginModellKey);
-  }
+  // static String? getUserLoginModel() {
+  //   return _preferences!.getString(userLoginModellKey);
+  // }
 
-  static Future setValueList(String data) async {
-    await _preferences.setString(key, data);
-  }
+  // static Future setValueList(String data) async {
+  //   await _preferences!.setString(key, data);
+  // }
 
   // static Future setLookup(LookUpModel data) async {
   //   await _preferences.setString(lookupKey, json.encode(data));
@@ -70,30 +83,46 @@ class CacheManager {
   //   return lookUp;
   // }
   static String? getValueList() {
-    return _preferences.getString(key);
+    return _preferences!.getString(key);
   }
 
   static Future setToken(String data) async {
-    await _preferences.setString(tokenKey, data);
+    await _preferences!.setString(tokenKey, data);
   }
 
   static String? getToken() {
-    return _preferences.getString(tokenKey);
+    return _preferences!.getString(tokenKey);
   }
 
   static Future setError(String? data) async {
-    await _preferences.setString(errorMessage, data!);
+    await _preferences!.setString(errorMessage, data!);
   }
 
   static String? getError() {
-    return _preferences.getString(errorMessage);
+    return _preferences!.getString(errorMessage);
   }
 
   static Future setLang(String? data) async {
-    await _preferences.setString(langKey, data!);
+    await _preferences!.setString(langKey, data!);
   }
 
   static String? getLang() {
-    return _preferences.getString(langKey);
+    return _preferences!.getString(langKey);
+  }
+
+  static Future? setPoint(String data) async {
+    await _preferences!.setString(pointsKey, data);
+  }
+
+  static String? getPoint() {
+    return _preferences!.getString(pointsKey);
+  }
+
+  static Future? setRoleId(int data) async {
+    await _preferences!.setInt(roleIdKey, data);
+  }
+
+  static int? getRoleId() {
+    return _preferences!.getInt(roleIdKey);
   }
 }

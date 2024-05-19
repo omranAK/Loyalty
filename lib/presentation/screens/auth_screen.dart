@@ -1,13 +1,15 @@
 // ignore_for_file: body_might_complete_normally_nullable
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:loyalty_system_mobile/constant/app_colors.dart' as color;
 import 'package:loyalty_system_mobile/constant/app_colors.dart';
-//import 'package:google_fonts/google_fonts.dart';
+import 'package:loyalty_system_mobile/constant/constant_data.dart';
 import 'dart:io';
-
-//import '../Provider/auth_provider.dart';
-//import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:loyalty_system_mobile/logic/auth/bloc/auth_bloc.dart';
 
 enum FilterOption { arabic, english }
 
@@ -29,11 +31,13 @@ class _AuthScreenState extends State<AuthScreen> {
     'phone': '',
     'name': ''
   };
-  var _isLoading = false;
   final TextEditingController emailController = TextEditingController();
   final TextEditingController nameController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController confirmpassController = TextEditingController();
+  final _passwordController = TextEditingController();
+  late Bloc loginbloc;
+
   void cleartext() {
     emailController.clear();
     nameController.clear();
@@ -42,20 +46,57 @@ class _AuthScreenState extends State<AuthScreen> {
     _passwordController.clear();
   }
 
-  final _passwordController = TextEditingController();
+  @override
+  void initState() {
+    loginbloc = BlocProvider.of<AuthBloc>(context);
+    super.initState();
+  }
+
   void _showErrorDialog(String message) {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('An Error Occurred!'),
-        content: Text(message),
+        backgroundColor: color.AppColors.appBarColor,
+        title: Text(
+          'An Error Occurred!',
+          style: GoogleFonts.montserrat(color: Colors.white),
+        ),
+        content: Text(
+          message,
+          style: GoogleFonts.montserrat(
+              color: Colors.black, fontWeight: FontWeight.w600),
+        ),
         actions: <Widget>[
-          ElevatedButton(
-            child: const Text('Okay'),
-            onPressed: () {
-              Navigator.of(ctx).pop();
-            },
-          )
+          message == 'You are not active'
+              ? ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: color.AppColors.darkGray,
+                  ),
+                  onPressed: () {
+                    loginbloc.add(ResendOtpButtonPressedEvent());
+                    Navigator.pushNamed(
+                      context,
+                      authOtp,
+                      arguments: _authData['email'],
+                    );
+                  },
+                  child: Text(
+                    'Active now',
+                    style: GoogleFonts.montserrat(color: Colors.white),
+                  ),
+                )
+              : ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: color.AppColors.darkGray,
+                  ),
+                  child: Text(
+                    'Okay',
+                    style: GoogleFonts.montserrat(color: Colors.white),
+                  ),
+                  onPressed: () {
+                    Navigator.of(ctx).pop();
+                  },
+                )
         ],
       ),
     );
@@ -66,27 +107,21 @@ class _AuthScreenState extends State<AuthScreen> {
       return;
     }
     _formKey.currentState!.save();
-    setState(
-      () {
-        _isLoading = true;
-      },
-    );
 
     try {
       if (_authMode == AuthMode.login) {
         // Log user in
-        // await Provider.of<Auth>(context, listen: false).login(
-        //   _authData['email']!,
-        //   _authData['password']!,
-        // );
-      } else {
+        loginbloc.add(LoginButtonPressedEvent(
+            _authData['email']!, _authData['password']!));
+      } else if (_authMode == AuthMode.signup) {
         // Sign user up
-        // await Provider.of<Auth>(context, listen: false).signup(
-        //   _authData['name']!,
-        //   _authData['email']!,
-        //   _authData['password']!,
-        //   _authData['phonenumber']!,
-        // );
+        loginbloc.add(
+          SignUpButtonPressedEvent(_authData['name']!, _authData['email']!,
+              _authData['password']!, _authData['phone']!),
+        );
+      } else {
+        _showErrorDialog('You are Not Connected to the Internet');
+        return;
       }
     } on HttpException catch (error) {
       var errorMessage = 'Authentication failed';
@@ -103,9 +138,6 @@ class _AuthScreenState extends State<AuthScreen> {
       }
       _showErrorDialog(errorMessage);
     }
-    setState(() {
-      _isLoading = false;
-    });
   }
 
   void _switchAuthMode() {
@@ -172,239 +204,230 @@ class _AuthScreenState extends State<AuthScreen> {
           ),
         ],
       ),
-      body: Center(
-        child: Form(
-          key: _formKey,
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.only(top: 18),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  SizedBox(
-                    width: width * 0.34,
-                    height: hieght * 0.22,
-                    child: const Image(
-                      color: Colors.black,
-                      fit: BoxFit.contain,
-                      image: AssetImage('assets/images/logo.png'),
+      body: BlocListener<AuthBloc, AuthState>(
+        listener: (context, state) {
+          if (state is SignUpSuccessState) {
+            Navigator.pushNamed(
+              context,
+              authOtp,
+              arguments: _authData['email'],
+            );
+          } else if (state is AuthFaildState) {
+            loginbloc.add(AuthIntialEvent());
+            _showErrorDialog(state.errorMessage.toString());
+          } else if (state is LoginSuccessState) {
+            Navigator.pushNamedAndRemoveUntil(
+                context, tabScreen, (Route<dynamic> route) => false);
+          }
+        },
+        child: Center(
+          child: Form(
+            key: _formKey,
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 18),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    SizedBox(
+                      width: width * 0.34,
+                      height: hieght * 0.22,
+                      child: const Image(
+                        fit: BoxFit.contain,
+                        color: Colors.black,
+                        image: AssetImage('assets/images/logo.png'),
+                      ),
                     ),
-                  ),
-                  _authMode == AuthMode.signup
-                      ? Text(
-                          localizations!.register,
-                        )
-                      : Text(
-                          localizations!.login,
-                        ),
-                  _authMode == AuthMode.signup
-                      ? Text(
-                          localizations.thanksforjoiningus,
-                        )
-                      : const SizedBox(
-                          height: 20,
-                        ),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  SizedBox(
-                    width: width * 0.8,
-                    child: TextFormField(
-                      controller: emailController,
-                      keyboardType: TextInputType.emailAddress,
-                      decoration: InputDecoration(
-                          contentPadding: const EdgeInsets.only(top: 15),
-                          enabledBorder: const OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black),
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(15),
-                            ),
-                          ),
-                          prefixIcon: const Icon(
-                            Icons.email_outlined,
-                            color: color.AppColors.sIcon,
-                          ),
-                          hintText: localizations.email),
-                      validator: (value) {
-                        if (value!.isEmpty || !value.contains('@')) {
-                          return localizations.invalidemail;
-                        }
-                      },
-                      onSaved: (newValue) {
-                        _authData['email'] = newValue!;
-                      },
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  if (_authMode == AuthMode.signup)
                     SizedBox(
                       width: width * 0.8,
-                      child: TextFormField(
-                        controller: nameController,
-                        decoration: InputDecoration(
-                            contentPadding: const EdgeInsets.only(top: 15),
-                            enabledBorder: const OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.black),
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(15),
-                              ),
-                            ),
-                            prefixIcon: const Icon(
+                      child: _field(
+                          localizations!,
+                          emailController,
+                          TextInputType.emailAddress,
+                          Icons.email_outlined,
+                          'email',
+                          'Email'),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    if (_authMode == AuthMode.signup)
+                      SizedBox(
+                          width: width * 0.8,
+                          child: _field(
+                              localizations,
+                              nameController,
+                              TextInputType.name,
                               Icons.person,
-                              color: color.AppColors.sIcon,
-                            ),
-                            hintText: localizations.nameHint),
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return localizations.invalidname;
-                          }
-                        },
-                        onSaved: (newValue) {
-                          _authData['name'] = newValue!;
-                        },
+                              'name',
+                              'Name')),
+                    if (_authMode == AuthMode.signup)
+                      const SizedBox(
+                        height: 20,
                       ),
-                    ),
-                  if (_authMode == AuthMode.signup)
-                    const SizedBox(
-                      height: 20,
-                    ),
-                  if (_authMode == AuthMode.signup)
+                    if (_authMode == AuthMode.signup)
+                      SizedBox(
+                        width: width * 0.8,
+                        child: _field(
+                            localizations,
+                            phoneController,
+                            TextInputType.phone,
+                            Icons.phone,
+                            'phone',
+                            'Phone Number'),
+                      ),
+                    if (_authMode == AuthMode.signup)
+                      const SizedBox(
+                        height: 20,
+                      ),
                     SizedBox(
-                      width: width * 0.8,
-                      child: TextFormField(
-                        controller: phoneController,
-                        keyboardType: TextInputType.phone,
-                        decoration: InputDecoration(
-                            contentPadding: const EdgeInsets.only(top: 15),
-                            enabledBorder: const OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.black),
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(15),
-                              ),
-                            ),
-                            prefixIcon: const Icon(
-                              Icons.phone,
-                              color: color.AppColors.sIcon,
-                            ),
-                            hintText: localizations.phonenumber),
-                        validator: (value) {
-                          if (value!.isEmpty ||
-                              value.length < 10 && value.length > 10) {
-                            return localizations.invalidphone;
-                          }
-                        },
-                        onSaved: (newValue) {
-                          _authData['phonenumber'] = newValue!;
-                        },
-                      ),
-                    ),
-                  if (_authMode == AuthMode.signup)
+                        width: width * 0.8,
+                        child: _field(
+                          localizations,
+                          _passwordController,
+                          TextInputType.visiblePassword,
+                          Icons.key,
+                          'password',
+                          'Password',
+                        )),
                     const SizedBox(
                       height: 20,
                     ),
-                  SizedBox(
-                    width: width * 0.8,
-                    child: TextFormField(
-                      obscureText: true,
-                      controller: _passwordController,
-                      decoration: InputDecoration(
-                        contentPadding: const EdgeInsets.only(top: 15),
-                        enabledBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.black),
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(15),
-                          ),
-                        ),
-                        prefixIcon: const Icon(
-                          Icons.key,
-                          color: color.AppColors.sIcon,
-                        ),
-                        hintText: localizations.password,
+                    if (_authMode == AuthMode.signup)
+                      SizedBox(
+                          width: width * 0.8,
+                          child: _field(
+                              localizations,
+                              confirmpassController,
+                              TextInputType.visiblePassword,
+                              Icons.check_outlined,
+                              '',
+                              'Confirm Password')),
+                    if (_authMode == AuthMode.signup)
+                      const SizedBox(
+                        height: 25,
                       ),
-                      validator: (value) {
-                        if (value!.isEmpty || value.length < 5) {
-                          return localizations.passwordistoshort;
+                    BlocBuilder<AuthBloc, AuthState>(
+                      builder: (context, state) {
+                        if (state is AuthLoadingState) {
+                          return const CircularProgressIndicator();
+                        } else {
+                          return ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: color.AppColors.buttonColor,
+                              fixedSize: const Size(184, 41),
+                            ),
+                            onPressed: _submit,
+                            child: Text(
+                              _authMode == AuthMode.signup
+                                  ? localizations.signip
+                                  : localizations.login,
+                              style: const TextStyle(
+                                  fontSize: 24, color: Colors.white),
+                            ),
+                          );
                         }
                       },
-                      onSaved: (newValue) {
-                        _authData['password'] = newValue!;
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        _switchAuthMode();
+                        cleartext();
                       },
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  if (_authMode == AuthMode.signup)
-                    SizedBox(
-                      width: width * 0.8,
-                      child: TextFormField(
-                        controller: confirmpassController,
-                        obscureText: true,
-                        decoration: InputDecoration(
-                          contentPadding: const EdgeInsets.only(top: 15),
-                          enabledBorder: const OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black),
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(15),
-                            ),
-                          ),
-                          prefixIcon: const Icon(
-                            Icons.check_outlined,
-                            color: color.AppColors.sIcon,
-                          ),
-                          hintText: localizations.confirmpassword,
-                        ),
-                        validator: (value) {
-                          if (value != _passwordController.text) {
-                            return localizations.passwordsdontmatch;
-                          }
-                        },
-                      ),
-                    ),
-                  if (_authMode == AuthMode.signup)
-                    const SizedBox(
-                      height: 25,
-                    ),
-                  if (_isLoading)
-                    const CircularProgressIndicator()
-                  else
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: color.AppColors.buttonColor,
-                        fixedSize: const Size(184, 41),
-                      ),
-                      onPressed: _submit,
                       child: Text(
                         _authMode == AuthMode.signup
-                            ? localizations.signip
-                            : localizations.login,
-                        style:
-                            const TextStyle(fontSize: 24, color: Colors.white),
+                            ? localizations.alreadyhaveaccount
+                            : localizations.donthaveaccountyet,
+                        style: GoogleFonts.montserrat(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.black),
                       ),
                     ),
-                  TextButton(
-                    onPressed: () {
-                      _switchAuthMode();
-                      cleartext();
-                    },
-                    child: Text(
-                      _authMode == AuthMode.signup
-                          ? localizations.alreadyhaveaccount
-                          : '${localizations.donthaveaccountyet}${localizations.registernow}',
-                      style: const TextStyle(
-                        color: color.AppColors.textColor,
-                      ),
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
         ),
       ),
+    );
+  }
+
+  TextFormField _field(
+      AppLocalizations localizations,
+      TextEditingController controller,
+      TextInputType textInputType,
+      IconData icon,
+      String x,
+      String hintText) {
+    return TextFormField(
+      obscureText: x == 'password' || x == '' ? true : false,
+      controller: controller,
+      keyboardType: textInputType,
+      inputFormatters: [
+        if (x == 'phone') LengthLimitingTextInputFormatter(10),
+        if (x == 'phone') FilteringTextInputFormatter.digitsOnly
+      ],
+      textCapitalization: TextCapitalization.none,
+      decoration: InputDecoration(
+          contentPadding: const EdgeInsets.only(top: 15),
+          enabledBorder: const OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.black),
+            borderRadius: BorderRadius.all(
+              Radius.circular(15),
+            ),
+          ),
+          prefixIcon: Icon(
+            icon,
+            color: color.AppColors.sIcon,
+          ),
+          hintText: hintText),
+      validator: (value) {
+        if (x == 'email') {
+          if (_authMode == AuthMode.signup) {
+            if (value!.isEmpty || !value.contains('@')) {
+              return localizations.invalidemail;
+            }
+          }
+        } else if (x == 'name') {
+          if (value!.isEmpty) {
+            return localizations.invalidname;
+          }
+        } else if (x == 'phone') {
+          if (value!.isEmpty || value.length < 10 && value.length > 10) {
+            return localizations.invalidphone;
+          }
+        } else if (x == 'password') {
+          if (_authMode == AuthMode.signup) {
+            if (value!.isEmpty || value.length < 8) {
+              return 'Password most contain at least 8 characters';
+            }
+            if (!value.contains('1') &
+                !value.contains('2') &
+                !value.contains('3') &
+                !value.contains('4') &
+                !value.contains('5') &
+                !value.contains('6') &
+                !value.contains('7') &
+                !value.contains('8') &
+                !value.contains('9') &
+                !value.contains('0')) {
+              return "Password most contain numbers like (1 2 3 ..)";
+            }
+          }
+        } else if (x == '') {
+          if (value!.isEmpty || value != _passwordController.text) {
+            localizations.passwordsdontmatch;
+          }
+        }
+      },
+      onSaved: (newValue) {
+        if (x != '') {
+          _authData[x] = newValue!;
+        }
+      },
     );
   }
 }

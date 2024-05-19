@@ -1,32 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:loyalty_system_mobile/constant/app_colors.dart';
-import 'package:loyalty_system_mobile/presentation/widgets/voucher_item.dart';
+import 'package:loyalty_system_mobile/data/models/store_voucher_model.dart';
+import 'package:loyalty_system_mobile/presentation/widgets/store_voucher_item.dart';
 
 class StoreVoucherScreen extends StatelessWidget {
-  const StoreVoucherScreen({super.key});
+  final List<StoreVoucherModel> vouchers;
+  final String name;
+  const StoreVoucherScreen(
+      {super.key, required this.vouchers, required this.name});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Store Name voucher',
-          style: GoogleFonts.montserrat(
-            textStyle: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.w500,
-              fontSize: 18,
-            ),
-          ),
-        ),
-        centerTitle: true,
-        backgroundColor: AppColors.appBarColor,
+    return ListView.builder(
+      itemBuilder: (ctx, i) => StoreVoucherItem(
+        storeVoucherModel: vouchers[i],
+        storeName: name,
       ),
-      body: ListView.builder(
-        itemBuilder: (ctx, _) => const VoucherItem(),
-        itemCount: 10,
-      ),
+      itemCount: vouchers.length,
     );
   }
 }

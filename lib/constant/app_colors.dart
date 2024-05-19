@@ -17,7 +17,7 @@ class AppColors {
   static const Color lightGreen = Color.fromRGBO(196, 252, 240, 1);
   static const Color pointCardColor = Color.fromRGBO(53, 88, 146, 1);
   static const Color lightGray = Color.fromRGBO(245, 245, 245, 1);
-
+  static const Color darkGray = Color.fromRGBO(46, 56, 56, 1);
   // static const Color backgroundColor = Color(0xff6fb5d0);
   // static const Color kProfileTextColor = Color(0xff4B5396);
   // static const Color kContainerColor = Color.fromRGBO(249, 249, 249, 1);

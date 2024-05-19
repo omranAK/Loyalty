@@ -49,22 +49,25 @@ class _TabsState extends State<Tabs> {
   ];
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: screens[selectedIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        items: items,
-        selectedLabelStyle: GoogleFonts.montserrat(
-            textStyle: const TextStyle(fontWeight: FontWeight.w600)),
-        selectedItemColor: Colors.black,
-        showSelectedLabels: true,
-        currentIndex: selectedIndex,
-        onTap: (value) {
-          setState(
-            () {
-              selectedIndex = value;
-            },
-          );
-        },
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
+        body: screens[selectedIndex],
+        bottomNavigationBar: BottomNavigationBar(
+          items: items,
+          selectedLabelStyle: GoogleFonts.montserrat(
+              textStyle: const TextStyle(fontWeight: FontWeight.w600)),
+          selectedItemColor: Colors.black,
+          showSelectedLabels: true,
+          currentIndex: selectedIndex,
+          onTap: (value) {
+            setState(
+              () {
+                selectedIndex = value;
+              },
+            );
+          },
+        ),
       ),
     );
   }

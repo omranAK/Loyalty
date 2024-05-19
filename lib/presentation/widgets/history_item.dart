@@ -1,9 +1,17 @@
-import 'package:flutter/material.dart';
-import 'package:loyalty_system_mobile/constant/app_colors.dart';
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:math' as math;
 
+import 'package:flutter/material.dart';
+
+import 'package:loyalty_system_mobile/constant/app_colors.dart';
+import 'package:loyalty_system_mobile/data/models/point_history_model.dart';
+
 class HistoryItem extends StatelessWidget {
-  const HistoryItem({super.key});
+  final PointHistoryModel history;
+  const HistoryItem({
+    Key? key,
+    required this.history,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -14,43 +22,55 @@ class HistoryItem extends StatelessWidget {
           child: ListTile(
             leading: CircleAvatar(
               backgroundColor: AppColors.lightGray,
-              child: Transform.rotate(
-                  angle: 180 * math.pi / 180,
-                  child: const Icon(
-                    Icons.arrow_outward_rounded,
-                    color: Colors.green,
-                  )),
+              child: history.up
+                  ? const Icon(
+                      Icons.arrow_outward_rounded,
+                      color: Colors.red,
+                    )
+                  : Transform.rotate(
+                      angle: 180 * math.pi / 180,
+                      child: const Icon(
+                        Icons.arrow_outward_rounded,
+                        color: Colors.green,
+                      )),
             ),
             titleAlignment: ListTileTitleAlignment.center,
-            title: const Text(
-              'Service 1 done by 20,000.00',
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Text(
+                  history.operation.toUpperCase(),
+                  style: const TextStyle(
+                      fontSize: 14, fontWeight: FontWeight.bold),
+                ),
+                Text(history.up ? ' to' : ' from'),
+                Text(history.otherSideName)
+              ],
             ),
-            subtitle: const Text('20 SEP 2022'),
-            trailing: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                color: AppColors.lightGreen,
-              ),
-              width: 80,
-              height: 45,
-              child: const Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Text(
-                    '4',
-                    style: TextStyle(fontSize: 28, color: AppColors.green),
+            subtitle: Text(history.time.toString()),
+            trailing: Column(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    color: AppColors.lightGreen,
                   ),
-                  Text(
-                    'Points',
-                    style: TextStyle(fontSize: 15),
-                  )
-                ],
-              ),
+                  width: 80,
+                  height: 40,
+                  child: Center(
+                    child: Text(
+                      history.ammount.toString(),
+                      style:
+                          const TextStyle(fontSize: 28, color: AppColors.green),
+                    ),
+                  ),
+                ),
+               const  Text('Points'),
+              ],
             ),
           ),
         ),
-        Divider(
+        const Divider(
           color: AppColors.green,
         )
       ],

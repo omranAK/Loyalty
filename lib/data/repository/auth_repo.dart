@@ -1,34 +1,89 @@
 import 'dart:async';
+import 'package:loyalty_system_mobile/data/models/user_setting_model.dart';
+import 'package:loyalty_system_mobile/data/storage/cache_manager.dart';
+import '../web_services/general_controller.dart';
+import 'package:loyalty_system_mobile/data/web_services/external_services.dart';
 
-import 'package:loyalty_system_mobile/data/models/user_model.dart';
+class AuthRepository extends GeneralController {
+  final ExternalService externalService;
 
-import '../web_services/auth_services.dart';
+  var token;
 
-class AuthRepository {
-  final AuthWebServices authWebServices;
+  AuthRepository({required this.externalService});
 
-  AuthRepository({required this.authWebServices});
-  Future login(String email, String password) async {
-    final user = await authWebServices.login(
-      email,
-      password,
-    );
-    return User.fromJason(user);
+  Future login(Map<String, String> queryParameters, String urlService) async {
+    UserSetting userSetting;
+    var response =
+        await externalService.postDataMap1(queryParameters, urlService);
+    if (returnCodeFunc(response) == "success") {
+      if (response.the0['role']['id'] == 4) {
+        token = response.the0['access_token'];
+        userSetting = UserSetting(
+            name: response.the0['user']['name'],
+            token: response.the0['access_token'],
+            id: response.the0['user']['id'],
+            active: response.the0['user']['active'],
+            roleID: response.the0['role']['id']);
+        CacheManager.setToken(token);
+        CacheManager.setUserModel(userSetting);
+        if (response.the0['user']['active'] == 1) {
+          return userSetting;
+        }
+      } else {
+        if (response.the0['user']['active'] != 1) {
+          return 'You are not active';
+        } else if (response.the0['role']['id'] != 4) {
+          return 'You are not authenticated';
+        }
+      }
+    } else {
+      return returnCodeFunc(response);
+    }
   }
 
-  Future signup(
-      String name, String email, String password, String phonenumber) async {
-    final user = await authWebServices.signup(
-      name,
-      email,
-      password,
-      phonenumber,
-    );
-    return User.fromJason(user);
+  Future signup(Map<String, dynamic> queryParameters, String urlService) async {
+    UserSetting userSetting;
+    var response =
+        await externalService.postDataMap(queryParameters, urlService);
+    if (returnCodeFunc(response) == "success") {
+      token = response.the0["access_token"];
+      print(response.the0);
+      userSetting = UserSetting(
+          name: response.the0['user']['name'],
+          token: response.the0['access_token'],
+          id: response.the0['user']['id'],
+          active: 0,
+          roleID: response.the0['user']['role_id']);
+
+      CacheManager.setToken(token);
+      CacheManager.setUserModel(userSetting);
+      return userSetting;
+    } else {
+      return returnCodeFunc(response);
+    }
   }
 
-  Future getUser() async {
-    final user = await authWebServices.getUser();
-    return User.fromJason(user);
+  Future sendOtp() async {
+    var response = await externalService.getData(null, 'generate_otp');
+    if (returnCodeFunc(response) == 'success') {
+      return 'success';
+    } else {
+      return 'faild';
+    }
+  }
+
+  Future confirmEmail(
+      Map<String, dynamic> queryParameters, String urlService) async {
+    var response =
+        await externalService.postDataMap1(queryParameters, urlService);
+    if (returnCodeFunc(response) == 'success') {
+      UserSetting userSetting;
+      userSetting = CacheManager.getUserModel();
+      UserSetting newUserSetting = userSetting.copyWith(active: 1);
+      CacheManager.setUserModel(newUserSetting);
+      return 'success';
+    } else {
+      return 'faild';
+    }
   }
 }

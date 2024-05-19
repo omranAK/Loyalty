@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:loyalty_system_mobile/constant/app_colors.dart';
+import 'package:loyalty_system_mobile/data/models/voucher_model.dart';
 
 class VoucherItem extends StatelessWidget {
-  const VoucherItem({super.key});
+  final VoucherModel voucher;
+  const VoucherItem({super.key, required this.voucher});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +21,7 @@ class VoucherItem extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              '500 Points Voucher',
+              voucher.name,
               style: GoogleFonts.montserrat(
                 textStyle: const TextStyle(
                     color: AppColors.pointCardColor,
@@ -64,7 +66,7 @@ class VoucherItem extends StatelessWidget {
                           Row(
                             children: [
                               Text(
-                                '500',
+                                '${voucher.points}',
                                 style: GoogleFonts.montserrat(
                                   textStyle: const TextStyle(
                                       color: AppColors.green,
@@ -86,7 +88,7 @@ class VoucherItem extends StatelessWidget {
                           Row(
                             children: [
                               Text(
-                                '500%',
+                                '${voucher.discount}%',
                                 style: GoogleFonts.montserrat(
                                   textStyle: const TextStyle(
                                       fontSize: 14,
@@ -114,7 +116,7 @@ class VoucherItem extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            "Alakad Store",
+                            voucher.storeNmae,
                             style: GoogleFonts.montserrat(
                               textStyle: const TextStyle(
                                 fontSize: 20,
@@ -123,9 +125,10 @@ class VoucherItem extends StatelessWidget {
                               ),
                             ),
                           ),
-                          const Text(
-                            'Redeem 500 points and get 50 discounts on Clothes',
-                            style: TextStyle(color: Colors.white, fontSize: 11),
+                          Text(
+                            voucher.description,
+                            style: const TextStyle(
+                                color: Colors.white, fontSize: 11),
                           )
                         ],
                       ),

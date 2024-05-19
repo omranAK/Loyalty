@@ -1,19 +1,18 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:loyalty_system_mobile/constant/constant_data.dart';
+import 'package:loyalty_system_mobile/data/models/store_model.dart';
 
-class StoreItem extends StatefulWidget {
-  const StoreItem({super.key});
+class StoreItem extends StatelessWidget {
+  final StoreModel store;
+  const StoreItem({super.key, required this.store});
 
-  @override
-  State<StoreItem> createState() => _StoreItemState();
-}
-
-class _StoreItemState extends State<StoreItem> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, storeDetail);
+        Navigator.pushNamed(context, storeDetail,
+            arguments: {'storeID': store.id, 'name': store.name});
       },
       child: Padding(
         padding: const EdgeInsets.only(top: 10.0),
@@ -27,52 +26,70 @@ class _StoreItemState extends State<StoreItem> {
                   border: Border.all(width: 2, color: Colors.green),
                   borderRadius: BorderRadius.circular(5),
                 ),
-                child: const Row(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     SizedBox(
-                        width: 90,
-                        height: 90,
-                        child: Image(
-                          fit: BoxFit.fill,
-                          image: AssetImage('assets/images/profile.jpg'),
-                        )),
+                      width: 110,
+                      height: 90,
+                      child: FadeInImage.assetNetwork(
+                        fit: BoxFit.cover,
+                        placeholder: 'assets/images/loading.gif',
+                        image: 'http://10.0.2.2:8000/${store.prof_img}',
+                      ),
+                    ),
                     Padding(
-                      padding: EdgeInsets.only(left: 8.0),
+                      padding: const EdgeInsets.only(left: 8.0),
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Expanded(
                             flex: 1,
                             child: Text(
-                              'omran alakad',
+                              store.name.toUpperCase(),
                               textAlign: TextAlign.center,
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontSize: 20, fontWeight: FontWeight.bold),
                             ),
                           ),
                           Row(
                             children: [
-                              Icon(
-                                Icons.place_outlined,
+                              const Icon(
+                                Icons.phone,
                                 color: Colors.black45,
                                 size: 18,
                               ),
-                              Text('', style: TextStyle(fontSize: 16))
+                              Text(store.phone.toUpperCase(),
+                                  style: const TextStyle(fontSize: 16))
                             ],
                           ),
                           Row(
                             children: [
-                              Icon(
+                              const Icon(
                                 Icons.category,
                                 color: Colors.black45,
                                 size: 18,
                               ),
-                              Text('store.catogries')
+                              Text(store.category.toUpperCase())
                             ],
                           )
                         ],
                       ),
                     ),
+                    Align(
+                        alignment: Alignment.bottomRight,
+                        child: SizedBox(
+                          width: 100,
+                          height: 100,
+                          child: Column(
+                            children: [
+                              const Text(
+                                'LOCATION',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              Text(store.location),
+                            ],
+                          ),
+                        ))
                   ],
                 ),
               ),

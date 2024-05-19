@@ -1,27 +1,44 @@
 class User {
-  final String id;
+  final int id;
   final String name;
   final String email;
-  final String phonenumber;
-  final double points;
-  User(
-      {required this.id,
-      required this.name,
-      required this.email,
-      required this.phonenumber,
-      required this.points});
+  final String phone;
+  final String? prof_img;
+  var points;
+  var spicialPoins;
 
-  factory User.fromJason(Map<String, dynamic> json) => User(
+  // final double points;
+  User({
+    required this.id,
+    required this.name,
+    required this.email,
+    required this.phone,
+    required this.prof_img,
+    required this.points,
+    required this.spicialPoins,
+
+    // required this.points
+  });
+
+  factory User.fromJson(Map<String, dynamic> json) => User(
       id: json['id'],
       name: json['name'],
       email: json['email'],
-      phonenumber: json['phonenumber'],
-      points: json['points']);
+      phone: json['phone'],
+      prof_img: json['prof_img'],
+      points: json['client']['points'],
+      spicialPoins: json['client']['special_points']
+
+      // points: json['points']
+      );
   Map<String, dynamic> toJson() => {
         "id": id,
         "name": name,
         "email": email,
-        "phonenumber": phonenumber,
-        "points": points
+        "phone": phone,
+        "prof_img": prof_img,
+        "points": points,
+        "spicialPoins": spicialPoins
+        // "points": points
       };
 }
