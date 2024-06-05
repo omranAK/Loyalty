@@ -17,8 +17,9 @@ final class LogoutFaildState extends HomeState {}
 final class DataLoadedState extends HomeState {
   var points;
   final List<VoucherModel> vouchers;
+  final String email;
 
-  DataLoadedState(this.points, this.vouchers);
+  DataLoadedState(this.points, this.vouchers, this.email);
 }
 
 final class DataLoadingState extends HomeState {}

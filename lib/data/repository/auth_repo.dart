@@ -14,9 +14,9 @@ class AuthRepository extends GeneralController {
   Future login(Map<String, String> queryParameters, String urlService) async {
     UserSetting userSetting;
     var response =
-        await externalService.postDataMap1(queryParameters, urlService);
+        await externalService.postDataMap(queryParameters, urlService);
     if (returnCodeFunc(response) == "success") {
-      if (response.the0['role']['id'] == 4) {
+      if (response.the0['role']['id'] == 4|| response.the0['role']['id'] == 5) {
         token = response.the0['access_token'];
         userSetting = UserSetting(
             name: response.the0['user']['name'],
@@ -27,14 +27,13 @@ class AuthRepository extends GeneralController {
         CacheManager.setToken(token);
         CacheManager.setUserModel(userSetting);
         if (response.the0['user']['active'] == 1) {
+          
           return userSetting;
+        } else {
+          return 'You are not active';
         }
       } else {
-        if (response.the0['user']['active'] != 1) {
-          return 'You are not active';
-        } else if (response.the0['role']['id'] != 4) {
-          return 'You are not authenticated';
-        }
+        return 'You are not authenticated';
       }
     } else {
       return returnCodeFunc(response);
@@ -47,7 +46,6 @@ class AuthRepository extends GeneralController {
         await externalService.postDataMap(queryParameters, urlService);
     if (returnCodeFunc(response) == "success") {
       token = response.the0["access_token"];
-      print(response.the0);
       userSetting = UserSetting(
           name: response.the0['user']['name'],
           token: response.the0['access_token'],
@@ -78,7 +76,7 @@ class AuthRepository extends GeneralController {
         await externalService.postDataMap1(queryParameters, urlService);
     if (returnCodeFunc(response) == 'success') {
       UserSetting userSetting;
-      userSetting = CacheManager.getUserModel();
+      userSetting = CacheManager.getUserModel()!;
       UserSetting newUserSetting = userSetting.copyWith(active: 1);
       CacheManager.setUserModel(newUserSetting);
       return 'success';

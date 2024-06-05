@@ -15,24 +15,31 @@ class HistoryItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.sizeOf(context).height;
+    
     return Column(
       children: [
         SizedBox(
-          height: 60,
+          height: height * 0.07,
           child: ListTile(
-            leading: CircleAvatar(
-              backgroundColor: AppColors.lightGray,
-              child: history.up
-                  ? const Icon(
-                      Icons.arrow_outward_rounded,
-                      color: Colors.red,
-                    )
-                  : Transform.rotate(
-                      angle: 180 * math.pi / 180,
-                      child: const Icon(
+            leading: Padding(
+              padding: const EdgeInsets.only(bottom: 16),
+              child: CircleAvatar(
+                backgroundColor: AppColors.lightGray,
+                child: history.up && history.operation == 'transfer' ||
+                        history.operation == 'donate points' ||
+                        history.operation == 'buy voucher'
+                    ? const Icon(
                         Icons.arrow_outward_rounded,
-                        color: Colors.green,
-                      )),
+                        color: Colors.red,
+                      )
+                    : Transform.rotate(
+                        angle: 180 * math.pi / 180,
+                        child: const Icon(
+                          Icons.arrow_outward_rounded,
+                          color: Colors.green,
+                        )),
+              ),
             ),
             titleAlignment: ListTileTitleAlignment.center,
             title: Row(
@@ -41,32 +48,35 @@ class HistoryItem extends StatelessWidget {
                 Text(
                   history.operation.toUpperCase(),
                   style: const TextStyle(
-                      fontSize: 14, fontWeight: FontWeight.bold),
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-                Text(history.up ? ' to' : ' from'),
-                Text(history.otherSideName)
               ],
             ),
-            subtitle: Text(history.time.toString()),
-            trailing: Column(
+            subtitle: Column(
               children: [
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    color: AppColors.lightGreen,
-                  ),
-                  width: 80,
-                  height: 40,
-                  child: Center(
-                    child: Text(
-                      history.ammount.toString(),
-                      style:
-                          const TextStyle(fontSize: 28, color: AppColors.green),
-                    ),
+                Text(history.otherSideName),
+                Text(history.time.toString()),
+              ],
+            ),
+            trailing: Padding(
+              padding: const EdgeInsets.only(bottom: 16),
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  color: AppColors.lightGreen,
+                ),
+                width: 80,
+                height: 40,
+                child: Center(
+                  child: Text(
+                    history.ammount.toString(),
+                    style:
+                        const TextStyle(fontSize: 28, color: AppColors.green),
                   ),
                 ),
-               const  Text('Points'),
-              ],
+              ),
             ),
           ),
         ),

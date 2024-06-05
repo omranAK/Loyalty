@@ -1,20 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:loyalty_system_mobile/constant/app_colors.dart';
+import 'package:loyalty_system_mobile/constant/constant_data.dart';
+import 'package:loyalty_system_mobile/data/models/charity_model.dart';
 //import 'package:project_2/Provider/products_provider.dart';
 
 class CharityItem extends StatelessWidget {
-  const CharityItem({super.key});
+  final CharityModel charity;
+  const CharityItem({super.key, required this.charity});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // Navigator.pushNamed(
-        //   context,
-        //   '/product_detail',
-        //   arguments: product.id,
-        // );
+        Navigator.pushNamed(
+          context,
+          charitydetaile,
+          arguments: charity,
+        );
       },
       child: Container(
         width: MediaQuery.sizeOf(context).width * 0.38,
@@ -33,29 +36,22 @@ class CharityItem extends StatelessWidget {
               children: [
                 Center(
                   child: Container(
-                    decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.only(
+                    decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(15),
                         topRight: Radius.circular(15),
                       ),
                       image: DecorationImage(
-                        image: AssetImage('assets/images/profile.jpg'),
+                        image: NetworkImage(
+                          'http://10.0.2.2:8000/${charity.prof_img}',
+                        ),
                         fit: BoxFit.cover,
-                        // image: product.imageURL != null
-                        //     ? CachedNetworkImageProvider(
-                        //         'http://$host/${product.imageURL![0]}',
-                        //       )
-                        //     : const AssetImage(
-                        //             'asset/images/productholedr.png')
-                        //         as ImageProvider),
                       ),
                     ),
                     width: double.infinity,
                     height: 99,
                   ),
                 ),
-                // product.colorandsize!.isNotEmpty
-                // ? const Center()
               ],
             ),
             Container(
@@ -67,7 +63,7 @@ class CharityItem extends StatelessWidget {
                   SizedBox(
                     height: 20,
                     child: Text(
-                      ' The green ground',
+                      charity.name,
                       // product.name![0].toUpperCase() +
                       //     product.name!.substring(1),
                       style: GoogleFonts.montserrat(
@@ -78,7 +74,7 @@ class CharityItem extends StatelessWidget {
                     height: 30,
                     width: 200,
                     child: Text(
-                      'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+                      charity.description,
                       // product.name![0].toUpperCase() +
                       //     product.name!.substring(1),
                       style: GoogleFonts.montserrat(

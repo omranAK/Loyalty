@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:loyalty_system_mobile/constant/app_colors.dart';
@@ -56,7 +57,7 @@ class VoucherItem extends StatelessWidget {
                                 border: Border.all(
                                     width: 0.6, color: Colors.black)),
                             child: Text(
-                              '20-4-2020',
+                              DateFormat('yyyy-MM-dd').format(voucher.expDate),
                               style: GoogleFonts.montserrat(
                                 textStyle: const TextStyle(
                                     fontSize: 12, fontWeight: FontWeight.bold),

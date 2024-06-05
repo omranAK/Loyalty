@@ -8,16 +8,17 @@ class VoucherModel {
   var points;
   final int discount;
   final String storeNmae;
+  final DateTime expDate;
 
-  VoucherModel({
-    required this.id,
-    required this.isValid,
-    required this.name,
-    required this.description,
-    required this.points,
-    required this.discount,
-    required this.storeNmae,
-  });
+  VoucherModel(
+      {required this.id,
+      required this.isValid,
+      required this.name,
+      required this.description,
+      required this.points,
+      required this.discount,
+      required this.storeNmae,
+      required this.expDate});
 
   // Voucher copyWith({
   //   int? id,
@@ -66,14 +67,14 @@ class VoucherModel {
   // String toJson() => json.encode(toMap());
 
   factory VoucherModel.fromJson(Map<String, dynamic> json) => VoucherModel(
-        id: json['id'],
-        isValid: json['valid'],
-        name: json['voucher']['name'],
-        description: json['voucher']['description'],
-        points: json['voucher']['point'],
-        discount: json['voucher']['discount'],
-        storeNmae: json['voucher']['partner']['name'],
-      );
+      id: json['id'],
+      isValid: json['valid'],
+      name: json['voucher']['name'],
+      description: json['voucher']['description'],
+      points: json['voucher']['point'],
+      discount: json['voucher']['discount'],
+      storeNmae: json['voucher']['partner']['name'],
+      expDate: DateTime.parse(json['exp_date']));
 
   @override
   String toString() {

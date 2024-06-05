@@ -28,11 +28,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     emit(DataLoadingState());
     var response = await _homeRepo.getMyVoucher({}, 'show_my_bought_voucher');
     var response1 = await _homeRepo
-        .getMyPoints({}, 'show_profile/${CacheManager.getUserModel().id}');
+        .getMyPoints({}, 'show_profile/${CacheManager.getUserModel()!.id}');
+    var response2 = await _homeRepo
+        .getMyEmail({}, 'show_profile/${CacheManager.getUserModel()!.id}');
     if (response is String) {
       emit(DataFaildState(response));
     } else {
-      emit(DataLoadedState(response1, response));
+      emit(DataLoadedState(response1, response, response2));
     }
   }
 }

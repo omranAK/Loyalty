@@ -103,11 +103,14 @@ class MyApp extends StatelessWidget {
               //   locale: context.locale,
               title: 'LoyaltySystem',
               debugShowCheckedModeBanner: false,
-              initialRoute: CacheManager.getToken() != null &&
-                      CacheManager.getUserModel().active == 1 &&
-                      CacheManager.getUserModel().roleID == 4
-                  ? tabScreen
-                  : authscreen,
+              initialRoute: CacheManager.getUserModel() == null
+                  ? authscreen
+                  : CacheManager.getToken() != null &&
+                              CacheManager.getUserModel()!.active == 1 &&
+                              CacheManager.getUserModel()!.roleID == 4 ||
+                          CacheManager.getUserModel()!.roleID == 5
+                      ? tabScreen
+                      : authscreen,
               onGenerateRoute: appRouter.generateRoute,
 
               //   ),

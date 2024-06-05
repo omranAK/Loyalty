@@ -21,7 +21,6 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
     emit(HistoryLoadingState());
     var response =
         await histortyRepository.getHistory({}, 'show_points_history');
-        print(response);
     if (response is String) {
       
       emit(HistoryFaildState(errorMessage: response));

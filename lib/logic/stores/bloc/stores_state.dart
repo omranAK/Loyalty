@@ -39,3 +39,13 @@ final class DetailesFaildState extends StoresState {
 
   const DetailesFaildState({required this.errorMessage});
 }
+
+final class BuyingLoadingState extends StoresState {}
+
+final class BuyingSuccessState extends StoresState {}
+
+final class BuyingFaildState extends StoresState {
+  final String errorMessage;
+
+  const BuyingFaildState({required this.errorMessage});
+}

@@ -40,8 +40,8 @@ class StoresBloc extends Bloc<StoresEvent, StoresState> {
       {},
       'show_partner_vouchers/${event.storeID}',
     );
- 
-     if (response1 is String) {
+
+    if (response1 is String) {
       emit(DetailesFaildState(errorMessage: response1));
     } else if (response is String) {
       emit(DetailesFaildState(errorMessage: response));
@@ -49,4 +49,6 @@ class StoresBloc extends Bloc<StoresEvent, StoresState> {
       emit(DetailesLoaddedState(offers: response, vouchers: response1));
     }
   }
+
+  
 }

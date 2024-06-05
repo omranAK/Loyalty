@@ -26,15 +26,13 @@ class ExternalService {
 
   // get data from server with parameters
   Future<ResponseModel> getData(var queryParameters, String urlService) async {
-  
     uri = Uri.parse(ServerConfig.mainApiUrl + urlService);
-
     if (queryParameters != null) {
       uri = uri.replace(
         queryParameters: queryParameters,
       );
     }
-    
+
     headerMap = {
       'Accept': 'application/json',
       'Authorization': 'Bearer ${CacheManager.getToken()}',
@@ -42,6 +40,7 @@ class ExternalService {
     };
     try {
       var response = await http.get(uri, headers: headerMap);
+
       if (response.statusCode != 500) {
         dynamic data = jsonDecode(response.body);
         return ResponseModel.fromJson(data);
@@ -69,11 +68,15 @@ class ExternalService {
     try {
       var response = await http
           .post(uri, body: body, headers: {'Accept': 'application/json'});
+
       if (response.statusCode == 200) {
         dynamic data = jsonDecode(response.body);
         return ResponseModel.fromJson(data);
-      } else {
-        return ResponseModel(status: 500, message: response.body);
+      } else if (response.statusCode != 500) {
+        return ResponseModel(
+          status: response.statusCode,
+          message: response.body,
+        );
       }
     } on TimeoutException catch (e) {
       if (kDebugMode) {
@@ -94,18 +97,18 @@ class ExternalService {
   ////////////////////////////////////////////////////////////////////////////////////////
   Future<ResponseModel> postDataMap1(body, String urlService) async {
     uri = Uri.parse(ServerConfig.mainApiUrl + urlService);
-    print(body);
     try {
       var response = await http.post(uri, body: body, headers: {
         'Accept': 'application/json',
         'Authorization': 'Bearer ${CacheManager.getToken()}'
       });
-      
+    
       if (response.statusCode == 200) {
         dynamic data = jsonDecode(response.body);
         return ResponseModel.fromJson(data);
-      } else {
-        return ResponseModel(status: 500, message: response.body);
+      } else if (response.statusCode != 500) {
+        return ResponseModel(
+            status: response.statusCode, message: response.body);
       }
     } on TimeoutException catch (e) {
       if (kDebugMode) {
@@ -121,7 +124,7 @@ class ExternalService {
       }
     }
 
-    return ResponseModel(status: 500, message: 'Something Wrong');
+    return ResponseModel(status: 500, message: 'Server error');
   }
 
   //////////////////////////////////////////////////////////////////////////////////

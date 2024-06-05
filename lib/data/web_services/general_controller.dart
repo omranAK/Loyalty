@@ -8,19 +8,15 @@ class GeneralController {
   String returnCodeFunc(ResponseModel generalModel) {
     switch (generalModel.status) {
       case 401:
-        return generalModel.message
-            .substring(2, generalModel.message.length - 3);
+        return generalModel.message;
       case 403:
-        return generalModel.message
-            .substring(2, generalModel.message.length - 3);
+        return generalModel.message;
       case 400:
-        return generalModel.message
-            .substring(2, generalModel.message.length - 3);
+        return generalModel.message;
       case 500:
         return generalModel.message;
       case 404:
-        return generalModel.message
-            .substring(2, generalModel.message.length - 3);
+        return generalModel.message;
       default:
         return "success";
     }

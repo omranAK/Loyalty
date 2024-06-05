@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:loyalty_system_mobile/data/storage/cache_manager.dart';
 import 'package:loyalty_system_mobile/presentation/screens/charit_screen.dart';
 import 'package:loyalty_system_mobile/presentation/screens/history_screen.dart';
 import 'package:loyalty_system_mobile/presentation/screens/stores_screen.dart';
@@ -32,7 +33,7 @@ class _TabsState extends State<Tabs> {
     const HomeScreen(),
     const StoresScreen(),
     const TransferScreen(),
-    const CharityScreen(),
+    if (CacheManager.getUserModel()!.roleID == 4)const  CharityScreen(),
     const HistoryScreen(),
   ];
   List<BottomNavigationBarItem> items = [
@@ -42,8 +43,9 @@ class _TabsState extends State<Tabs> {
         icon: Icon(Icons.store_outlined, color: Colors.black), label: 'stores'),
     BottomNavigationBarItem(
         icon: SvgPicture.asset('assets/svg/transfer.svg'), label: 'transfer'),
-    BottomNavigationBarItem(
-        icon: SvgPicture.asset('assets/svg/charity.svg'), label: 'charity'),
+    if (CacheManager.getUserModel()!.roleID == 4)
+      BottomNavigationBarItem(
+          icon: SvgPicture.asset('assets/svg/charity.svg'), label: 'charity'),
     const BottomNavigationBarItem(
         icon: Icon(Icons.history, color: Colors.black), label: 'history'),
   ];

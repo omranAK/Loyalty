@@ -32,10 +32,21 @@ class StoreItem extends StatelessWidget {
                     SizedBox(
                       width: 110,
                       height: 90,
-                      child: FadeInImage.assetNetwork(
+                      child: Image.network(
                         fit: BoxFit.cover,
-                        placeholder: 'assets/images/loading.gif',
-                        image: 'http://10.0.2.2:8000/${store.prof_img}',
+                        'http://10.0.2.2:8000/${store.prof_img}',
+                        loadingBuilder: (BuildContext context, Widget child,
+                            ImageChunkEvent? loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          return Center(
+                            child: CircularProgressIndicator(
+                              value: loadingProgress.expectedTotalBytes != null
+                                  ? loadingProgress.cumulativeBytesLoaded /
+                                      loadingProgress.expectedTotalBytes!
+                                  : null,
+                            ),
+                          );
+                        },
                       ),
                     ),
                     Padding(

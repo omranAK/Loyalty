@@ -2,12 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:loyalty_system_mobile/constant/app_colors.dart';
 import 'package:loyalty_system_mobile/data/models/store_voucher_model.dart';
+import 'package:loyalty_system_mobile/data/repository/store_repo.dart';
+import 'package:loyalty_system_mobile/data/web_services/external_services.dart';
 
 class StoreVoucherItem extends StatelessWidget {
-  final StoreVoucherModel storeVoucherModel;
+  final StoreVoucherModel voucher;
   final String storeName;
-  const StoreVoucherItem(
-      {super.key, required this.storeVoucherModel, required this.storeName});
+  const StoreVoucherItem({
+    super.key,
+    required this.voucher,
+    required this.storeName,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +31,7 @@ class StoreVoucherItem extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  storeVoucherModel.name,
+                  voucher.name,
                   style: GoogleFonts.montserrat(
                     textStyle: const TextStyle(
                         color: AppColors.pointCardColor,
@@ -42,51 +47,82 @@ class StoreVoucherItem extends StatelessWidget {
                   ),
                   onPressed: () {
                     showDialog(
-                        context: context,
-                        builder: (_) => AlertDialog(
-                              title: Text(
-                                'Bying Voucher',
+                      context: context,
+                      builder: (_) => AlertDialog(
+                        title: Text(
+                          'Bying Voucher',
+                          style: GoogleFonts.montserrat(
+                            textStyle:
+                                const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        content: Text(
+                            'Are you sure you want to buy this voucher',
+                            style: GoogleFonts.montserrat(
+                              textStyle:
+                                  const TextStyle(fontWeight: FontWeight.w400),
+                            )),
+                        actions: [
+                          ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: AppColors.darkGray),
+                              onPressed: () async {
+                                StoreRepository storeRepository =
+                                    StoreRepository(
+                                  externalService: ExternalService(),
+                                );
+                                var response = await storeRepository.buyVoucher(
+                                    {},
+                                    'buy_voucher/${voucher.id}',
+                                    voucher.points);
+                                if (response == 'success') {
+                                  if (!context.mounted) return;
+                                  Navigator.pop(context);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      backgroundColor: Colors.green,
+                                      content: Text(
+                                          'Done Now you can use your voucher'),
+                                    ),
+                                  );
+                                } else {
+                                  if (!context.mounted) return;
+                                  Navigator.pop(context);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(response),
+                                    ),
+                                  );
+                                }
+                              },
+                              child: Text(
+                                'Yes',
                                 style: GoogleFonts.montserrat(
                                   textStyle: const TextStyle(
-                                      fontWeight: FontWeight.bold),
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w400),
                                 ),
+                              )),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.darkGray),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: Text(
+                              'No',
+                              style: GoogleFonts.montserrat(
+                                textStyle: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w400),
                               ),
-                              content: Text(
-                                  'Are you sure you want to buy this voucher',
-                                  style: GoogleFonts.montserrat(
-                                    textStyle: const TextStyle(
-                                        fontWeight: FontWeight.w400),
-                                  )),
-                              actions: [
-                                ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                      backgroundColor: AppColors.darkGray),
-                                  onPressed: () {},
-                                  child: Text(
-                                    'Yes',
-                                    style: GoogleFonts.montserrat(
-                                      textStyle: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w400),
-                                    ),
-                                  ),
-                                ),
-                                ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                        backgroundColor: AppColors.darkGray),
-                                    onPressed: () {},
-                                    child: Text(
-                                      'No',
-                                      style: GoogleFonts.montserrat(
-                                        textStyle: const TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w400),
-                                      ),
-                                    )),
-                              ],
-                            ));
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
                   },
                   child: Text(
                     'Get Voucher',
@@ -123,23 +159,10 @@ class StoreVoucherItem extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              border:
-                                  Border.all(width: 0.6, color: Colors.black),
-                            ),
-                            child: Text(
-                              '20-4-2020',
-                              style: GoogleFonts.montserrat(
-                                textStyle: const TextStyle(
-                                    fontSize: 12, fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                          ),
                           Row(
                             children: [
                               Text(
-                                storeVoucherModel.points.toString(),
+                                voucher.points.toString(),
                                 style: GoogleFonts.montserrat(
                                   textStyle: const TextStyle(
                                       color: AppColors.green,
@@ -152,7 +175,7 @@ class StoreVoucherItem extends StatelessWidget {
                                 style: GoogleFonts.montserrat(
                                   textStyle: const TextStyle(
                                       color: AppColors.green,
-                                      fontSize: 10,
+                                      fontSize: 12,
                                       fontWeight: FontWeight.w500),
                                 ),
                               ),
@@ -161,7 +184,7 @@ class StoreVoucherItem extends StatelessWidget {
                           Row(
                             children: [
                               Text(
-                                '${storeVoucherModel.discount}%',
+                                '${voucher.discount}%',
                                 style: GoogleFonts.montserrat(
                                   textStyle: const TextStyle(
                                       fontSize: 14,
@@ -199,7 +222,7 @@ class StoreVoucherItem extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            storeVoucherModel.description,
+                            voucher.description,
                             style: const TextStyle(
                                 color: Colors.white, fontSize: 11),
                           )

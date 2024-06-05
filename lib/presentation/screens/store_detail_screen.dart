@@ -8,7 +8,7 @@ import 'package:loyalty_system_mobile/data/models/store_voucher_model.dart';
 import 'package:loyalty_system_mobile/data/storage/cache_manager.dart';
 import 'package:loyalty_system_mobile/logic/stores/bloc/stores_bloc.dart';
 import 'package:loyalty_system_mobile/presentation/screens/store_offer_screen.dart';
-import 'package:loyalty_system_mobile/presentation/screens/store_voucher_screen.dart';
+import 'package:loyalty_system_mobile/presentation/screens/store_vouchers.dart';
 
 class StoreDetailScreen extends StatefulWidget {
   final int storeID;
@@ -97,13 +97,17 @@ class _StoreDetailScreenState extends State<StoreDetailScreen> {
                         textStyle: const TextStyle(
                             color: Colors.white, fontWeight: FontWeight.w500)),
                   ),
-                  Text(
-                    CacheManager.getPoint().toString(),
-                    style: GoogleFonts.montserrat(
-                        textStyle: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold)),
+                  BlocBuilder<StoresBloc, StoresState>(
+                    builder: (context, state) {
+                      return Text(
+                        CacheManager.getPoint().toString(),
+                        style: GoogleFonts.montserrat(
+                            textStyle: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold)),
+                      );
+                    },
                   ),
                 ],
               ),
@@ -120,9 +124,9 @@ class _StoreDetailScreenState extends State<StoreDetailScreen> {
               vouchers = state.vouchers;
               return selectedIndex == 0
                   ? StoreOffer(offers: offers)
-                  : StoreVoucherScreen(
+                  : StoreVouchers(
                       vouchers: vouchers,
-                      name: widget.storeName,
+                      storeName: widget.storeName,
                     );
             } else if (state is DetailesFaildState) {
               return Center(

@@ -4,13 +4,16 @@ class StoreVoucherModel {
   final String description;
   var points;
   final int discount;
+  final DateTime creatTime;
 
-  StoreVoucherModel(
-      {required this.id,
-      required this.name,
-      required this.description,
-      required this.points,
-      required this.discount});
+  StoreVoucherModel({
+    required this.id,
+    required this.name,
+    required this.description,
+    required this.points,
+    required this.discount,
+    required this.creatTime,
+  });
 
   factory StoreVoucherModel.fromJson(Map<String, dynamic> json) =>
       StoreVoucherModel(
@@ -19,6 +22,7 @@ class StoreVoucherModel {
         description: json['description'],
         points: json['point'],
         discount: json['discount'],
+        creatTime: DateTime.parse(json['created_at']),
       );
   Map<String, dynamic> toJson() => {
         "id": id,
@@ -26,5 +30,6 @@ class StoreVoucherModel {
         "description": description,
         "points": points,
         "discount": discount,
+        "created_at": creatTime
       };
 }

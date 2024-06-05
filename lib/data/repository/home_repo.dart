@@ -31,8 +31,23 @@ class HomeRepository extends GeneralController {
   Future getMyPoints(
       Map<String, dynamic> queryParameters, String urlService) async {
     var response = await externalService.getData(queryParameters, urlService);
+
     if (returnCodeFunc(response) == 'success') {
-      return response.the0['client']['points'];
+      if (CacheManager.getUserModel()!.roleID == 5) {
+        return response.the0['charity']['points'];
+      } else {
+        return response.the0['client']['points'];
+      }
+    } else {
+      return returnCodeFunc(response);
+    }
+  }
+
+  Future getMyEmail(
+      Map<String, dynamic> queryParameters, String urlService) async {
+    var response = await externalService.getData(queryParameters, urlService);
+    if (returnCodeFunc(response) == 'success') {
+      return response.the0['email'];
     } else {
       return returnCodeFunc(response);
     }

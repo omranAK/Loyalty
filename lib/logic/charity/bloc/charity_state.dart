@@ -2,7 +2,7 @@ part of 'charity_bloc.dart';
 
 sealed class CharityState extends Equatable {
   const CharityState();
-  
+
   @override
   List<Object> get props => [];
 }
@@ -13,8 +13,9 @@ final class CharityLoadingState extends CharityState {}
 
 final class CharityLoaddedState extends CharityState {
   final List<CharityModel> charities;
+  var spicialPoints;
 
-  const CharityLoaddedState(this.charities);
+   CharityLoaddedState(this.charities, this.spicialPoints);
 }
 
 final class CharityFailedState extends CharityState {

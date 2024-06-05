@@ -4,7 +4,7 @@ class OfferModel {
   final String description;
   var points;
   final DateTime endsIn;
-  final String image;
+  final List<String> imageList;
 
   OfferModel(
       {required this.id,
@@ -12,7 +12,7 @@ class OfferModel {
       required this.description,
       required this.points,
       required this.endsIn,
-      required this.image});
+      required this.imageList});
 
   factory OfferModel.fromJson(Map<String, dynamic> json) => OfferModel(
       id: json['id'],
@@ -20,7 +20,7 @@ class OfferModel {
       description: json['description'],
       points: json['points'],
       endsIn: DateTime.parse(json['end_time']),
-      image: json['images'][0]['name']);
+      imageList: json['images'][0]['name']);
 
   Map<String, dynamic> toJson() => {
         "id": id,
@@ -28,6 +28,6 @@ class OfferModel {
         "description": description,
         "points": points,
         "endsIn": endsIn,
-        "image": image,
+        "image": imageList,
       };
 }

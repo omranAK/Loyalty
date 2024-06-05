@@ -17,7 +17,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       GetProfileDataEvent event, Emitter<ProfileState> emit) async {
     emit(ProfileLoadingState());
     var response = await _profileRepository
-        .getUserData({}, 'show_profile/${CacheManager.getUserModel().id}');
+        .getUserData({}, 'show_profile/${CacheManager.getUserModel()!.id}');
     if (response is String) {
       emit(ProfileFaildState(response));
     } else {

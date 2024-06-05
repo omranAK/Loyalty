@@ -14,3 +14,9 @@ final class LoadStoreDetailesEvent extends StoresEvent {
 
   const LoadStoreDetailesEvent({required this.storeID});
 }
+
+// final class BuyVoucherButtonPressedEvent extends StoresEvent{
+//   final int voucherID;
+
+//  const  BuyVoucherButtonPressedEvent({required this.voucherID});
+// }

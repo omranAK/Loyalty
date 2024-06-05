@@ -16,6 +16,7 @@ class CacheManager {
   static String langKey = "LANG";
   static String pointsKey = "pointsKey";
   static String roleIdKey = "roleId";
+  static String spicialKey = 'spicial';
 
   CacheManager() {
     init();
@@ -25,19 +26,26 @@ class CacheManager {
     _preferences = await SharedPreferences.getInstance();
   }
 
-  static clearSharedPreferences() {
-    _preferences!.clear();
-    _preferences!.remove(userModellKey);
-    _preferences!.remove(tokenKey);
+  static clearSharedPreferences() async {
+    await _preferences!.clear();
+    await _preferences!.remove(userModellKey);
+    await _preferences!.remove(tokenKey);
+    await _preferences!.remove(pointsKey);
+
+    await _preferences!.remove(spicialKey);
   }
 
-  static UserSetting getUserModel() {
-    Map<String, dynamic> json1 =
-        json.decode(_preferences!.getString(userModellKey)!);
+  static UserSetting? getUserModel() {
+    if (_preferences!.getString(userModellKey) != null) {
+      Map<String, dynamic> json1 =
+          json.decode(_preferences!.getString(userModellKey)!);
+      UserSetting userModel = UserSetting.fromJson(json1);
+      return userModel;
+    } else {
+      return null;
+    }
 
-    // Map<String, dynamic> valueMap = json.decode(json1) as Map<String, dynamic>;
-    UserSetting userModel = UserSetting.fromJson(json1);
-    return userModel;
+    // Map<String, dynamic> valueMap = json.decode(json1) as Map<String, dynamic>
 
     // String s = _preferences!.getString(userModellKey)!;
     // print(json.decode(s));
@@ -124,5 +132,13 @@ class CacheManager {
 
   static int? getRoleId() {
     return _preferences!.getInt(roleIdKey);
+  }
+
+  static Future? setSpicialPoint(String data) async {
+    await _preferences!.setString(spicialKey, data);
+  }
+
+  static String? getSpicialPoint() {
+    return _preferences!.getString(spicialKey);
   }
 }

@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:loyalty_system_mobile/data/repository/profile_repo.dart';
-import 'package:loyalty_system_mobile/data/web_services/external_services.dart';
-import 'package:loyalty_system_mobile/logic/pofile/bloc/profile_bloc.dart';
+import 'package:loyalty_system_mobile/data/models/charity_model.dart';
 import 'package:loyalty_system_mobile/presentation/screens/auth_otp_screen.dart';
 import 'package:loyalty_system_mobile/presentation/screens/auth_screen.dart';
+import 'package:loyalty_system_mobile/presentation/screens/charity_detail_screen.dart';
 import 'package:loyalty_system_mobile/presentation/screens/profile_screen.dart';
 import 'package:loyalty_system_mobile/presentation/screens/store_detail_screen.dart';
 import 'package:loyalty_system_mobile/presentation/screens/tab_screen.dart';
+import 'package:loyalty_system_mobile/presentation/widgets/video_player.dart';
 import './constant/constant_data.dart';
 
 class AppRouter {
   Route? generateRoute(RouteSettings routeSettings) {
-    ExternalService? externalService;
     switch (routeSettings.name) {
       case tabScreen:
         return MaterialPageRoute(builder: (_) => const Tabs());
@@ -24,15 +22,7 @@ class AppRouter {
                   storeName: args['name'],
                 ));
       case profile:
-        return MaterialPageRoute(
-            builder: (_) => BlocProvider(
-                  create: (context) => ProfileBloc(
-                    ProfileRepository(
-                      externalService: externalService!,
-                    ),
-                  ),
-                  child: const ProfileScreen(),
-                ));
+        return MaterialPageRoute(builder: (_) => const ProfileScreen());
       case authscreen:
         return MaterialPageRoute(builder: (_) => const AuthScreen());
       case authOtp:
@@ -41,6 +31,17 @@ class AppRouter {
           builder: (_) => AuthOtp(
             data: args,
           ),
+        );
+      case charitydetaile:
+        final args = routeSettings.arguments as CharityModel;
+        return MaterialPageRoute(
+          builder: (_) => CharityDetailScreen(
+            charity: args,
+          ),
+        );
+      case videoplayer:
+        return MaterialPageRoute(
+          builder: (_) => const VideoPlayerScreen(),
         );
       default:
         return null;
