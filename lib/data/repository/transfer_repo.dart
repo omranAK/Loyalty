@@ -10,12 +10,14 @@ class TransferRepository extends GeneralController {
   );
   Future makeTranfer(
       Map<String, dynamic> queryParameters, String urlService) async {
-    var response =
-        await externalService.postDataMap1({'points':queryParameters['points'].toString(),'email':queryParameters['email']}, urlService);
+    var response = await externalService.postDataMap1({
+      'points': queryParameters['points'].toString(),
+      'email': queryParameters['email']
+    }, urlService);
     if (returnCodeFunc(response) == 'success') {
-    double old= double.tryParse( CacheManager.getPoint()!)!;
-     var point=old-queryParameters['points'];
-     CacheManager.setPoint(point.toString());
+      double old = double.tryParse(CacheManager.getPoint()!)!;
+      var point = old - queryParameters['points'];
+      CacheManager.setPoint(point.toString());
       return 'success';
     } else {
       return returnCodeFunc(response);
@@ -27,6 +29,17 @@ class TransferRepository extends GeneralController {
     var response = await externalService.getData(queryParameters, urlService);
     if (returnCodeFunc(response) == 'success') {
       return response.the0['client']['points'];
+    } else {
+      return returnCodeFunc(response);
+    }
+  }
+
+  Future useVoucher(
+      Map<String, dynamic> queryParameters, String urlService) async {
+    var response =
+        await externalService.postDataMap1(queryParameters, urlService);
+    if (returnCodeFunc(response) == 'success') {
+      return response.the0;
     } else {
       return returnCodeFunc(response);
     }

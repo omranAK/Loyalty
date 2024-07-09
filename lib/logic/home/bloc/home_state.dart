@@ -29,3 +29,31 @@ final class DataFaildState extends HomeState {
 
   const DataFaildState(this.errorMessage);
 }
+
+final class ConsumingSuccessState extends HomeState {
+  final String otp;
+
+  const ConsumingSuccessState({required this.otp});
+}
+
+final class ConsumingFailedState extends HomeState {
+  final String errorMessage;
+
+  const ConsumingFailedState({required this.errorMessage});
+}
+
+final class ConsumingLoaadingState extends HomeState {}
+
+final class GenerateOtpSuccessState extends HomeState {
+  final String otp;
+
+  const GenerateOtpSuccessState({required this.otp});
+}
+
+final class GenerateOtpFailedState extends HomeState {
+  final String errorMessage;
+
+  const GenerateOtpFailedState({required this.errorMessage});
+}
+
+final class GenerateOtpLoadingState extends HomeState {}

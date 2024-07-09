@@ -15,9 +15,17 @@ class StoresBloc extends Bloc<StoresEvent, StoresState> {
   StoresBloc(
     this.storeRepository,
   ) : super(StoresInitial()) {
+    on<StoreInitialEvent>(_onStoreInitialEvent);
     on<LoadStoresEvent>(_onLoadStoresEvent);
-    on<LoadStoreDetailesEvent>(_onLoadStoreDetailesEvent);
+    on<LoadStoreOffersEvent>(_onLoadStoreOffersEvent);
+    on<LoadStoreVouchersEvent>(_onLoadStoreVouchersEvent);
+    on<BuyVoucherButtonPressedEvent>(_onBuyVoucherButtonPressedEvent);
   }
+  void _onStoreInitialEvent(
+      StoreInitialEvent event, Emitter<StoresState> emit) async {
+    emit(StoresInitial());
+  }
+
   void _onLoadStoresEvent(
       LoadStoresEvent event, Emitter<StoresState> emit) async {
     emit(StoresLoadingState());
@@ -29,26 +37,45 @@ class StoresBloc extends Bloc<StoresEvent, StoresState> {
     }
   }
 
-  void _onLoadStoreDetailesEvent(
-      LoadStoreDetailesEvent event, Emitter<StoresState> emit) async {
-    emit(DetailesLoadingState());
+  void _onLoadStoreOffersEvent(
+      LoadStoreOffersEvent event, Emitter<StoresState> emit) async {
+    emit(OffersLoadingState());
     var response = await storeRepository.getOffers(
       {},
       'show_partner_offers/${event.storeID}',
     );
-    var response1 = await storeRepository.getVoucheres(
-      {},
-      'show_partner_vouchers/${event.storeID}',
-    );
 
-    if (response1 is String) {
-      emit(DetailesFaildState(errorMessage: response1));
-    } else if (response is String) {
-      emit(DetailesFaildState(errorMessage: response));
+    if (response is String) {
+      emit(OffersFailedState(errorMessage: response));
     } else {
-      emit(DetailesLoaddedState(offers: response, vouchers: response1));
+      emit(OffersLoaddedState(offers: response));
     }
   }
 
-  
+  void _onLoadStoreVouchersEvent(
+      LoadStoreVouchersEvent event, Emitter<StoresState> emit) async {
+    var response = await storeRepository.getVoucheres(
+      {},
+      'show_partner_vouchers/${event.storeID}',
+    );
+    if (response is String) {
+      emit(VocuhersFailedState(errorMessage: response));
+    } else {
+      emit(VouchersLoaddedState(vouchers: response));
+    }
+  }
+
+  void _onBuyVoucherButtonPressedEvent(
+      BuyVoucherButtonPressedEvent event, Emitter<StoresState> emit) async {
+    emit(BuyingLoadingState());
+    var response = await storeRepository
+        .buyVoucher({}, 'buy_voucher/${event.voucherID}', event.points);
+    if (response == 'success') {
+      emit(BuyingSuccessState());
+    } else {
+      emit(
+        BuyingFailedState(errorMessage: response),
+      );
+    }
+  }
 }

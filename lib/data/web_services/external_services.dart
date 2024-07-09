@@ -40,7 +40,6 @@ class ExternalService {
     };
     try {
       var response = await http.get(uri, headers: headerMap);
-
       if (response.statusCode != 500) {
         dynamic data = jsonDecode(response.body);
         return ResponseModel.fromJson(data);
@@ -68,7 +67,6 @@ class ExternalService {
     try {
       var response = await http
           .post(uri, body: body, headers: {'Accept': 'application/json'});
-
       if (response.statusCode == 200) {
         dynamic data = jsonDecode(response.body);
         return ResponseModel.fromJson(data);
@@ -102,7 +100,6 @@ class ExternalService {
         'Accept': 'application/json',
         'Authorization': 'Bearer ${CacheManager.getToken()}'
       });
-    
       if (response.statusCode == 200) {
         dynamic data = jsonDecode(response.body);
         return ResponseModel.fromJson(data);

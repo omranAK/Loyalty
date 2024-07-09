@@ -8,6 +8,7 @@ import 'package:loyalty_system_mobile/data/repository/profile_repo.dart';
 import 'package:loyalty_system_mobile/data/storage/cache_manager.dart';
 import 'package:loyalty_system_mobile/data/web_services/external_services.dart';
 import 'package:loyalty_system_mobile/logic/pofile/bloc/profile_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({
@@ -16,8 +17,9 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _height = MediaQuery.sizeOf(context).height;
-    final _width = MediaQuery.sizeOf(context).width;
+    final localizations = AppLocalizations.of(context);
+    final height = MediaQuery.sizeOf(context).height;
+    final width = MediaQuery.sizeOf(context).width;
     final roleID = CacheManager.getUserModel()!.roleID;
     return BlocProvider<ProfileBloc>(
       create: (context) => ProfileBloc(
@@ -64,37 +66,40 @@ class ProfileScreen extends StatelessWidget {
                           ),
                         ),
                         Padding(
-                          padding: EdgeInsets.only(top: _height / 2.2),
+                          padding: EdgeInsets.only(top: height / 2.2),
                           child: Container(
-                            color: Colors.white,
+                            color: Theme.of(context).colorScheme.background
                           ),
                         ),
                         Padding(
                           padding: EdgeInsets.only(
-                              top: _height / 2.6,
-                              left: _width / 20,
-                              right: _width / 20),
+                              top: height / 2.6,
+                              left: width / 20,
+                              right: width / 20),
                           child: Column(
                             children: <Widget>[
                               Container(
-                                decoration: const BoxDecoration(
-                                    color: Colors.white,
-                                    boxShadow: [
-                                      BoxShadow(
+                                decoration: BoxDecoration(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .background,
+                                    boxShadow:const  [
+                                       BoxShadow(
                                           color: Colors.black45,
                                           blurRadius: 2.0,
                                           offset: Offset(0.0, 2.0))
                                     ]),
                                 child: Padding(
-                                  padding: EdgeInsets.all(_width / 20),
+                                  padding: EdgeInsets.all(width / 20),
                                   child: Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
                                       children: <Widget>[
-                                        headerChild('Points', user.points),
+                                        headerChild(
+                                            localizations!.point, user.points),
                                         roleID == 4
                                             ? headerChild(
-                                                'Special Points',
+                                                localizations.spicialpoints,
                                                 user.spicialPoins,
                                               )
                                             : const Center()
@@ -102,20 +107,26 @@ class ProfileScreen extends StatelessWidget {
                                 ),
                               ),
                               Padding(
-                                padding: EdgeInsets.only(top: _height / 20),
-                                child: Column(
-                                  children: <Widget>[
-                                    infoChild(_width, Icons.email, user.email),
-                                    infoChild(_width, Icons.call, user.phone),
-                                    roleID == 5
-                                        ? infoChild(_width, Icons.location_on,
-                                            user.location)
-                                        : const Center(),
-                                    roleID == 5
-                                        ? infoChild(_width, Icons.description,
-                                            user.about)
-                                        : const Center()
-                                  ],
+                                
+                                padding: EdgeInsets.only(top: height / 20),
+                                child: Container(
+                                  
+                                  child: Column(
+                                    children: <Widget>[
+                                      infoChild(width, Icons.email, user.email,
+                                          context),
+                                      infoChild(
+                                          width, Icons.call, user.phone, context),
+                                      roleID == 5
+                                          ? infoChild(width, Icons.location_on,
+                                              user.location, context)
+                                          : const Center(),
+                                      roleID == 5
+                                          ? infoChild(width, Icons.description,
+                                              user.about, context)
+                                          : const Center()
+                                    ],
+                                  ),
                                 ),
                               )
                             ],
@@ -165,7 +176,8 @@ Widget headerChild(String header, var value) => Expanded(
       ],
     ));
 
-Widget infoChild(double width, IconData icon, data) => Padding(
+Widget infoChild(double width, IconData icon, data, BuildContext context) =>
+    Padding(
       padding: const EdgeInsets.only(bottom: 8.0),
       child: InkWell(
         child: Row(
@@ -181,7 +193,10 @@ Widget infoChild(double width, IconData icon, data) => Padding(
             SizedBox(
               width: width / 20,
             ),
-            Text(data)
+            Text(
+              data,
+              style: TextStyle(color: Theme.of(context).primaryIconTheme.color),
+            )
           ],
         ),
         onTap: () {

@@ -1,11 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:loyalty_system_mobile/constant/app_colors.dart';
 import 'package:loyalty_system_mobile/data/storage/cache_manager.dart';
 import 'package:loyalty_system_mobile/logic/transfer/bloc/transfer_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/widgets/quickalert_dialog.dart';
 
 class TransferScreen extends StatelessWidget {
   static const route = '/transfer';
@@ -13,6 +17,9 @@ class TransferScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
+    final width = MediaQuery.sizeOf(context).width;
+    final height = MediaQuery.sizeOf(context).height;
     final TextEditingController emailController = TextEditingController();
     final TextEditingController ammountController = TextEditingController();
     final TextEditingController confirmAmmountController =
@@ -93,14 +100,17 @@ class TransferScreen extends StatelessWidget {
           child: Column(
             children: [
               SizedBox(
-                  width: double.infinity,
-                  height: MediaQuery.sizeOf(context).height * 0.3,
-                  child: Image.asset('assets/images/transfer.png')),
+                width: double.infinity,
+                height: height * 0.3,
+                child: Image.asset(
+                  'assets/images/transfer.png',
+                ),
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Text(
-                    'My Points',
+                    localizations!.points,
                     style: GoogleFonts.cairo(
                       textStyle: const TextStyle(
                         fontSize: 20,
@@ -112,8 +122,8 @@ class TransferScreen extends StatelessWidget {
                     builder: (context, state) {
                       return Container(
                         margin: const EdgeInsets.only(right: 35, top: 35),
-                        width: 150,
-                        height: 75,
+                        width: width * 0.36,
+                        height: height * 0.1,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(15),
                           color: AppColors.pointCardColor,
@@ -129,9 +139,9 @@ class TransferScreen extends StatelessWidget {
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
-                            const Text(
-                              'points',
-                              style: TextStyle(
+                            Text(
+                              localizations.point,
+                              style: const TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w500,
                               ),
@@ -149,7 +159,7 @@ class TransferScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Text(
-                      'Recever email:',
+                      localizations.reciveremail,
                       style: GoogleFonts.cairo(
                         textStyle: const TextStyle(
                           fontSize: 16,
@@ -158,8 +168,8 @@ class TransferScreen extends StatelessWidget {
                       ),
                     ),
                     Container(
-                      width: 250,
-                      height: 35,
+                      width: width * 0.6,
+                      height: height * 0.04,
                       margin: const EdgeInsets.all(8),
                       child: TextFormField(
                         onSaved: (newValue) =>
@@ -198,7 +208,7 @@ class TransferScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Text(
-                      'Ammount:                         ',
+                      '${localizations.ammount}                         ',
                       style: GoogleFonts.cairo(
                         textStyle: const TextStyle(
                           fontSize: 16,
@@ -207,10 +217,13 @@ class TransferScreen extends StatelessWidget {
                       ),
                     ),
                     SizedBox(
-                      width: 150,
-                      height: 35,
+                      width: width * 0.36,
+                      height: height * 0.04,
                       child: TextFormField(
                           controller: ammountController,
+                          inputFormatters: <TextInputFormatter>[
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
                           keyboardType: TextInputType.emailAddress,
                           decoration: const InputDecoration(
                             isDense: true,
@@ -234,7 +247,7 @@ class TransferScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Text(
-                      'Re Enter the Ammount:',
+                      localizations.reenterammount,
                       style: GoogleFonts.cairo(
                         textStyle: const TextStyle(
                           fontSize: 16,
@@ -243,10 +256,13 @@ class TransferScreen extends StatelessWidget {
                       ),
                     ),
                     SizedBox(
-                      width: 150,
-                      height: 35,
+                      width: width * 0.36,
+                      height: height * 0.04,
                       child: TextFormField(
                         controller: confirmAmmountController,
+                        inputFormatters: <TextInputFormatter>[
+                          FilteringTextInputFormatter.digitsOnly
+                        ],
                         keyboardType: TextInputType.emailAddress,
                         decoration: const InputDecoration(
                           isDense: true,
@@ -274,13 +290,21 @@ class TransferScreen extends StatelessWidget {
                   listener: (context, state) {
                     if (state is TransferSuccessState) {
                       clearText();
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Transfer done'),
-                        ),
+                      QuickAlert.show(
+                        context: context,
+                        type: QuickAlertType.success,
+                        title: 'Success',
+                        confirmBtnColor: AppColors.buttonColor,
                       );
                     } else if (state is TransferFaildState) {
-                      _showErrorDialog(state.errorMessage);
+                      
+                      QuickAlert.show(
+                        context: context,
+                        type: QuickAlertType.error,
+                        title: 'Failed',
+                        text: state.errorMessage,
+                        confirmBtnColor: AppColors.buttonColor,
+                      );
                     }
                   },
                   builder: (context, state) {
@@ -292,14 +316,14 @@ class TransferScreen extends StatelessWidget {
                           _submit();
                         },
                         style: ElevatedButton.styleFrom(
-                          minimumSize: const Size(250, 50),
+                          minimumSize: Size(width * 0.6, height * 0.06),
                           backgroundColor: AppColors.darkGray,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15),
                           ),
                         ),
                         child: Text(
-                          'Proceed',
+                          localizations.procced,
                           style: GoogleFonts.montserrat(
                             textStyle: const TextStyle(
                                 fontSize: 22,

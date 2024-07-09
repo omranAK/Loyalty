@@ -7,7 +7,8 @@ sealed class TransferEvent extends Equatable {
   List<Object> get props => [];
 }
 
-final class TransferInitialEvent extends TransferEvent {}
+final class TransferIntialEvent extends TransferEvent {}
+
 
 final class ProccedButtonPressedEvent extends TransferEvent {
   final String email;

@@ -11,11 +11,12 @@ final class CharityInitial extends CharityState {}
 
 final class CharityLoadingState extends CharityState {}
 
+// ignore: must_be_immutable
 final class CharityLoaddedState extends CharityState {
   final List<CharityModel> charities;
   var spicialPoints;
 
-   CharityLoaddedState(this.charities, this.spicialPoints);
+  CharityLoaddedState(this.charities, this.spicialPoints);
 }
 
 final class CharityFailedState extends CharityState {
@@ -23,3 +24,13 @@ final class CharityFailedState extends CharityState {
 
   const CharityFailedState(this.errorMessage);
 }
+
+final class DonateDoneState extends CharityState {}
+
+final class DonateFailedState extends CharityState {
+  final String errorMessage;
+
+  const DonateFailedState({required this.errorMessage});
+}
+
+final class DonateLoadingState extends CharityState {}

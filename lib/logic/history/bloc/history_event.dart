@@ -7,4 +7,6 @@ sealed class HistoryEvent extends Equatable {
   List<Object> get props => [];
 }
 
+final class HistoryInitialEvent extends HistoryEvent {}
+
 final class LoadHistoryEvent extends HistoryEvent {}

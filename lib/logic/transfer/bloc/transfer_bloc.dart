@@ -10,19 +10,24 @@ part 'transfer_state.dart';
 class TransferBloc extends Bloc<TransferEvent, TransferState> {
   TransferRepository transferRepository;
   TransferBloc(this.transferRepository) : super(TransferInitial()) {
+    on<TransferIntialEvent>(_onTransferIntialEvent);
     on<ProccedButtonPressedEvent>(_onProccedButtonPressedEvent);
-    
   }
+  void _onTransferIntialEvent(
+      TransferIntialEvent event, Emitter<TransferState> emit) async {
+    emit(TransferInitial());
+  }
+
   void _onProccedButtonPressedEvent(
       ProccedButtonPressedEvent event, Emitter<TransferState> emit) async {
     emit(TransferLoadiingState());
-    String response = await transferRepository
-        .makeTranfer({'points': event.ammount, 'email': event.email}, 'transfer_point_to_friend');
+    String response = await transferRepository.makeTranfer(
+        {'points': event.ammount, 'email': event.email},
+        'transfer_point_to_friend');
     if (response == 'success') {
       emit(TransferSuccessState());
     } else {
       emit(TransferFaildState(response));
     }
   }
- 
 }

@@ -4,8 +4,10 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:loyalty_system_mobile/constant/app_colors.dart';
 import 'package:loyalty_system_mobile/data/models/offer_model.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:loyalty_system_mobile/data/web_services/server_config.dart';
 
 class StoreOfferItem extends StatelessWidget {
   final OfferModel offer;
@@ -16,25 +18,15 @@ class StoreOfferItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Image> images = [];
+    final localizations = AppLocalizations.of(context);
+    final height = MediaQuery.sizeOf(context).height;
+    List<CachedNetworkImage> images = [];
     offer.imageList.forEach(
       (element) {
         images.add(
-          Image.network(
-            'http://10.0.2.2:8000/$element',
+          CachedNetworkImage(
+            imageUrl: '${ServerConfig.mainApiUrlImage}$element',
             fit: BoxFit.cover,
-            loadingBuilder: (BuildContext context, Widget child,
-                ImageChunkEvent? loadingProgress) {
-              if (loadingProgress == null) return child;
-              return Center(
-                child: CircularProgressIndicator(
-                  value: loadingProgress.expectedTotalBytes != null
-                      ? loadingProgress.cumulativeBytesLoaded /
-                          loadingProgress.expectedTotalBytes!
-                      : null,
-                ),
-              );
-            },
           ),
         );
       },
@@ -43,10 +35,11 @@ class StoreOfferItem extends StatelessWidget {
       padding: const EdgeInsets.only(top: 8.0),
       child: Container(
         decoration: BoxDecoration(
-            color: AppColors.green,
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(width: 2)),
-        height: 250,
+          color: Theme.of(context).cardTheme.color,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(width: 2),
+        ),
+        height: height * 0.28,
         width: double.infinity,
         child: Column(
           children: [
@@ -65,10 +58,10 @@ class StoreOfferItem extends StatelessWidget {
                     alignment: Alignment.topCenter,
                     child: Container(
                       decoration: BoxDecoration(
-                          color: Colors.green[300],
+                          color: Theme.of(context).bannerTheme.backgroundColor,
                           borderRadius: BorderRadius.circular(8)),
                       child: Text(
-                        'valid until ${DateFormat('yyyy-MM-dd').format(offer.endsIn)}',
+                        '${localizations!.validuntil} ${DateFormat('yyyy-MM-dd').format(offer.endsIn)}',
                         style: GoogleFonts.montserrat(
                           fontSize: 16,
                           color: Colors.white,

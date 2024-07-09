@@ -17,6 +17,7 @@ class CacheManager {
   static String pointsKey = "pointsKey";
   static String roleIdKey = "roleId";
   static String spicialKey = 'spicial';
+  static String themeKey = 'theme';
 
   CacheManager() {
     init();
@@ -140,5 +141,17 @@ class CacheManager {
 
   static String? getSpicialPoint() {
     return _preferences!.getString(spicialKey);
+  }
+
+  static Future setTheme(String data) async {
+    await _preferences!.setString(themeKey, data);
+  }
+
+  static String? getTHeme() {
+    String? theme = _preferences!.getString(themeKey);
+    if (theme == null) {
+      return 'light';
+    }
+    return theme;
   }
 }

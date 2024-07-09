@@ -67,7 +67,7 @@ class VoucherModel {
   // String toJson() => json.encode(toMap());
 
   factory VoucherModel.fromJson(Map<String, dynamic> json) => VoucherModel(
-      id: json['id'],
+      id: json['voucher']['id'],
       isValid: json['valid'],
       name: json['voucher']['name'],
       description: json['voucher']['description'],

@@ -15,14 +15,18 @@ class CharityRepository extends GeneralController {
     List<CharityModel> charity_list = [];
     var response = await externalService.getData(queryParameters, urlService);
     if (returnCodeFunc(response) == 'success') {
-      list = response.the0;
-      list.forEach(
-        (element) {
-          storeModel = CharityModel.fromJson(element);
-          charity_list.add(storeModel);
-        },
-      );
-      return charity_list;
+      if (response.the0 != []) {
+        list = response.the0;
+        list.forEach(
+          (element) {
+            storeModel = CharityModel.fromJson(element);
+            charity_list.add(storeModel);
+          },
+        );
+        return charity_list;
+      } else {
+        return 'No charity yet';
+      }
     }
     return returnCodeFunc(response);
   }

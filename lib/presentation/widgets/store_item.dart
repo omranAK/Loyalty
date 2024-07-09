@@ -21,9 +21,9 @@ class StoreItem extends StatelessWidget {
             LimitedBox(
               maxWidth: MediaQuery.sizeOf(context).width * 0.95,
               child: Container(
-                height: MediaQuery.sizeOf(context).height * 0.1,
+                height: MediaQuery.sizeOf(context).height * 0.11,
                 decoration: BoxDecoration(
-                  border: Border.all(width: 2, color: Colors.green),
+                  border: Border.all(width: 2, color: Theme.of(context).cardColor),
                   borderRadius: BorderRadius.circular(5),
                 ),
                 child: Row(
@@ -32,22 +32,30 @@ class StoreItem extends StatelessWidget {
                     SizedBox(
                       width: 110,
                       height: 90,
-                      child: Image.network(
-                        fit: BoxFit.cover,
-                        'http://10.0.2.2:8000/${store.prof_img}',
-                        loadingBuilder: (BuildContext context, Widget child,
-                            ImageChunkEvent? loadingProgress) {
-                          if (loadingProgress == null) return child;
-                          return Center(
-                            child: CircularProgressIndicator(
-                              value: loadingProgress.expectedTotalBytes != null
-                                  ? loadingProgress.cumulativeBytesLoaded /
-                                      loadingProgress.expectedTotalBytes!
-                                  : null,
+                      child: store.prof_img == null
+                          ? Image.asset(
+                              'assets/images/logo.png',
+                              color: Colors.black,
+                            )
+                          : Image.network(
+                              fit: BoxFit.cover,
+                              'http://jamal.savoiacar.com/${store.prof_img}',
+                              loadingBuilder: (BuildContext context,
+                                  Widget child,
+                                  ImageChunkEvent? loadingProgress) {
+                                if (loadingProgress == null) return child;
+                                return Center(
+                                  child: CircularProgressIndicator(
+                                    value: loadingProgress.expectedTotalBytes !=
+                                            null
+                                        ? loadingProgress
+                                                .cumulativeBytesLoaded /
+                                            loadingProgress.expectedTotalBytes!
+                                        : null,
+                                  ),
+                                );
+                              },
                             ),
-                          );
-                        },
-                      ),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(left: 8.0),
@@ -69,8 +77,10 @@ class StoreItem extends StatelessWidget {
                                 color: Colors.black45,
                                 size: 18,
                               ),
-                              Text(store.phone.toUpperCase(),
-                                  style: const TextStyle(fontSize: 16))
+                              Text(
+                                store.phone.toUpperCase(),
+                                style: const TextStyle(fontSize: 16),
+                              )
                             ],
                           ),
                           Row(
@@ -80,7 +90,9 @@ class StoreItem extends StatelessWidget {
                                 color: Colors.black45,
                                 size: 18,
                               ),
-                              Text(store.category.toUpperCase())
+                              Text(
+                                store.category.toUpperCase(),
+                              )
                             ],
                           )
                         ],

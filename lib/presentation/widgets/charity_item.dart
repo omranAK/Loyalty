@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:loyalty_system_mobile/constant/app_colors.dart';
 import 'package:loyalty_system_mobile/constant/constant_data.dart';
 import 'package:loyalty_system_mobile/data/models/charity_model.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 //import 'package:project_2/Provider/products_provider.dart';
 
 class CharityItem extends StatelessWidget {
@@ -11,6 +12,7 @@ class CharityItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.sizeOf(context).width;
     return GestureDetector(
       onTap: () {
         Navigator.pushNamed(
@@ -37,14 +39,13 @@ class CharityItem extends StatelessWidget {
                 Center(
                   child: Container(
                     decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.only(
+                      borderRadius:const  BorderRadius.only(
                         topLeft: Radius.circular(15),
                         topRight: Radius.circular(15),
                       ),
                       image: DecorationImage(
-                        image: NetworkImage(
-                          'http://10.0.2.2:8000/${charity.prof_img}',
-                        ),
+                        image:charity.prof_img!=null? CachedNetworkImageProvider(
+                            'http://jamal.savoiacar.com/${charity.prof_img}'):const AssetImage('assets/images/EmptyCharity.jpg')as ImageProvider,
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -72,7 +73,7 @@ class CharityItem extends StatelessWidget {
                   ),
                   SizedBox(
                     height: 30,
-                    width: 200,
+                    width: width * 0.6,
                     child: Text(
                       charity.description,
                       // product.name![0].toUpperCase() +

@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:loyalty_system_mobile/constant/app_colors.dart';
 import 'package:loyalty_system_mobile/data/models/charity_model.dart';
-import 'package:loyalty_system_mobile/data/repository/charity_repo.dart';
 import 'package:loyalty_system_mobile/data/storage/cache_manager.dart';
-import 'package:loyalty_system_mobile/data/web_services/external_services.dart';
+import 'package:loyalty_system_mobile/data/web_services/server_config.dart';
 import 'package:loyalty_system_mobile/logic/charity/bloc/charity_bloc.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:quickalert/quickalert.dart';
 
 class CharityDetailScreen extends StatelessWidget {
   final CharityModel charity;
@@ -17,19 +19,8 @@ class CharityDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.sizeOf(context).height;
     TextEditingController ammountController = TextEditingController();
-    final GlobalKey<FormState> _formKey = GlobalKey();
-    CharityRepository charityRepository =
-        CharityRepository(externalService: ExternalService());
-    Future _submit() async {
-      if (!_formKey.currentState!.validate()) {
-        return;
-      }
-
-      _formKey.currentState!.save();
-      await charityRepository
-          .donate({'points': ammountController.text, 'id': charity.id}, '');
-    }
 
     return Scaffold(
       appBar: AppBar(
@@ -44,24 +35,26 @@ class CharityDetailScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8)),
               child: Row(
                 children: [
+                  Text(
+                    'My Spicial Points',
+                    style: GoogleFonts.montserrat(
+                      textStyle: const TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.w500),
+                    ),
+                  ),
                   BlocBuilder<CharityBloc, CharityState>(
                     builder: (context, state) {
                       return Text(
-                        'My Spicial Points',
+                        CacheManager.getSpicialPoint().toString(),
                         style: GoogleFonts.montserrat(
-                            textStyle: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w500)),
-                      );
-                    },
-                  ),
-                  Text(
-                    CacheManager.getSpicialPoint().toString(),
-                    style: GoogleFonts.montserrat(
-                        textStyle: const TextStyle(
+                          textStyle: const TextStyle(
                             color: Colors.white,
                             fontSize: 18,
-                            fontWeight: FontWeight.bold)),
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      );
+                    },
                   )
                 ],
               ),
@@ -75,7 +68,7 @@ class CharityDetailScreen extends StatelessWidget {
             context: context,
             builder: (_) => AlertDialog(
               title: Text(
-                'Bying Voucher',
+                'Donate',
                 style: GoogleFonts.montserrat(
                   textStyle: const TextStyle(fontWeight: FontWeight.bold),
                 ),
@@ -94,10 +87,12 @@ class CharityDetailScreen extends StatelessWidget {
                   ),
                   Expanded(
                     child: SizedBox(
-                      height: 35,
                       child: TextFormField(
+                        inputFormatters: <TextInputFormatter>[
+                          FilteringTextInputFormatter.digitsOnly
+                        ],
                         controller: ammountController,
-                        keyboardType: TextInputType.emailAddress,
+                        keyboardType: TextInputType.number,
                         decoration: const InputDecoration(
                           isDense: true,
                           contentPadding:
@@ -116,6 +111,7 @@ class CharityDetailScreen extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.darkGray),
                   onPressed: () {
+                    ammountController.clear();
                     Navigator.pop(context);
                   },
                   child: Text(
@@ -129,44 +125,84 @@ class CharityDetailScreen extends StatelessWidget {
                   ),
                 ),
                 ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.green),
-                    onPressed: () async {
-                      var response = await charityRepository.donate(
-                        {
-                          'points': ammountController.text,
-                          'id': charity.id.toString(),
-                        },
-                        'donate_special_points',
-                      );
-                      if (response == 'success') {
-                        if (!context.mounted) return;
-                        Navigator.pop(context);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            backgroundColor: Colors.green,
-                            content: Text('Done thank you for your generosity'),
-                          ),
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.green),
+                  onPressed: () async {
+                    BlocProvider.of<CharityBloc>(context).add(
+                      DonateSpicialPointsEvent(
+                        charity.id,
+                        ammount: ammountController.text,
+                      ),
+                    );
+                    // var response = await charityRepository.donate(
+                    //   {
+                    //     'points': ammountController.text,
+                    //     'id': charity.id.toString(),
+                    //   },
+                    //   'donate_special_points',
+                    // );
+                    // if (response == 'success') {
+                    //   if (!context.mounted) return;
+                    //   Navigator.pop(context);
+                    //   ScaffoldMessenger.of(context).showSnackBar(
+                    //     const SnackBar(
+                    //       backgroundColor: Colors.green,
+                    //       content: Text('Done thank you for your generosity'),
+                    //     ),
+                    //   );
+                    // } else {
+                    //   if (!context.mounted) return;
+                    //   Navigator.pop(context);
+                    //   ScaffoldMessenger.of(context).showSnackBar(
+                    //     SnackBar(
+                    //       content: Text(response),
+                    //     ),
+                    //   );
+                    // }
+                  },
+                  child: BlocConsumer<CharityBloc, CharityState>(
+                    listener: (context, state) {
+                      if (state is DonateDoneState) {
+                        ammountController.clear();
+                        Navigator.of(context).pop();
+                        QuickAlert.show(
+                          context: context,
+                          type: QuickAlertType.success,
+                          title: 'Success',
+                          confirmBtnColor: AppColors.buttonColor,
                         );
+                      } else if (state is DonateFailedState) {
+                        ammountController.clear();
+                        Navigator.of(context).pop();
+                        QuickAlert.show(
+                          context: context,
+                          type: QuickAlertType.error,
+                          title: 'Failed',
+                          text: state.errorMessage,
+                          confirmBtnColor: AppColors.buttonColor,
+                        );
+                      }
+                    },
+                    buildWhen: (previous, current) =>
+                        current is DonateLoadingState,
+                    builder: (context, state) {
+                      if (state is DonateLoadingState) {
+                        return const CircularProgressIndicator();
                       } else {
-                        if (!context.mounted) return;
-                        Navigator.pop(context);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(response),
+                        return Text(
+                          'Procced',
+                          style: GoogleFonts.montserrat(
+                            textStyle: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w400,
+                            ),
                           ),
                         );
                       }
                     },
-                    child: Text(
-                      'Procced',
-                      style: GoogleFonts.montserrat(
-                        textStyle: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w400),
-                      ),
-                    )),
+                  ),
+                ),
               ],
             ),
           );
@@ -176,14 +212,17 @@ class CharityDetailScreen extends StatelessWidget {
       ),
       body: ListView(
         children: [
-          // Product image
-          Image.network(
-            'http://10.0.2.2:8000/${charity.prof_img}',
-            height: MediaQuery.of(context).size.height / 1.8,
-            fit: BoxFit.fill,
-          ),
+          // Charity image
+          charity.prof_img != null
+              ? CachedNetworkImage(
+                  imageUrl:
+                      '${ServerConfig.mainApiUrlImage}${charity.prof_img}',
+                  height: height / 1.8,
+                  fit: BoxFit.fill,
+                )
+              : Image.asset('assets/images/EmptyCharity.jpg'),
 
-          // Product title
+          // Charity title
           Padding(
             padding:
                 const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
@@ -194,16 +233,10 @@ class CharityDetailScreen extends StatelessWidget {
             ),
           ),
 
-          // Product description
+          //charity Description
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: Text(charity.description),
-          ),
-
-          // Product price
-
-          const SizedBox(
-            height: 30.0,
           ),
         ],
       ),

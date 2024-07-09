@@ -10,9 +10,15 @@ part 'profile_state.dart';
 class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   ProfileRepository _profileRepository;
   ProfileBloc(this._profileRepository) : super(ProfileInitial()) {
+    on<ProfileInitialEvent>(_onProfileInitialEvent);
     on<GetProfileDataEvent>(_onGetProfileEvent);
     on<UpdateUserDataEvent>(_onUpdateUserDataEvent);
   }
+  void _onProfileInitialEvent(
+      ProfileInitialEvent event, Emitter<ProfileState> emit) async {
+    emit(ProfileInitial());
+  }
+
   void _onGetProfileEvent(
       GetProfileDataEvent event, Emitter<ProfileState> emit) async {
     emit(ProfileLoadingState());

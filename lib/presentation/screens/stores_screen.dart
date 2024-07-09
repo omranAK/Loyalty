@@ -5,6 +5,7 @@ import 'package:loyalty_system_mobile/constant/app_colors.dart';
 import 'package:loyalty_system_mobile/data/models/store_model.dart';
 import 'package:loyalty_system_mobile/logic/stores/bloc/stores_bloc.dart';
 import 'package:loyalty_system_mobile/presentation/widgets/store_item.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class StoresScreen extends StatefulWidget {
   const StoresScreen({super.key});
@@ -15,12 +16,29 @@ class StoresScreen extends StatefulWidget {
 
 class _StoresScreenState extends State<StoresScreen> {
   late Bloc storesBloc;
+  TextEditingController textEditingController = TextEditingController();
   List<StoreModel> storeList = [];
+  List<StoreModel> filteredStores = [];
   @override
   void initState() {
     storesBloc = BlocProvider.of<StoresBloc>(context);
     storesBloc.add(LoadStoresEvent());
     super.initState();
+  }
+
+  void _runFilter(String name) {
+    List<StoreModel> resault = [];
+    if (name.isEmpty) {
+      resault = storeList;
+    } else {
+      resault = storeList
+          .where((element) =>
+              element.name.toLowerCase().contains(name.toLowerCase()))
+          .toList();
+    }
+    setState(() {
+      filteredStores = resault;
+    });
   }
 
   Future<void> reGet() async {
@@ -29,11 +47,14 @@ class _StoresScreenState extends State<StoresScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
+    final width = MediaQuery.sizeOf(context).width;
+    final height = MediaQuery.sizeOf(context).height;
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: Text(
-          'Stores',
+          localizations!.stores,
           style: GoogleFonts.montserrat(
             textStyle: const TextStyle(
               color: Colors.white,
@@ -49,6 +70,7 @@ class _StoresScreenState extends State<StoresScreen> {
         listener: (context, state) {
           if (state is StoresLoaddedState) {
             storeList = state.storeModel;
+            filteredStores = state.storeModel;
           }
         },
         child: SingleChildScrollView(
@@ -60,50 +82,29 @@ class _StoresScreenState extends State<StoresScreen> {
                   child: Container(
                     decoration: BoxDecoration(
                       shape: BoxShape.rectangle,
-                      border: Border.all(width: 1),
+                      border: Border.all(
+                        width: 1,
+                        color: Theme.of(context).primaryIconTheme.color!,
+                      ),
                       borderRadius: BorderRadius.circular(15),
                     ),
-                    width: MediaQuery.sizeOf(context).width * 0.60,
-                    height: MediaQuery.sizeOf(context).height * 0.041,
+                    width: width * 0.60,
+                    height: height * 0.041,
                     child: TextFormField(
-                      // controller: textEditingController,
-                      // onFieldSubmitted: (newValue) {
-                      //   value = newValue;
-                      //   final List<Store> searchresult =
-                      //       Provider.of<Stores>(context, listen: false)
-                      //           .findByName(newValue);
-                      //   Navigator.of(context).pushNamed(
-                      //     '/search_store',
-                      //     arguments: {
-                      //       'list': searchresult,
-                      //       'value': newValue,
-                      //     },
-                      //   );
-                      //   clearText();
-                      // },
+                      controller: textEditingController,
+                      keyboardType: TextInputType.emailAddress,
+                      onChanged: (value) => _runFilter(value),
                       decoration: InputDecoration(
-                        contentPadding: const EdgeInsets.all(7),
-                        hintTextDirection: TextDirection.ltr,
+                        contentPadding: EdgeInsets.zero,
                         border: InputBorder.none,
                         prefixIcon: IconButton(
                           onPressed: () {},
                           padding: const EdgeInsets.all(-15),
-                          // onPressed: () {
-                          //   final List<Store> searchresult =
-                          //       Provider.of<Stores>(context, listen: false)
-                          //           .findByName(value!);
-                          //   Navigator.of(context).pushNamed(
-                          //     '/search_store',
-                          //     arguments: {
-                          //       'list': searchresult,
-                          //       'value': value,
-                          //     },
-                          //   );
-                          //   clearText();
-                          // },
-                          icon: const Icon(Icons.search, color: Colors.black),
+                          icon: Icon(
+                            Icons.search,
+                            color: Theme.of(context).primaryIconTheme.color,
+                          ),
                         ),
-                      
                         hintStyle: const TextStyle(fontWeight: FontWeight.w300),
                       ),
                     ),
@@ -111,7 +112,7 @@ class _StoresScreenState extends State<StoresScreen> {
                 ),
               ),
               SizedBox(
-                height: MediaQuery.sizeOf(context).height * 0.73,
+                height: height * 0.73,
                 child: RefreshIndicator(
                   onRefresh: () {
                     return reGet();
@@ -128,29 +129,32 @@ class _StoresScreenState extends State<StoresScreen> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                'Somthing Went Wrong!!!! Try again Please',
+                                localizations.somthingwentwrong,
                                 style: GoogleFonts.montserrat(
                                     fontSize: 16, fontWeight: FontWeight.w500),
                               ),
                               ElevatedButton.icon(
-                                  icon: const Icon(Icons.dangerous),
-                                  onPressed: () {
-                                    storesBloc.add(
-                                      LoadStoresEvent(),
-                                    );
-                                  },
-                                  label: const Text('data'))
+                                icon: const Icon(Icons.refresh),
+                                onPressed: () {
+                                  storesBloc.add(
+                                    LoadStoresEvent(),
+                                  );
+                                },
+                                label: const Text('Re Get Data'),
+                              )
                             ],
                           ),
                         );
                       } else {
-                        return storeList.isNotEmpty
+                        return filteredStores.isNotEmpty
                             ? ListView.builder(
                                 padding: const EdgeInsets.all(8),
                                 scrollDirection: Axis.vertical,
                                 shrinkWrap: true,
-                                itemCount: storeList.length,
-                                itemBuilder: ((ctx, i) =>  StoreItem(store: storeList[i],)),
+                                itemCount: filteredStores.length,
+                                itemBuilder: ((ctx, i) => StoreItem(
+                                      store: filteredStores[i],
+                                    )),
                               )
                             : const Center(
                                 child: Text('NO Store to show!!!'),

@@ -3,12 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:loyalty_system_mobile/constant/app_colors.dart';
-import 'package:loyalty_system_mobile/data/models/offer_model.dart';
-import 'package:loyalty_system_mobile/data/models/store_voucher_model.dart';
 import 'package:loyalty_system_mobile/data/storage/cache_manager.dart';
 import 'package:loyalty_system_mobile/logic/stores/bloc/stores_bloc.dart';
 import 'package:loyalty_system_mobile/presentation/screens/store_offer_screen.dart';
 import 'package:loyalty_system_mobile/presentation/screens/store_vouchers.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class StoreDetailScreen extends StatefulWidget {
   final int storeID;
@@ -22,55 +21,42 @@ class StoreDetailScreen extends StatefulWidget {
 
 class _StoreDetailScreenState extends State<StoreDetailScreen> {
   int selectedIndex = 0;
-  late List<OfferModel> offers;
-  late List<StoreVoucherModel> vouchers;
-  late Bloc storeBloc;
-
-  List<BottomNavigationBarItem> items = [
-    BottomNavigationBarItem(
-      label: 'Offers',
-      activeIcon: SvgPicture.asset(
-        width: 30,
-        colorFilter: const ColorFilter.mode(Colors.blue, BlendMode.srcIn),
-        'assets/svg/Special_Offers.svg',
-      ),
-      icon: SvgPicture.asset(
-        width: 30,
-        'assets/svg/Special_Offers.svg',
-      ),
-    ),
-    BottomNavigationBarItem(
-      activeIcon: SvgPicture.asset(
-        colorFilter: const ColorFilter.mode(Colors.blue, BlendMode.srcIn),
-        width: 30,
-        'assets/svg/coupon.svg',
-      ),
-      label: 'Vouchers',
-      icon: SvgPicture.asset(
-        width: 30,
-        'assets/svg/coupon.svg',
-      ),
-    )
-  ];
-  @override
-  void initState() {
-    storeBloc = BlocProvider.of<StoresBloc>(context);
-    storeBloc.add(LoadStoreDetailesEvent(storeID: widget.storeID));
-    super.initState();
-  }
-
-  Future<void> reGet() async {
-    storeBloc.add(LoadStoreDetailesEvent(storeID: widget.storeID));
-  }
-
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
+    List<BottomNavigationBarItem> items = [
+      BottomNavigationBarItem(
+        label: localizations!.offers,
+        activeIcon: SvgPicture.asset(
+          width: 30,
+          colorFilter:  ColorFilter.mode(Theme.of(context).primaryIconTheme.color!, BlendMode.srcIn),
+          'assets/svg/Special_Offers.svg',
+        ),
+        icon: SvgPicture.asset(
+          width: 30,
+          'assets/svg/Special_Offers.svg',
+        ),
+      ),
+      BottomNavigationBarItem(
+        activeIcon: SvgPicture.asset(
+          colorFilter:  ColorFilter.mode(Theme.of(context).primaryIconTheme.color!, BlendMode.srcIn),
+          width: 30,
+          'assets/svg/coupon.svg',
+        ),
+        label: localizations.vouchers,
+        icon: SvgPicture.asset(
+          colorFilter: ColorFilter.mode(Theme.of(context).primaryIconTheme.color!, BlendMode.srcIn),
+          width: 30,
+          'assets/svg/coupon.svg',
+        ),
+      )
+    ];
     return Scaffold(
       appBar: AppBar(
         title: Text(
           selectedIndex == 0
-              ? '${widget.storeName} offers'
-              : '${widget.storeName} vouchers',
+              ? '${widget.storeName} ${localizations.offers}'
+              : '${widget.storeName} ${localizations.vouchers}',
           style: GoogleFonts.montserrat(
             textStyle: const TextStyle(
               color: Colors.white,
@@ -92,20 +78,22 @@ class _StoreDetailScreenState extends State<StoreDetailScreen> {
               child: Row(
                 children: [
                   Text(
-                    'My Points ',
+                    localizations.points,
                     style: GoogleFonts.montserrat(
-                        textStyle: const TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.w500)),
+                      textStyle: const TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.w500),
+                    ),
                   ),
                   BlocBuilder<StoresBloc, StoresState>(
                     builder: (context, state) {
                       return Text(
                         CacheManager.getPoint().toString(),
                         style: GoogleFonts.montserrat(
-                            textStyle: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold)),
+                          textStyle: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold),
+                        ),
                       );
                     },
                   ),
@@ -115,38 +103,21 @@ class _StoreDetailScreenState extends State<StoreDetailScreen> {
           )
         ],
       ),
-      body: RefreshIndicator(
-        onRefresh: () => reGet(),
-        child: BlocBuilder<StoresBloc, StoresState>(
-          builder: (context, state) {
-            if (state is DetailesLoaddedState) {
-              offers = state.offers;
-              vouchers = state.vouchers;
-              return selectedIndex == 0
-                  ? StoreOffer(offers: offers)
-                  : StoreVouchers(
-                      vouchers: vouchers,
-                      storeName: widget.storeName,
-                    );
-            } else if (state is DetailesFaildState) {
-              return Center(
-                child: Text(state.errorMessage),
-              );
-            } else {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-          },
-        ),
-      ),
+      body: selectedIndex == 0
+          ? StoreOffer(
+              storeID: widget.storeID,
+            )
+          : StoreVouchers(
+              storeID: widget.storeID,
+              storeName: widget.storeName,
+            ),
       bottomNavigationBar: BottomNavigationBar(
         items: items,
         selectedLabelStyle: GoogleFonts.montserrat(
           textStyle: const TextStyle(fontWeight: FontWeight.bold),
         ),
-        selectedItemColor: Colors.black,
-        backgroundColor: AppColors.lightGreen,
+        selectedItemColor: Theme.of(context).primaryIconTheme.color,
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         showSelectedLabels: true,
         currentIndex: selectedIndex,
         onTap: (value) {

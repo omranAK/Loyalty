@@ -5,6 +5,7 @@ import 'package:loyalty_system_mobile/constant/app_colors.dart';
 import 'package:loyalty_system_mobile/data/models/point_history_model.dart';
 import 'package:loyalty_system_mobile/logic/history/bloc/history_bloc.dart';
 import 'package:loyalty_system_mobile/presentation/widgets/history_item.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HistoryScreen extends StatefulWidget {
   const HistoryScreen({super.key});
@@ -29,11 +30,13 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
+    final height = MediaQuery.sizeOf(context).height;
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: Text(
-          'Transactions History',
+          localizations!.transactionshistory,
           style: GoogleFonts.montserrat(
             textStyle: const TextStyle(
               color: Colors.white,
@@ -62,14 +65,15 @@ class _HistoryScreenState extends State<HistoryScreen> {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
-                        'Number of Transactions: ${historyList.length}',
+                        '${localizations.numberoftransactions} ${historyList.length}',
                         style: GoogleFonts.montserrat(
-                            textStyle: const TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.w600)),
+                          textStyle: const TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.w600),
+                        ),
                       ),
                     ),
                     SizedBox(
-                      height: MediaQuery.sizeOf(context).height * 0.73,
+                      height: height * 0.73,
                       child: ListView.builder(
                         padding: const EdgeInsets.all(8),
                         scrollDirection: Axis.vertical,
@@ -85,20 +89,24 @@ class _HistoryScreenState extends State<HistoryScreen> {
               );
             } else if (state is HistoryFaildState) {
               return Center(
-                  child: state.errorMessage == 'Empty'
-                      ? Column(
-                          children: [
-                            Image.asset('assets/images/empty.jpg'),
-                            Text(
-                              'No History to Show',
-                              style: GoogleFonts.montserrat(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            )
-                          ],
-                        )
-                      : Text(state.errorMessage));
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      state.errorMessage,
+                      style: GoogleFonts.montserrat(
+                          fontSize: 16, fontWeight: FontWeight.w500),
+                    ),
+                    ElevatedButton.icon(
+                      icon: const Icon(Icons.restart_alt_outlined),
+                      onPressed: () {
+                        historyBloc.add(LoadHistoryEvent());
+                      },
+                      label: const Text('Re Get Data'),
+                    )
+                  ],
+                ),
+              );
             } else {
               return Center(
                 child: Image.asset('assets/images/loading.gif'),

@@ -7,7 +7,7 @@ class StoreModel {
   final String category;
   final String location;
   final String description;
-  final String prof_img;
+  final String? prof_img;
   final String phone;
   StoreModel({
     required this.id,

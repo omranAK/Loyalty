@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:loyalty_system_mobile/constant/theme_constant.dart';
+import 'package:loyalty_system_mobile/data/storage/cache_manager.dart';
 
 class GlobalProvider extends ChangeNotifier {
   String _phoneCode = '974';
   String _phoneNumber = '';
   String _nationality = 'Qatar';
+  ThemeData _theme = lightTheme;
 
-  Locale _locale = const Locale('ar', 'SA');
+  Locale _locale = const Locale('ar');
 
   int _currentIndex = 0;
 
@@ -29,9 +32,28 @@ class GlobalProvider extends ChangeNotifier {
   //   notifyListeners();
   // }
 
-  void updateLanguage(Locale locale) {
-    _locale = locale;
-    notifyListeners();
+  void updateLanguage() {
+    if (_locale == const Locale('ar')) {
+      _locale = const Locale('en');
+      CacheManager.setLang('en');
+      notifyListeners();
+    } else {
+      _locale = const Locale('ar');
+      CacheManager.setLang('ar');
+      notifyListeners();
+    }
+  }
+
+  void updateTheme() {
+    if (_theme == lightTheme) {
+      _theme = darkTheme;
+      CacheManager.setTheme('dark');
+      notifyListeners();
+    } else {
+      _theme = lightTheme;
+      CacheManager.setTheme('light');
+      notifyListeners();
+    }
   }
 
   void updateCurrentIndex(int index) {

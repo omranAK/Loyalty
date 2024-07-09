@@ -15,6 +15,7 @@ class HomeRepository extends GeneralController {
     List list = [];
     List<VoucherModel> voucherList = [];
     var response = await externalService.getData(queryParameters, urlService);
+
     if (returnCodeFunc(response) == 'success') {
       list = response.the0;
       list.forEach(
@@ -30,7 +31,8 @@ class HomeRepository extends GeneralController {
 
   Future getMyPoints(
       Map<String, dynamic> queryParameters, String urlService) async {
-    var response = await externalService.getData(queryParameters, urlService);
+    var response =
+        await externalService.postDataMap(queryParameters, urlService);
 
     if (returnCodeFunc(response) == 'success') {
       if (CacheManager.getUserModel()!.roleID == 5) {
@@ -59,8 +61,32 @@ class HomeRepository extends GeneralController {
     if (returnCodeFunc(response) == 'success') {
       CacheManager.clearSharedPreferences();
       return 'success';
+    } else if (response.message.contains('Unauthenticated')) {
+      return 'success';
     } else {
       return 'faild';
+    }
+  }
+
+  Future useVoucher(
+      Map<String, dynamic> queryParameters, String urlService) async {
+    var response =
+        await externalService.postDataMap1(queryParameters, urlService);
+    if (returnCodeFunc(response) == 'success') {
+      return response.the0;
+    } else {
+      return returnCodeFunc(response);
+    }
+  }
+
+  Future generateOtp(
+      Map<String, dynamic> queryParameters, String urlService) async {
+    var response =
+        await externalService.postDataMap1(queryParameters, urlService);
+    if (returnCodeFunc(response) == 'success') {
+      return response.the0;
+    } else {
+      return returnCodeFunc(response);
     }
   }
 }

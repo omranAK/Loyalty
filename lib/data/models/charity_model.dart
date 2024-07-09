@@ -4,7 +4,7 @@ class CharityModel {
   final String name;
   final String email;
   final String description;
-  final String prof_img;
+  final String? prof_img;
   final String location;
   final String phone;
   CharityModel({

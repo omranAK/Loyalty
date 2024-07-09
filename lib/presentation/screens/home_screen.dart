@@ -10,6 +10,11 @@ import 'package:loyalty_system_mobile/data/web_services/external_services.dart';
 import 'package:loyalty_system_mobile/logic/home/bloc/home_bloc.dart';
 import 'package:loyalty_system_mobile/logic/pofile/bloc/profile_bloc.dart';
 import 'package:loyalty_system_mobile/presentation/widgets/voucher_item.dart';
+import 'package:loyalty_system_mobile/provider/global_provider.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/widgets/quickalert_dialog.dart';
 
 class HomeScreen extends StatefulWidget {
   static const route = '/';
@@ -22,14 +27,12 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   late Bloc homeBloc;
   var point;
-  bool isLoading = true;
-  bool voucherLoading = true;
-  late String email;
   List<VoucherModel> vouchers = [];
   @override
   void initState() {
     homeBloc = BlocProvider.of<HomeBloc>(context);
     homeBloc.add(GetHomeDateEvent());
+    //FirebaseMessaging.instance.getToken().then((token) => print(token));
     super.initState();
   }
 
@@ -39,23 +42,51 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
+    final width = MediaQuery.sizeOf(context).width;
+    final height = MediaQuery.sizeOf(context).height;
+    final iconColor = Theme.of(context).primaryIconTheme.color;
     final items = [
-      const PopupMenuItem(
+      PopupMenuItem(
+        onTap: () {
+          Provider.of<GlobalProvider>(context, listen: false).updateLanguage();
+        },
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [Icon(Icons.language), Text('English')],
+          children: [
+            Icon(
+              Icons.language,
+              color: iconColor,
+            ),
+            Text(localizations!.english),
+          ],
         ),
       ),
-      const PopupMenuItem(
+      PopupMenuItem(
+        onTap: () {
+          Provider.of<GlobalProvider>(context, listen: false).updateTheme();
+        },
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [Icon(Icons.nights_stay_outlined), Text('Light')],
+          children: [
+            Icon(
+              Icons.nights_stay_outlined,
+              color: iconColor,
+            ),
+            Text(localizations.light)
+          ],
         ),
       ),
-      const PopupMenuItem(
+      PopupMenuItem(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [Icon(Icons.help_outline_rounded), Text('Help ')],
+          children: [
+            Icon(
+              Icons.help_outline_rounded,
+              color: iconColor,
+            ),
+            Text(localizations.help)
+          ],
         ),
       ),
       PopupMenuItem(
@@ -63,11 +94,14 @@ class _HomeScreenState extends State<HomeScreen> {
           onTap: () {
             homeBloc.add(LogoutButtonPressedEvent());
           },
-          child: const Row(
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Icon(Icons.logout),
-              Text('Logout'),
+              Icon(
+                Icons.logout,
+                color: iconColor,
+              ),
+              Text(localizations.logout),
             ],
           ),
         ),
@@ -78,7 +112,7 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: Text(
-          'Home',
+          localizations.home,
           style: GoogleFonts.montserrat(
             textStyle: const TextStyle(
               color: Colors.white,
@@ -103,7 +137,7 @@ class _HomeScreenState extends State<HomeScreen> {
             }
           },
           child: Padding(
-            padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
+            padding: const EdgeInsets.only(left: 12, right: 12, top: 15),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -139,10 +173,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                     profile,
                                   );
                                 },
-                                child: const CircleAvatar(
-                                  backgroundColor: Colors.white,
+                                child: CircleAvatar(
+                                  backgroundColor:
+                                      Theme.of(context).primaryColorDark,
                                   radius: 30,
-                                  child: Icon(
+                                  child: const Icon(
                                     Icons.person_outline_rounded,
                                     color: AppColors.green,
                                     size: 35,
@@ -150,17 +185,18 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                               ),
                             ),
-                            const SizedBox(
-                              width: 20,
+                            SizedBox(
+                              width: width * 0.2,
                             ),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  CacheManager.getUserModel()!.name.toUpperCase(),
+                                  CacheManager.getUserModel()!
+                                      .name
+                                      .toUpperCase(),
                                   style: GoogleFonts.cairo(
                                     textStyle: const TextStyle(
-                                      color: Colors.black,
                                       fontSize: 16,
                                       fontWeight: FontWeight.w400,
                                     ),
@@ -173,12 +209,13 @@ class _HomeScreenState extends State<HomeScreen> {
                         Row(
                           children: [
                             PopupMenuButton(
-                                icon: const Icon(
-                                  Icons.settings,
-                                  color: AppColors.textColor,
-                                  size: 22,
-                                ),
-                                itemBuilder: (_) => items),
+                              icon: Icon(
+                                Icons.settings,
+                                color: iconColor,
+                                size: 22,
+                              ),
+                              itemBuilder: (_) => items,
+                            ),
                           ],
                         )
                       ],
@@ -189,7 +226,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     Container(
                       margin: const EdgeInsets.only(top: 15),
-                      height: 70,
+                      height: height * 0.1,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
                         color: AppColors.lightGreen,
@@ -207,14 +244,41 @@ class _HomeScreenState extends State<HomeScreen> {
                           const SizedBox(
                             width: 20,
                           ),
-                          TextButton(
-                            onPressed: () {},
-                            child: const Text(
-                              "OTP",
-                              style: TextStyle(
+                          BlocListener<HomeBloc, HomeState>(
+                            listener: (context, state) {
+                              if (state is GenerateOtpSuccessState) {
+                                QuickAlert.show(
+                                  backgroundColor: Theme.of(context).cardColor,
+                                  context: context,
+                                  type: QuickAlertType.success,
+                                  title: state.otp,
+                                  titleColor: iconColor!,
+                                  text: 'Give this otp to the cashier',
+                                  textColor: iconColor,
+                                  confirmBtnColor: AppColors.buttonColor,
+                                );
+                              } else if (state is GenerateOtpFailedState) {
+                                QuickAlert.show(
+                                  context: context,
+                                  type: QuickAlertType.error,
+                                  title: 'Failed',
+                                  text: state.errorMessage,
+                                  confirmBtnColor: AppColors.buttonColor,
+                                );
+                              }
+                            },
+                            child: TextButton(
+                              onPressed: () {
+                                homeBloc.add(GenerateOtpEvent());
+                              },
+                              child: const Text(
+                                "OTP",
+                                style: TextStyle(
                                   color: Colors.black,
                                   decoration: TextDecoration.underline,
-                                  fontSize: 20),
+                                  fontSize: 20,
+                                ),
+                              ),
                             ),
                           )
                         ],
@@ -225,8 +289,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: [
                         Container(
                           margin: const EdgeInsets.only(right: 35, top: 35),
-                          width: 150,
-                          height: 75,
+                          width: width * 0.36,
+                          height: height * 0.1,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(15),
                             color: AppColors.pointCardColor,
@@ -235,25 +299,30 @@ class _HomeScreenState extends State<HomeScreen> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               BlocBuilder<HomeBloc, HomeState>(
+                                buildWhen: (previous, current) =>
+                                    current is DataLoadingState ||
+                                    current is DataLoadedState ||
+                                    current is DataFaildState,
                                 builder: (context, state) {
                                   if (state is DataLoadingState) {
                                     return const Center(
                                       child: CircularProgressIndicator(),
                                     );
+                                  } else {
+                                    return Text(
+                                      ("$point"),
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 30,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    );
                                   }
-                                  return Text(
-                                    ("$point"),
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 30,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  );
                                 },
                               ),
-                              const Text(
-                                'points',
-                                style: TextStyle(
+                              Text(
+                                localizations.point,
+                                style: const TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -273,17 +342,17 @@ class _HomeScreenState extends State<HomeScreen> {
                         Navigator.pushNamed(context, videoplayer);
                       },
                       style: ElevatedButton.styleFrom(
-                        minimumSize: const Size(200, 50),
+                        minimumSize: Size(width * 0.1, height * 0.06),
                         backgroundColor: const Color.fromRGBO(46, 56, 56, 1),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15),
                         ),
                       ),
                       child: Text(
-                        'Get new Voucher',
+                        localizations.watchadd,
                         style: GoogleFonts.montserrat(
-                          textStyle:
-                              const TextStyle(fontSize: 18, color: Colors.white),
+                          textStyle: const TextStyle(
+                              fontSize: 18, color: Colors.white),
                         ),
                       ),
                     ),
@@ -297,22 +366,28 @@ class _HomeScreenState extends State<HomeScreen> {
                 Row(
                   children: [
                     Text(
-                      "My Vouchers:",
+                      localizations.myvouchers,
                       style: GoogleFonts.montserrat(
                         textStyle: const TextStyle(
-                            fontSize: 15, fontWeight: FontWeight.w800),
+                          fontSize: 15,
+                          fontWeight: FontWeight.w800,
+                        ),
                       ),
                     ),
                   ],
                 ),
                 SizedBox(
                   width: double.infinity,
-                  height: MediaQuery.sizeOf(context).height * 0.46,
+                  height: height * 0.46,
                   child: RefreshIndicator(
                     onRefresh: () {
                       return reGet();
                     },
                     child: BlocBuilder<HomeBloc, HomeState>(
+                      buildWhen: (previous, current) =>
+                          current is DataLoadingState ||
+                          current is DataLoadedState ||
+                          current is DataFaildState,
                       builder: (context, state) {
                         if (state is DataLoadingState) {
                           return const Center(
@@ -324,18 +399,20 @@ class _HomeScreenState extends State<HomeScreen> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  'Somthing Went Wrong!!!! Try again Please',
+                                  localizations.somthingwentwrong,
                                   style: GoogleFonts.montserrat(
-                                      fontSize: 16, fontWeight: FontWeight.w500),
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500),
                                 ),
                                 ElevatedButton.icon(
-                                    icon: const Icon(Icons.dangerous),
-                                    onPressed: () {
-                                      homeBloc.add(
-                                        GetHomeDateEvent(),
-                                      );
-                                    },
-                                    label: const Text('data'))
+                                  icon: const Icon(Icons.restart_alt_outlined),
+                                  onPressed: () {
+                                    homeBloc.add(
+                                      GetHomeDateEvent(),
+                                    );
+                                  },
+                                  label: const Text('Refetch Data'),
+                                )
                               ],
                             ),
                           );
@@ -348,10 +425,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                     voucher: vouchers[i],
                                   ),
                                   itemCount: vouchers.length,
+                                  
                                 )
                               : Center(
                                   child: Text(
-                                    'You Have No Voucher Yet!!!!!',
+                                    localizations.youhavenovoucher,
                                     style: GoogleFonts.montserrat(
                                       fontSize: 20,
                                       fontWeight: FontWeight.w700,
@@ -370,4 +448,5 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+
 }

@@ -13,7 +13,12 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
   HistoryBloc(
     this.histortyRepository,
   ) : super(HistoryInitial()) {
+    on<HistoryInitialEvent>(_onHistoryInitialEvent);
     on<LoadHistoryEvent>(_onLoadHistoryEvent);
+  }
+  void _onHistoryInitialEvent(
+      HistoryInitialEvent event, Emitter<HistoryState> emit) async {
+    emit(HistoryInitial());
   }
 
   void _onLoadHistoryEvent(
@@ -22,7 +27,6 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
     var response =
         await histortyRepository.getHistory({}, 'show_points_history');
     if (response is String) {
-      
       emit(HistoryFaildState(errorMessage: response));
     } else {
       emit(HistoryLoaddedState(history_list: response));

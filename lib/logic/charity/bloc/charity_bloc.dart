@@ -13,15 +13,21 @@ class CharityBloc extends Bloc<CharityEvent, CharityState> {
   CharityBloc(
     this.charityRepository,
   ) : super(CharityInitial()) {
+    on<CharityIntialEvent>(_onCharityIntialEvent);
     on<LoadCharityEvent>(_onLoadCharityEvent);
+    on<DonateSpicialPointsEvent>(_onDonateSpicialPointsEvent);
   }
+  void _onCharityIntialEvent(
+      CharityIntialEvent event, Emitter<CharityState> emit) async {
+    emit(CharityInitial());
+  }
+
   void _onLoadCharityEvent(
       LoadCharityEvent event, Emitter<CharityState> emit) async {
     emit(CharityLoadingState());
     var response = await charityRepository.getCharity({}, 'show_all_charities');
     var response1 = await charityRepository
         .getMyPoints({}, 'show_profile/${CacheManager.getUserModel()!.id}');
-        print(response1);
     if (response is String) {
       emit(CharityFailedState(response));
     } else {
@@ -30,6 +36,23 @@ class CharityBloc extends Bloc<CharityEvent, CharityState> {
       );
     }
   }
+
+  void _onDonateSpicialPointsEvent(
+      DonateSpicialPointsEvent event, Emitter<CharityState> emit) async {
+    emit(DonateLoadingState());
+    var response = await charityRepository.donate(
+      {
+        'points': event.ammount,
+        'id': event.charityID.toString(),
+      },
+      'donate_special_points',
+    );
+    if (response == 'success') {
+      emit(DonateDoneState());
+    } else {
+      emit(
+        DonateFailedState(errorMessage: response),
+      );
+    }
+  }
 }
-
-

@@ -388,7 +388,7 @@ class _AuthScreenState extends State<AuthScreen> {
         if (x == 'email') {
           if (_authMode == AuthMode.signup) {
             if (value!.isEmpty || !value.contains('@')) {
-              return localizations.invalidemail;
+              return localizations.invalidname;
             }
           }
         } else if (x == 'name') {

@@ -16,7 +16,7 @@ class HistoryItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.sizeOf(context).height;
-    
+    final width = MediaQuery.sizeOf(context).width;
     return Column(
       children: [
         SizedBox(
@@ -25,7 +25,7 @@ class HistoryItem extends StatelessWidget {
             leading: Padding(
               padding: const EdgeInsets.only(bottom: 16),
               child: CircleAvatar(
-                backgroundColor: AppColors.lightGray,
+                backgroundColor: Theme.of(context).cardColor,
                 child: history.up && history.operation == 'transfer' ||
                         history.operation == 'donate points' ||
                         history.operation == 'buy voucher'
@@ -67,8 +67,8 @@ class HistoryItem extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                   color: AppColors.lightGreen,
                 ),
-                width: 80,
-                height: 40,
+                width: width * 0.2,
+                //height: height*0.06,
                 child: Center(
                   child: Text(
                     history.ammount.toString(),

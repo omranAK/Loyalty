@@ -4,12 +4,18 @@ import 'package:flutter/material.dart';
 
 class AppColors {
   static const Color appBgColor = Color(0xFFE5E5E5);
+  static const Color backgroundColorDark = Color.fromRGBO(18, 37, 56, 1);
   static const Color appBarColor = Color.fromRGBO(31, 98, 94, 1);
   static const Color kIcon = Color(0xFFE5E5E5);
+  static const Color offersLight = Color.fromRGBO(27, 188, 155, 1);
+  static const Color offersDark = Color.fromARGB(169, 11, 63, 91);
   static const Color sIcon = Color.fromRGBO(78, 171, 166, 1);
   static const Color darkBlue = Color(0xff18293e);
+  static const Color validateLight = Color.fromRGBO(129, 199, 132, 1);
+  static const Color validateDark = Color.fromRGBO(97, 97, 97, 1);
   static const Color blackColor = Color(0xFF000000);
-  static const Color cardsColor = Color.fromRGBO(245, 245, 245, 1);
+  static const Color cardsColor = Color.fromARGB(255, 244, 244, 240);
+  static const Color cardsColorDark = Color.fromRGBO(196, 252, 240, 0.14);
   static const Color buttonColor = Color.fromRGBO(46, 56, 56, 1);
   static const Color cardButtonColor = Color.fromRGBO(219, 157, 0, 1);
   static const Color textColor = Color.fromRGBO(18, 37, 56, 1);

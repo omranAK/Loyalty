@@ -1,6 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:loyalty_system_mobile/data/models/point_history_model.dart';
-import 'package:loyalty_system_mobile/data/storage/cache_manager.dart';
 import 'package:loyalty_system_mobile/data/web_services/external_services.dart';
 import 'package:loyalty_system_mobile/data/web_services/general_controller.dart';
 

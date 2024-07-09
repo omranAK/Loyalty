@@ -23,29 +23,42 @@ final class StoresFailedState extends StoresState {
   const StoresFailedState(this.errorMessage);
 }
 
-final class DetailesLoadingState extends StoresState {}
+final class OffersLoadingState extends StoresState {}
 
-final class DetailesLoaddedState extends StoresState {
+final class OffersLoaddedState extends StoresState {
   final List<OfferModel> offers;
-  final List<StoreVoucherModel> vouchers;
-  const DetailesLoaddedState({
+  const OffersLoaddedState({
     required this.offers,
+  });
+}
+
+final class OffersFailedState extends StoresState {
+  final String errorMessage;
+
+  const OffersFailedState({required this.errorMessage});
+}
+
+final class VouchersLoadingState extends StoresState {}
+
+final class VouchersLoaddedState extends StoresState {
+  final List<StoreVoucherModel> vouchers;
+  const VouchersLoaddedState({
     required this.vouchers,
   });
 }
 
-final class DetailesFaildState extends StoresState {
+final class VocuhersFailedState extends StoresState {
   final String errorMessage;
 
-  const DetailesFaildState({required this.errorMessage});
+  const VocuhersFailedState({required this.errorMessage});
 }
 
 final class BuyingLoadingState extends StoresState {}
 
 final class BuyingSuccessState extends StoresState {}
 
-final class BuyingFaildState extends StoresState {
+final class BuyingFailedState extends StoresState {
   final String errorMessage;
 
-  const BuyingFaildState({required this.errorMessage});
+  const BuyingFailedState({required this.errorMessage});
 }
