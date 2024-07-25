@@ -11,8 +11,20 @@ final class ProfileInitialEvent extends ProfileEvent {}
 
 final class GetProfileDataEvent extends ProfileEvent {}
 
+// ignore: must_be_immutable
 final class UpdateUserDataEvent extends ProfileEvent {
-  final User user;
+  String? name;
+  String? phone;
+  final String oldPassword;
+  String? newPassword;
+  String? location;
+  String? description;
 
-  const UpdateUserDataEvent({required this.user});
+  UpdateUserDataEvent(
+      {required this.oldPassword,
+      this.phone,
+      this.description,
+      this.location,
+      this.name,
+      this.newPassword});
 }

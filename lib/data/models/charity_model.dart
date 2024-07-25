@@ -4,7 +4,7 @@ class CharityModel {
   final String name;
   final String email;
   final String description;
-  final String? prof_img;
+  final String? profImg;
   final String location;
   final String phone;
   CharityModel({
@@ -12,7 +12,7 @@ class CharityModel {
     required this.name,
     required this.email,
     required this.description,
-    required this.prof_img,
+    required this.profImg,
     required this.location,
     required this.phone,
   });
@@ -22,7 +22,7 @@ class CharityModel {
       name: json['name'],
       email: json['email'],
       description: json['charity']['about'],
-      prof_img: json['prof_img'],
+      profImg: json['prof_img'],
       location: json['charity']['location'],
       phone: json['phone']);
   Map<String, dynamic> toJson() => {
@@ -30,7 +30,7 @@ class CharityModel {
         "name": name,
         "email": email,
         "description": description,
-        "prof_img": prof_img,
+        "prof_img": profImg,
         "location": location,
         "phone": phone
       };

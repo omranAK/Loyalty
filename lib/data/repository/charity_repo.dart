@@ -12,18 +12,16 @@ class CharityRepository extends GeneralController {
       Map<String, dynamic> queryParameters, String urlService) async {
     CharityModel storeModel;
     List list = [];
-    List<CharityModel> charity_list = [];
+    List<CharityModel> charityList = [];
     var response = await externalService.getData(queryParameters, urlService);
     if (returnCodeFunc(response) == 'success') {
       if (response.the0 != []) {
         list = response.the0;
-        list.forEach(
-          (element) {
-            storeModel = CharityModel.fromJson(element);
-            charity_list.add(storeModel);
-          },
-        );
-        return charity_list;
+        for (var element in list) {
+          storeModel = CharityModel.fromJson(element);
+          charityList.add(storeModel);
+        }
+        return charityList;
       } else {
         return 'No charity yet';
       }

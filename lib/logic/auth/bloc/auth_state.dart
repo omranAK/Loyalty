@@ -20,6 +20,7 @@ final class LoginSuccessState extends AuthState {
   final UserSetting user;
 
   const LoginSuccessState(this.user);
+  @override
   List<Object> get props => [user];
 }
 
@@ -27,6 +28,7 @@ final class SignUpSuccessState extends AuthState {
   final UserSetting user;
 
   const SignUpSuccessState(this.user);
+  @override
   List<Object> get props => [user];
 }
 

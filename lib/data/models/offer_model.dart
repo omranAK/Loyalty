@@ -2,6 +2,7 @@ class OfferModel {
   final int id;
   final String name;
   final String description;
+  // ignore: prefer_typing_uninitialized_variables
   var points;
   final DateTime endsIn;
   final List<String> imageList;

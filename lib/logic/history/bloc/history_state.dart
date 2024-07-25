@@ -10,9 +10,9 @@ sealed class HistoryState extends Equatable {
 final class HistoryInitial extends HistoryState {}
 
 final class HistoryLoaddedState extends HistoryState {
-  final List<PointHistoryModel> history_list;
+  final List<PointHistoryModel> historyList;
 
-  const HistoryLoaddedState({required this.history_list});
+  const HistoryLoaddedState({required this.historyList});
 }
 
 final class HistoryFaildState extends HistoryState {

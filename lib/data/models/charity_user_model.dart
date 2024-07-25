@@ -4,16 +4,17 @@ class CharityUserModel {
   final String name;
   final String email;
   final String phone;
-  final String prof_img;
+  final String profImg;
   final String about;
   final String location;
+  // ignore: prefer_typing_uninitialized_variables
   var points;
   CharityUserModel({
     required this.id,
     required this.name,
     required this.email,
     required this.phone,
-    required this.prof_img,
+    required this.profImg,
     required this.about,
     required this.location,
     required this.points,
@@ -25,7 +26,7 @@ class CharityUserModel {
           name: json['name'],
           email: json['email'],
           phone: json['phone'],
-          prof_img: json['prof_img'],
+          profImg: json['prof_img'],
           about: json['charity']['about'],
           points: json['charity']['points'],
           location: json['charity']['location']
@@ -37,7 +38,7 @@ class CharityUserModel {
         "name": name,
         "email": email,
         "phone": phone,
-        "prof_img": prof_img,
+        "prof_img": profImg,
         "about": about,
         "points": points,
         "location": location

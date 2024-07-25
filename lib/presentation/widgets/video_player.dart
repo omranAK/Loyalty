@@ -1,14 +1,7 @@
-import 'dart:async';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:loyalty_system_mobile/constant/app_colors.dart';
-import 'package:loyalty_system_mobile/data/web_services/server_config.dart';
-import 'package:loyalty_system_mobile/logic/ad/bloc/ad_bloc.dart';
-import 'package:video_player/video_player.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import '../../constant/imports.dart';
 
 class VideoPlayerScreen extends StatefulWidget {
   const VideoPlayerScreen({super.key});
@@ -21,7 +14,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
   VideoPlayerController? _controller;
   Future<void>? _video;
   Timer? _timer;
-  late int _start;
+  int _start = 10;
   late Bloc adBloc;
   late int adID;
   @override
@@ -32,16 +25,19 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
     super.initState();
   }
 
-  void initlizeVideo(String url) {
+  void initlizeVideo(String url) async {
     _controller = VideoPlayerController.networkUrl(
       Uri.parse('${ServerConfig.mainApiUrlImage}$url'),
     );
     _video = _controller!.initialize();
-    _controller!.play();
+    await _controller!
+        .play()
+        .then((value) => Timer(const Duration(seconds: 2), () {
+              startTimer();
+            }));
   }
 
   void startTimer() {
-    _start = 10;
     const oneSec = Duration(seconds: 1);
     _timer = Timer.periodic(
       oneSec,
@@ -62,6 +58,22 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
     );
   }
 
+  whatsapp() async {
+    var contact = "+963933000741";
+    var androidUrl = "whatsapp://send?phone=$contact&text=Hi, I need some help";
+    var iosUrl =
+        "https://wa.me/$contact?text=${Uri.parse('Hi, I need some help')}";
+
+    try {
+      if (Platform.isIOS) {
+        await launchUrl(Uri.parse(iosUrl));
+      } else {
+        await launchUrl(Uri.parse(androidUrl));
+      }
+      // ignore: empty_catches
+    } on Exception {}
+  }
+
   @override
   void dispose() {
     if (_timer != null) {
@@ -76,18 +88,23 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.sizeOf(context).height;
+    final localizations = AppLocalizations.of(context);
+    //final height = MediaQuery.sizeOf(context).height;
     //final width = MediaQuery.sizeOf(context).width;
     return BlocListener<AdBloc, AdState>(
       listener: (context, state) {
         if (state is AdLoaddedState) {
-          startTimer();
           initlizeVideo(state.ad.url);
+
           adID = state.ad.id;
         }
       },
       child: Scaffold(
-        backgroundColor: AppColors.appBarColor,
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          backgroundColor: AppColors.appBarColor,
+        ),
+        backgroundColor: Theme.of(context).colorScheme.background,
         body: BlocBuilder<AdBloc, AdState>(
           builder: (context, state) {
             if (state is AdLoaddedState) {
@@ -96,7 +113,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
                     return Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Padding(
                           padding: const EdgeInsets.only(top: 8.0),
@@ -125,8 +142,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                                         child: Text(
                                           '$_start',
                                           style: const TextStyle(
-                                              fontSize: 20,
-                                              color: Colors.white),
+                                            fontSize: 20,
+                                            color: Colors.white,
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -181,75 +199,13 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                             )
                           ],
                         ),
-                        // Container(
-                        //   padding: const EdgeInsets.all(12),
-                        //   height: height * 0.2,
-                        //   decoration: BoxDecoration(
-                        //       color: AppColors.buttonColor,
-                        //       borderRadius: BorderRadius.circular(12)),
-                        //   child: Column(
-                        //     mainAxisAlignment: MainAxisAlignment.center,
-                        //     children: [
-                        //       const Text(
-                        //         'To advertise on the Walaa application, please contact the following number',
-                        //         style: TextStyle(
-                        //           fontSize: 20,
-                        //           color: Colors.white,
-                        //         ),
-                        //       ),
-                        //       Row(
-                        //         mainAxisAlignment: MainAxisAlignment.center,
-                        //         children: [
-                        //           GestureDetector(
-                        //             onTap: () async {
-                        //               var whatsapp = "+963933000741";
-                        //               var whatsappURl =
-                        //                   "whatsapp://send?phone=$whatsapp";
-                        //               if (await canLaunchUrl(
-                        //                   Uri.parse(whatsappURl))) {
-                        //                 await launchUrl(
-                        //                   Uri.parse(whatsappURl),
-                        //                 );
-                        //               } else {
-                        //                 ScaffoldMessenger.of(context)
-                        //                     .showSnackBar(
-                        //                   const SnackBar(
-                        //                     content:
-                        //                         Text('whatsapp not installed'),
-                        //                   ),
-                        //                 );
-                        //               }
-                        //             },
-                        //             child: Container(
-                        //               decoration: BoxDecoration(
-                        //                 borderRadius: BorderRadius.circular(15),
-                        //                 color: Colors.green,
-                        //               ),
-                        //               width: MediaQuery.sizeOf(context).width *
-                        //                   0.5,
-                        //               child: const ListTile(
-                        //                 leading: Icon(
-                        //                   FontAwesomeIcons.whatsapp,
-                        //                   color: Colors.white,
-                        //                   size: 20,
-                        //                 ),
-                        //                 title: Text(
-                        //                   '+963933000741',
-                        //                   style: TextStyle(color: Colors.white),
-                        //                 ),
-                        //               ),
-                        //             ),
-                        //           ),
-                        //         ],
-                        //       )
-                        //     ],
-                        //   ),
-                        // )
                       ],
                     );
                   } else {
-                    return const Center(
-                      child: CircularProgressIndicator(),
+                    return Center(
+                      child: CircularProgressIndicator(
+                        color: Theme.of(context).badgeTheme.backgroundColor,
+                      ),
                     );
                   }
                 },
@@ -271,19 +227,43 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
-                    child: const Text(
-                      'Back to home',
-                      style: TextStyle(color: Colors.white),
+                    child: Text(
+                      localizations!.back,
+                      style: const TextStyle(color: Colors.white),
                     ),
                   )
                 ],
               );
             } else {
-              return const Center(
-                child: CircularProgressIndicator(),
+              return Center(
+                child: CircularProgressIndicator(
+                  color: Theme.of(context).badgeTheme.backgroundColor,
+                ),
               );
             }
           },
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        floatingActionButton: GestureDetector(
+          onTap: () => whatsapp(),
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15),
+              color: Colors.green,
+            ),
+            width: MediaQuery.sizeOf(context).width * 0.7,
+            child: ListTile(
+              leading: const Icon(
+                FontAwesomeIcons.whatsapp,
+                color: Colors.white,
+                size: 26,
+              ),
+              title: Text(
+                localizations!.toadvertise,
+                style: const TextStyle(color: Colors.white),
+              ),
+            ),
+          ),
         ),
       ),
     );

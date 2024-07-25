@@ -1,15 +1,4 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:loyalty_system_mobile/constant/app_colors.dart';
-import 'package:loyalty_system_mobile/data/storage/cache_manager.dart';
-import 'package:loyalty_system_mobile/logic/transfer/bloc/transfer_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:quickalert/models/quickalert_type.dart';
-import 'package:quickalert/widgets/quickalert_dialog.dart';
+import '../../constant/imports.dart';
 
 class TransferScreen extends StatelessWidget {
   static const route = '/transfer';
@@ -24,43 +13,12 @@ class TransferScreen extends StatelessWidget {
     final TextEditingController ammountController = TextEditingController();
     final TextEditingController confirmAmmountController =
         TextEditingController();
-    final GlobalKey<FormState> _formKey = GlobalKey();
+    final GlobalKey<FormState> formKey = GlobalKey();
 
-    final Map<String, dynamic> _tranferData = {
+    final Map<String, dynamic> tranferData = {
       'email': '',
       'ammount': 0.0,
     };
-    void _showErrorDialog(String message) {
-      showDialog(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          backgroundColor: AppColors.appBarColor,
-          title: Text(
-            'An Error Occurred!',
-            style: GoogleFonts.montserrat(color: Colors.white),
-          ),
-          content: Text(
-            message,
-            style: GoogleFonts.montserrat(
-                color: Colors.black, fontWeight: FontWeight.w600),
-          ),
-          actions: <Widget>[
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.darkGray,
-              ),
-              child: Text(
-                'Okay',
-                style: GoogleFonts.montserrat(color: Colors.white),
-              ),
-              onPressed: () {
-                Navigator.of(ctx).pop();
-              },
-            )
-          ],
-        ),
-      );
-    }
 
     void clearText() {
       confirmAmmountController.clear();
@@ -68,12 +26,12 @@ class TransferScreen extends StatelessWidget {
       ammountController.clear();
     }
 
-    Future _submit() async {
-      if (!_formKey.currentState!.validate()) {
+    Future submit() async {
+      if (!formKey.currentState!.validate()) {
         return;
       }
 
-      _formKey.currentState!.save();
+      formKey.currentState!.save();
       BlocProvider.of<TransferBloc>(context).add(ProccedButtonPressedEvent(
           email: emailController.text,
           ammount: double.tryParse(ammountController.text)!));
@@ -154,7 +112,7 @@ class TransferScreen extends StatelessWidget {
                 ],
               ),
               Form(
-                key: _formKey,
+                key: formKey,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -172,20 +130,20 @@ class TransferScreen extends StatelessWidget {
                       height: height * 0.04,
                       margin: const EdgeInsets.all(8),
                       child: TextFormField(
-                        onSaved: (newValue) =>
-                            _tranferData['email'] = newValue!,
+                        onSaved: (newValue) => tranferData['email'] = newValue!,
                         cursorHeight: 5,
                         controller: emailController,
                         keyboardType: TextInputType.emailAddress,
-                        decoration: const InputDecoration(
+                        decoration: InputDecoration(
                           isDense: true,
-                          fillColor: AppColors.lightGray,
-                          filled: true,
-                          contentPadding:
-                              EdgeInsets.only(top: 0, bottom: 10, left: 10),
+                          //fillColor: AppColors.lightGray,
+                          //filled: true,
+                          contentPadding: const EdgeInsets.only(
+                              top: 0, bottom: 10, left: 10),
                           enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black),
-                            borderRadius: BorderRadius.all(
+                            borderSide: BorderSide(
+                                color: Theme.of(context).primaryColor),
+                            borderRadius: const BorderRadius.all(
                               Radius.circular(15),
                             ),
                           ),
@@ -225,17 +183,17 @@ class TransferScreen extends StatelessWidget {
                             FilteringTextInputFormatter.digitsOnly
                           ],
                           keyboardType: TextInputType.emailAddress,
-                          decoration: const InputDecoration(
+                          decoration: InputDecoration(
                             isDense: true,
-                            contentPadding:
-                                EdgeInsets.only(top: 0, bottom: 10, left: 10),
+                            contentPadding: const EdgeInsets.only(
+                                top: 0, bottom: 10, left: 10),
                             enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.black),
+                              borderSide: BorderSide(
+                                  color: Theme.of(context).primaryColor),
                             ),
                           ),
                           onSaved: (newValue) {
-                            _tranferData['ammount'] =
-                                double.tryParse(newValue!);
+                            tranferData['ammount'] = double.tryParse(newValue!);
                           }),
                     ),
                   ],
@@ -264,17 +222,18 @@ class TransferScreen extends StatelessWidget {
                           FilteringTextInputFormatter.digitsOnly
                         ],
                         keyboardType: TextInputType.emailAddress,
-                        decoration: const InputDecoration(
+                        decoration: InputDecoration(
                           isDense: true,
-                          contentPadding:
-                              EdgeInsets.only(top: 0, bottom: 10, left: 10),
+                          contentPadding: const EdgeInsets.only(
+                              top: 0, bottom: 10, left: 10),
                           enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black),
+                            borderSide: BorderSide(
+                                color: Theme.of(context).primaryColor),
                           ),
                         ),
                         validator: (value) {
                           if (value != ammountController.text) {
-                            return 'No Match';
+                            return localizations.passwordsdontmatch;
                           } else {
                             return null;
                           }
@@ -291,29 +250,34 @@ class TransferScreen extends StatelessWidget {
                     if (state is TransferSuccessState) {
                       clearText();
                       QuickAlert.show(
-                        context: context,
-                        type: QuickAlertType.success,
-                        title: 'Success',
-                        confirmBtnColor: AppColors.buttonColor,
-                      );
+                          backgroundColor: Theme.of(context).cardColor,
+                          context: context,
+                          type: QuickAlertType.success,
+                          title: localizations.success,
+                          confirmBtnColor: AppColors.buttonColor,
+                          confirmBtnText: localizations.done);
                     } else if (state is TransferFaildState) {
-                      
                       QuickAlert.show(
-                        context: context,
-                        type: QuickAlertType.error,
-                        title: 'Failed',
-                        text: state.errorMessage,
-                        confirmBtnColor: AppColors.buttonColor,
-                      );
+                          backgroundColor: Theme.of(context).cardColor,
+                          context: context,
+                          type: QuickAlertType.error,
+                          titleColor: Theme.of(context).primaryColor,
+                          title: localizations.failed,
+                          textColor: Theme.of(context).primaryColor,
+                          text: state.errorMessage,
+                          confirmBtnColor: AppColors.buttonColor,
+                          confirmBtnText: localizations.done);
                     }
                   },
                   builder: (context, state) {
                     if (state is TransferLoadiingState) {
-                      return const CircularProgressIndicator();
+                      return CircularProgressIndicator(
+                        color: Theme.of(context).badgeTheme.backgroundColor,
+                      );
                     } else {
                       return ElevatedButton(
                         onPressed: () {
-                          _submit();
+                          submit();
                         },
                         style: ElevatedButton.styleFrom(
                           minimumSize: Size(width * 0.6, height * 0.06),

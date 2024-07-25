@@ -1,11 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:loyalty_system_mobile/constant/app_colors.dart';
-import 'package:loyalty_system_mobile/data/models/point_history_model.dart';
-import 'package:loyalty_system_mobile/logic/history/bloc/history_bloc.dart';
-import 'package:loyalty_system_mobile/presentation/widgets/history_item.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../../constant/imports.dart';
 
 class HistoryScreen extends StatefulWidget {
   const HistoryScreen({super.key});
@@ -51,7 +44,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
       body: BlocListener<HistoryBloc, HistoryState>(
         listener: (context, state) {
           if (state is HistoryLoaddedState) {
-            historyList = state.history_list;
+            historyList = state.historyList;
           }
         },
         child: BlocBuilder<HistoryBloc, HistoryState>(
@@ -98,11 +91,19 @@ class _HistoryScreenState extends State<HistoryScreen> {
                           fontSize: 16, fontWeight: FontWeight.w500),
                     ),
                     ElevatedButton.icon(
-                      icon: const Icon(Icons.restart_alt_outlined),
+                      icon: const Icon(
+                        Icons.refresh,
+                        color: Colors.white,
+                      ),
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.buttonColor),
                       onPressed: () {
                         historyBloc.add(LoadHistoryEvent());
                       },
-                      label: const Text('Re Get Data'),
+                      label: Text(
+                        localizations.regetdata,
+                        style: const TextStyle(color: Colors.white),
+                      ),
                     )
                   ],
                 ),

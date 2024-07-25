@@ -1,10 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:loyalty_system_mobile/constant/app_colors.dart';
-import 'package:loyalty_system_mobile/constant/constant_data.dart';
-import 'package:loyalty_system_mobile/data/models/charity_model.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-//import 'package:project_2/Provider/products_provider.dart';
+import '../../constant/imports.dart';
 
 class CharityItem extends StatelessWidget {
   final CharityModel charity;
@@ -39,13 +33,16 @@ class CharityItem extends StatelessWidget {
                 Center(
                   child: Container(
                     decoration: BoxDecoration(
-                      borderRadius:const  BorderRadius.only(
+                      borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(15),
                         topRight: Radius.circular(15),
                       ),
                       image: DecorationImage(
-                        image:charity.prof_img!=null? CachedNetworkImageProvider(
-                            'http://jamal.savoiacar.com/${charity.prof_img}'):const AssetImage('assets/images/EmptyCharity.jpg')as ImageProvider,
+                        image: charity.profImg != null
+                            ? CachedNetworkImageProvider(
+                                'http://jamal.savoiacar.com/${charity.profImg}')
+                            : const AssetImage('assets/images/EmptyCharity.jpg')
+                                as ImageProvider,
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -62,19 +59,22 @@ class CharityItem extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(
-                    height: 20,
+                    // height: 20,
                     child: Text(
                       charity.name,
                       // product.name![0].toUpperCase() +
                       //     product.name!.substring(1),
                       style: GoogleFonts.montserrat(
-                          fontSize: 15, fontWeight: FontWeight.w600),
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                   SizedBox(
-                    height: 30,
+                    height: 35,
                     width: width * 0.6,
                     child: Text(
+                      overflow: TextOverflow.clip,
                       charity.description,
                       // product.name![0].toUpperCase() +
                       //     product.name!.substring(1),

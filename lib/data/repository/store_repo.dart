@@ -14,17 +14,15 @@ class StoreRepository extends GeneralController {
       Map<String, dynamic> queryParameters, String urlService) async {
     StoreModel storeModel;
     List list = [];
-    List<StoreModel> stores_list = [];
+    List<StoreModel> storesList = [];
     var response = await externalService.getData(queryParameters, urlService);
     if (returnCodeFunc(response) == 'success') {
       list = response.the0;
-      list.forEach(
-        (element) {
+      for (var element in list) {
           storeModel = StoreModel.fromJson(element);
-          stores_list.add(storeModel);
-        },
-      );
-      return stores_list;
+          storesList.add(storeModel);
+        }
+      return storesList;
     }
     return returnCodeFunc(response);
   }
@@ -39,13 +37,12 @@ class StoreRepository extends GeneralController {
     if (returnCodeFunc(response) == 'success') {
       if (response.the0 != []) {
         list = response.the0;
-        list.forEach(
-          (element) {
+        for (var element in list) {
             List<String> img = [];
             image = element['images'];
-            image.forEach((element) {
+            for (var element in image) {
               img.add(element['name']);
-            });
+            }
             offerModel = OfferModel(
               id: element['id'],
               name: element['title'],
@@ -55,8 +52,7 @@ class StoreRepository extends GeneralController {
               imageList: img,
             );
             offerList.add(offerModel);
-          },
-        );
+          }
         return offerList;
       } else {
         return 'This store does not have offers ';
@@ -74,12 +70,10 @@ class StoreRepository extends GeneralController {
     if (returnCodeFunc(response) == 'success') {
       if (response.the0 != []) {
         list = response.the0;
-        list.forEach(
-          (element) {
+        for (var element in list) {
             voucherModel = StoreVoucherModel.fromJson(element);
             voucherList.add(voucherModel);
-          },
-        );
+          }
         voucherList.sort((a, b) => a.creatTime.compareTo(b.creatTime));
         List<StoreVoucherModel> finalList = voucherList.reversed.toList();
         return finalList;

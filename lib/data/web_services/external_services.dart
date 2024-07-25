@@ -40,6 +40,7 @@ class ExternalService {
     };
     try {
       var response = await http.get(uri, headers: headerMap);
+
       if (response.statusCode != 500) {
         dynamic data = jsonDecode(response.body);
         return ResponseModel.fromJson(data);
@@ -162,7 +163,7 @@ class ExternalService {
   //   // }
   // }
 
-  // // TODO try{}catch{}
+
   // // post data to server as form data without application/json header
   // Future<ResponseModel> postFormData(
   //     Map<String, dynamic> body, String urlService) async {

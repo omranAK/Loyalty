@@ -1,15 +1,12 @@
-import 'dart:async';
 import 'dart:convert';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:loyalty_system_mobile/constant/imports.dart';
 
-Future<void> handelBackgroundMessage(RemoteMessage message) async {
-  print('Title: ${message.notification?.title}');
-  print('Body: ${message.notification?.body}');
-  print('Payload: ${message.data}');
-}
+Future<void> handelBackgroundMessage(RemoteMessage message) async {}
 
 class FirebaseApi {
+  final navigatorKey = GlobalKey<NavigatorState>();
   final _firebaseMessaging = FirebaseMessaging.instance;
   final FlutterLocalNotificationsPlugin notificationsPlugin =
       FlutterLocalNotificationsPlugin();
@@ -55,7 +52,6 @@ class FirebaseApi {
 
   Future showNotification(
       {int? id, String? title, String? body, String? payload}) async {
-    print(body);
     return notificationsPlugin.show(id!, title, body, notificationDetails());
   }
 
@@ -92,8 +88,16 @@ class FirebaseApi {
   Future<void> initNotification() async {
     await _firebaseMessaging.requestPermission();
     final fCMtoken = await _firebaseMessaging.getToken();
-    print('Token : $fCMtoken');
+    if (fCMtoken != null) {
+      CacheManager.setdeviceToken(fCMtoken);
+      NotificationsRepository(externalService: ExternalService())
+          .registerToken({'device_token': fCMtoken}, 'add_device_key');
+    }
     initPushNotifications();
     inirLocalNotifications();
+  }
+
+  Future<void> deleteToken() async {
+    await _firebaseMessaging.deleteToken();
   }
 }

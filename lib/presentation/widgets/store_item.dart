@@ -1,7 +1,4 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:loyalty_system_mobile/constant/constant_data.dart';
-import 'package:loyalty_system_mobile/data/models/store_model.dart';
+import '../../constant/imports.dart';
 
 class StoreItem extends StatelessWidget {
   final StoreModel store;
@@ -9,6 +6,9 @@ class StoreItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
+    final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
     return GestureDetector(
       onTap: () {
         Navigator.pushNamed(context, storeDetail,
@@ -19,11 +19,12 @@ class StoreItem extends StatelessWidget {
         child: Row(
           children: [
             LimitedBox(
-              maxWidth: MediaQuery.sizeOf(context).width * 0.95,
+              maxWidth: width * 0.95,
               child: Container(
-                height: MediaQuery.sizeOf(context).height * 0.11,
+                height: height * 0.11,
                 decoration: BoxDecoration(
-                  border: Border.all(width: 2, color: Theme.of(context).cardColor),
+                  border:
+                      Border.all(width: 2, color: Theme.of(context).cardColor),
                   borderRadius: BorderRadius.circular(5),
                 ),
                 child: Row(
@@ -32,20 +33,21 @@ class StoreItem extends StatelessWidget {
                     SizedBox(
                       width: 110,
                       height: 90,
-                      child: store.prof_img == null
+                      child: store.profImg == null
                           ? Image.asset(
                               'assets/images/logo.png',
                               color: Colors.black,
                             )
                           : Image.network(
                               fit: BoxFit.cover,
-                              'http://jamal.savoiacar.com/${store.prof_img}',
+                              '${ServerConfig.mainApiUrlImage}${store.profImg}',
                               loadingBuilder: (BuildContext context,
                                   Widget child,
                                   ImageChunkEvent? loadingProgress) {
                                 if (loadingProgress == null) return child;
                                 return Center(
                                   child: CircularProgressIndicator(
+                                    color: Theme.of(context).badgeTheme.backgroundColor,
                                     value: loadingProgress.expectedTotalBytes !=
                                             null
                                         ? loadingProgress
@@ -67,7 +69,9 @@ class StoreItem extends StatelessWidget {
                               store.name.toUpperCase(),
                               textAlign: TextAlign.center,
                               style: const TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.bold),
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                           Row(
@@ -98,21 +102,23 @@ class StoreItem extends StatelessWidget {
                         ],
                       ),
                     ),
-                    Align(
-                        alignment: Alignment.bottomRight,
-                        child: SizedBox(
-                          width: 100,
-                          height: 100,
-                          child: Column(
-                            children: [
-                              const Text(
-                                'LOCATION',
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                              Text(store.location),
-                            ],
+                    SizedBox(
+                      width: 100,
+                      height: 100,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            localizations!.location,
+                            style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
-                        ))
+                          Padding(
+                            padding: const EdgeInsets.only(left: 25.0),
+                            child: Text(store.location),
+                          ),
+                        ],
+                      ),
+                    )
                   ],
                 ),
               ),

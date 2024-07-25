@@ -15,6 +15,7 @@ final class LogoutFaildState extends HomeState {}
 
 // ignore: must_be_immutable
 final class DataLoadedState extends HomeState {
+  // ignore: prefer_typing_uninitialized_variables
   var points;
   final List<VoucherModel> vouchers;
   final String email;

@@ -21,3 +21,17 @@ final class ProfileFaildState extends ProfileState {
 
   const ProfileFaildState(this.errorMessage);
 }
+
+final class ProfileUpdateSuccessState extends ProfileState {
+  final User user;
+
+  const ProfileUpdateSuccessState({required this.user});
+}
+
+final class ProfileUpdateFailedState extends ProfileState {
+  final String errorMessage;
+
+  const ProfileUpdateFailedState({required this.errorMessage});
+}
+
+final class ProfileUpdateLoadingState extends ProfileState {}

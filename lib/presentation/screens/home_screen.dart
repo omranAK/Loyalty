@@ -1,20 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:loyalty_system_mobile/constant/app_colors.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:loyalty_system_mobile/constant/constant_data.dart';
-import 'package:loyalty_system_mobile/data/models/voucher_model.dart';
-import 'package:loyalty_system_mobile/data/repository/profile_repo.dart';
-import 'package:loyalty_system_mobile/data/storage/cache_manager.dart';
-import 'package:loyalty_system_mobile/data/web_services/external_services.dart';
-import 'package:loyalty_system_mobile/logic/home/bloc/home_bloc.dart';
-import 'package:loyalty_system_mobile/logic/pofile/bloc/profile_bloc.dart';
-import 'package:loyalty_system_mobile/presentation/widgets/voucher_item.dart';
-import 'package:loyalty_system_mobile/provider/global_provider.dart';
-import 'package:provider/provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:quickalert/models/quickalert_type.dart';
-import 'package:quickalert/widgets/quickalert_dialog.dart';
+// ignore_for_file: prefer_typing_uninitialized_variables
+
+import '../../constant/imports.dart';
 
 class HomeScreen extends StatefulWidget {
   static const route = '/';
@@ -32,7 +18,6 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     homeBloc = BlocProvider.of<HomeBloc>(context);
     homeBloc.add(GetHomeDateEvent());
-    //FirebaseMessaging.instance.getToken().then((token) => print(token));
     super.initState();
   }
 
@@ -42,10 +27,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final localizations = AppLocalizations.of(context);
     final width = MediaQuery.sizeOf(context).width;
     final height = MediaQuery.sizeOf(context).height;
-    final iconColor = Theme.of(context).primaryIconTheme.color;
     final items = [
       PopupMenuItem(
         onTap: () {
@@ -56,7 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Icon(
               Icons.language,
-              color: iconColor,
+              color: theme.primaryIconTheme.color,
             ),
             Text(localizations!.english),
           ],
@@ -71,19 +56,20 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Icon(
               Icons.nights_stay_outlined,
-              color: iconColor,
+              color: theme.primaryIconTheme.color,
             ),
             Text(localizations.light)
           ],
         ),
       ),
       PopupMenuItem(
+        onTap: () => Navigator.pushNamed(context, about),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Icon(
               Icons.help_outline_rounded,
-              color: iconColor,
+              color: theme.primaryIconTheme.color,
             ),
             Text(localizations.help)
           ],
@@ -99,7 +85,7 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               Icon(
                 Icons.logout,
-                color: iconColor,
+                color: theme.primaryIconTheme.color,
               ),
               Text(localizations.logout),
             ],
@@ -137,61 +123,54 @@ class _HomeScreenState extends State<HomeScreen> {
             }
           },
           child: Padding(
-            padding: const EdgeInsets.only(left: 12, right: 12, top: 15),
+            padding: const EdgeInsets.only(left: 10, right: 10, top: 15),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Column(
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Row(
-                          children: [
-                            Container(
-                              decoration: const BoxDecoration(
-                                color: Colors.white,
-                                shape: BoxShape.circle,
-                                boxShadow: [
-                                  BoxShadow(
-                                      blurRadius: 15,
-                                      color: Colors.black,
-                                      spreadRadius: -6)
-                                ],
-                              ),
-                              child: GestureDetector(
-                                onTap: () {
-                                  BlocProvider(
-                                    create: (context) => ProfileBloc(
-                                      ProfileRepository(
-                                        externalService: ExternalService(),
-                                      ),
-                                    ),
-                                  );
-                                  Navigator.pushNamed(
-                                    context,
-                                    profile,
-                                  );
-                                },
-                                child: CircleAvatar(
-                                  backgroundColor:
-                                      Theme.of(context).primaryColorDark,
-                                  radius: 30,
-                                  child: const Icon(
-                                    Icons.person_outline_rounded,
-                                    color: AppColors.green,
-                                    size: 35,
-                                  ),
-                                ),
+                        Container(
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                blurRadius: 15,
+                                color: Colors.black,
+                                spreadRadius: -6,
+                              )
+                            ],
+                          ),
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.pushNamed(
+                                context,
+                                profile,
+                              );
+                            },
+                            child: CircleAvatar(
+                              backgroundColor:
+                                  Theme.of(context).toggleButtonsTheme.color,
+                              radius: 30,
+                              child: const Icon(
+                                Icons.person_outline_rounded,
+                                color: AppColors.green,
+                                size: 35,
                               ),
                             ),
-                            SizedBox(
-                              width: width * 0.2,
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
+                          ),
+                        ),
+                        Padding(
+                          padding:
+                              const EdgeInsets.only(left: 15.0, right: 15.0),
+                          child: SizedBox(
+                            width: width * 0.31,
+                            child: BlocBuilder<ProfileBloc, ProfileState>(
+                              builder: (context, state) {
+                                return Text(
                                   CacheManager.getUserModel()!
                                       .name
                                       .toUpperCase(),
@@ -201,23 +180,32 @@ class _HomeScreenState extends State<HomeScreen> {
                                       fontWeight: FontWeight.w400,
                                     ),
                                   ),
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            PopupMenuButton(
-                              icon: Icon(
-                                Icons.settings,
-                                color: iconColor,
-                                size: 22,
-                              ),
-                              itemBuilder: (_) => items,
+                                );
+                              },
                             ),
-                          ],
+                          ),
                         )
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            Navigator.pushNamed(context, notification);
+                          },
+                          icon: Icon(
+                            Icons.notifications,
+                            color: theme.primaryIconTheme.color,
+                          ),
+                        ),
+                        PopupMenuButton(
+                          icon: Icon(
+                            Icons.settings,
+                            color: theme.primaryIconTheme.color,
+                            size: 22,
+                          ),
+                          itemBuilder: (_) => items,
+                        ),
                       ],
                     )
                   ],
@@ -234,7 +222,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Row(
                         children: [
                           IconButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              // Navigator.pushNamed(context, barcode);
+                            },
                             icon: const Icon(
                               Icons.qr_code_scanner_outlined,
                               size: 35,
@@ -248,23 +238,25 @@ class _HomeScreenState extends State<HomeScreen> {
                             listener: (context, state) {
                               if (state is GenerateOtpSuccessState) {
                                 QuickAlert.show(
-                                  backgroundColor: Theme.of(context).cardColor,
-                                  context: context,
-                                  type: QuickAlertType.success,
-                                  title: state.otp,
-                                  titleColor: iconColor!,
-                                  text: 'Give this otp to the cashier',
-                                  textColor: iconColor,
-                                  confirmBtnColor: AppColors.buttonColor,
-                                );
+                                    backgroundColor: theme.cardColor,
+                                    context: context,
+                                    type: QuickAlertType.success,
+                                    title: state.otp,
+                                    titleColor:
+                                        theme.textTheme.titleMedium!.color!,
+                                    text: localizations.givethisotptothecashier,
+                                    textColor:
+                                        theme.textTheme.titleMedium!.color!,
+                                    confirmBtnColor: AppColors.buttonColor,
+                                    confirmBtnText: localizations.done);
                               } else if (state is GenerateOtpFailedState) {
                                 QuickAlert.show(
-                                  context: context,
-                                  type: QuickAlertType.error,
-                                  title: 'Failed',
-                                  text: state.errorMessage,
-                                  confirmBtnColor: AppColors.buttonColor,
-                                );
+                                    context: context,
+                                    type: QuickAlertType.error,
+                                    title: localizations.failed,
+                                    text: state.errorMessage,
+                                    confirmBtnColor: AppColors.buttonColor,
+                                    confirmBtnText: localizations.done);
                               }
                             },
                             child: TextButton(
@@ -352,7 +344,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         localizations.watchadd,
                         style: GoogleFonts.montserrat(
                           textStyle: const TextStyle(
-                              fontSize: 18, color: Colors.white),
+                            fontSize: 18,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ),
@@ -390,8 +384,11 @@ class _HomeScreenState extends State<HomeScreen> {
                           current is DataFaildState,
                       builder: (context, state) {
                         if (state is DataLoadingState) {
-                          return const Center(
-                            child: CircularProgressIndicator(),
+                          return Center(
+                            child: CircularProgressIndicator(
+                              color:
+                                  Theme.of(context).badgeTheme.backgroundColor,
+                            ),
                           );
                         } else if (state is DataFaildState) {
                           return Center(
@@ -401,17 +398,28 @@ class _HomeScreenState extends State<HomeScreen> {
                                 Text(
                                   localizations.somthingwentwrong,
                                   style: GoogleFonts.montserrat(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500),
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                    color: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium!
+                                        .color,
+                                  ),
                                 ),
                                 ElevatedButton.icon(
-                                  icon: const Icon(Icons.restart_alt_outlined),
+                                  icon: const Icon(
+                                    Icons.restart_alt_outlined,
+                                    color: Colors.white,
+                                  ),
                                   onPressed: () {
                                     homeBloc.add(
                                       GetHomeDateEvent(),
                                     );
                                   },
-                                  label: const Text('Refetch Data'),
+                                  label: Text(
+                                    localizations.regetdata,
+                                    style: const TextStyle(color: Colors.white),
+                                  ),
                                 )
                               ],
                             ),
@@ -425,7 +433,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                     voucher: vouchers[i],
                                   ),
                                   itemCount: vouchers.length,
-                                  
                                 )
                               : Center(
                                   child: Text(
@@ -448,5 +455,4 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-
 }

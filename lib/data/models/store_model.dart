@@ -7,7 +7,7 @@ class StoreModel {
   final String category;
   final String location;
   final String description;
-  final String? prof_img;
+  final String? profImg;
   final String phone;
   StoreModel({
     required this.id,
@@ -15,7 +15,7 @@ class StoreModel {
     required this.category,
     required this.location,
     required this.description,
-    required this.prof_img,
+    required this.profImg,
     required this.phone,
   });
 
@@ -25,7 +25,7 @@ class StoreModel {
     String? category,
     String? location,
     String? description,
-    String? prof_img,
+    String? profImg,
     String? phone,
   }) {
     return StoreModel(
@@ -34,7 +34,7 @@ class StoreModel {
       category: category ?? this.category,
       location: location ?? this.location,
       description: description ?? this.description,
-      prof_img: prof_img ?? this.prof_img,
+      profImg: profImg ?? this.profImg,
       phone: phone ?? this.phone,
     );
   }
@@ -46,7 +46,7 @@ class StoreModel {
       'category': category,
       'location': location,
       'description': description,
-      'prof_img': prof_img,
+      'prof_img': profImg,
       'phone': phone,
     };
   }
@@ -58,7 +58,7 @@ class StoreModel {
       category: map['category'] as String,
       location: map['location'] as String,
       description: map['description'] as String,
-      prof_img: map['prof_img'] as String,
+      profImg: map['prof_img'] as String,
       phone: map['phone'] as String,
     );
   }
@@ -69,7 +69,7 @@ factory StoreModel.fromJson(Map<String, dynamic> json) => StoreModel(
       category: json['partner']['category'],
       location: json['partner']['location'],
       description: json['partner']['about'],
-      prof_img: json['prof_img'],
+      profImg: json['prof_img'],
       phone: json['phone']
 
     
@@ -80,7 +80,7 @@ factory StoreModel.fromJson(Map<String, dynamic> json) => StoreModel(
         "category": category,
         "location": location,
         "description": description,
-        "prof_img": prof_img,
+        "prof_img": profImg,
         "phone": phone
        
       };
@@ -98,7 +98,7 @@ factory StoreModel.fromJson(Map<String, dynamic> json) => StoreModel(
         other.category == category &&
         other.location == location &&
         other.description == description &&
-        other.prof_img == prof_img &&
+        other.profImg == profImg &&
         other.phone == phone;
   }
 
@@ -109,7 +109,7 @@ factory StoreModel.fromJson(Map<String, dynamic> json) => StoreModel(
         category.hashCode ^
         location.hashCode ^
         description.hashCode ^
-        prof_img.hashCode ^
+        profImg.hashCode ^
         phone.hashCode;
   }
 }

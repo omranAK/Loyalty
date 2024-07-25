@@ -6,3 +6,6 @@ const profile = '/profile';
 const authOtp = '/authOtp';
 const charitydetaile = '/charitydetail';
 const videoplayer = '/video';
+const notification = '/notification';
+const about = '/about';
+const barcode = '/barcode';

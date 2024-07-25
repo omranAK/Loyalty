@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:loyalty_system_mobile/data/models/charity_model.dart';
-import 'package:loyalty_system_mobile/presentation/widgets/charity_item.dart';
+
+
+import '../../constant/imports.dart';
 
 // ignore: must_be_immutable
 class CharityGrid extends StatelessWidget {
@@ -19,7 +19,7 @@ class CharityGrid extends StatelessWidget {
       ),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
-        childAspectRatio: 1,
+        childAspectRatio: 0.88,
         crossAxisSpacing: 20,
         mainAxisSpacing: 20,
       ),

@@ -2,6 +2,7 @@ class StoreVoucherModel {
   final int id;
   final String name;
   final String description;
+  // ignore: prefer_typing_uninitialized_variables
   var points;
   final int discount;
   final DateTime creatTime;

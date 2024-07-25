@@ -1,10 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:math' as math;
 
-import 'package:flutter/material.dart';
-
-import 'package:loyalty_system_mobile/constant/app_colors.dart';
-import 'package:loyalty_system_mobile/data/models/point_history_model.dart';
+import '../../constant/imports.dart';
 
 class HistoryItem extends StatelessWidget {
   final PointHistoryModel history;
@@ -20,15 +17,13 @@ class HistoryItem extends StatelessWidget {
     return Column(
       children: [
         SizedBox(
-          height: height * 0.07,
+          height: height * 0.09,
           child: ListTile(
             leading: Padding(
               padding: const EdgeInsets.only(bottom: 16),
               child: CircleAvatar(
                 backgroundColor: Theme.of(context).cardColor,
-                child: history.up && history.operation == 'transfer' ||
-                        history.operation == 'donate points' ||
-                        history.operation == 'buy voucher'
+                child: history.up
                     ? const Icon(
                         Icons.arrow_outward_rounded,
                         color: Colors.red,
@@ -37,7 +32,7 @@ class HistoryItem extends StatelessWidget {
                         angle: 180 * math.pi / 180,
                         child: const Icon(
                           Icons.arrow_outward_rounded,
-                          color: Colors.green,
+                          color: Color.fromARGB(255, 117, 236, 121),
                         )),
               ),
             ),
@@ -57,7 +52,10 @@ class HistoryItem extends StatelessWidget {
             subtitle: Column(
               children: [
                 Text(history.otherSideName),
-                Text(history.time.toString()),
+                Text(
+                  history.time.toString(),
+                  style: const TextStyle(fontSize: 12),
+                ),
               ],
             ),
             trailing: Padding(
@@ -68,7 +66,6 @@ class HistoryItem extends StatelessWidget {
                   color: AppColors.lightGreen,
                 ),
                 width: width * 0.2,
-                //height: height*0.06,
                 child: Center(
                   child: Text(
                     history.ammount.toString(),

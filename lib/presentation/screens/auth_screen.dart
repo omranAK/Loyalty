@@ -1,15 +1,6 @@
 // ignore_for_file: body_might_complete_normally_nullable
-import 'dart:async';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:loyalty_system_mobile/constant/app_colors.dart' as color;
-import 'package:loyalty_system_mobile/constant/app_colors.dart';
-import 'package:loyalty_system_mobile/constant/constant_data.dart';
-import 'dart:io';
-import 'package:loyalty_system_mobile/logic/auth/bloc/auth_bloc.dart';
+
+import '../../constant/imports.dart';
 
 enum FilterOption { arabic, english }
 
@@ -56,7 +47,7 @@ class _AuthScreenState extends State<AuthScreen> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: color.AppColors.appBarColor,
+        backgroundColor: AppColors.appBarColor,
         title: Text(
           'An Error Occurred!',
           style: GoogleFonts.montserrat(color: Colors.white),
@@ -70,7 +61,7 @@ class _AuthScreenState extends State<AuthScreen> {
           message == 'You are not active'
               ? ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: color.AppColors.darkGray,
+                    backgroundColor: AppColors.darkGray,
                   ),
                   onPressed: () {
                     loginbloc.add(ResendOtpButtonPressedEvent());
@@ -87,7 +78,7 @@ class _AuthScreenState extends State<AuthScreen> {
                 )
               : ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: color.AppColors.darkGray,
+                    backgroundColor: AppColors.darkGray,
                   ),
                   child: Text(
                     'Okay',
@@ -158,51 +149,9 @@ class _AuthScreenState extends State<AuthScreen> {
     double width = MediaQuery.of(context).size.width;
     double hieght = MediaQuery.of(context).size.height;
     return Scaffold(
-      backgroundColor: AppColors.appBgColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
         backgroundColor: AppColors.appBarColor,
-        actions: [
-          PopupMenuButton(
-            onSelected: (FilterOption selectedlocal) {
-              if (selectedlocal == FilterOption.arabic) {
-                // Provider.of<Auth>(context, listen: false).changeLocal(
-                //   const Locale('ar', ''),
-                // );
-              } else {
-                // Provider.of<Auth>(context, listen: false).changeLocal(
-                //   const Locale('en', ''),
-                // );
-              }
-            },
-            icon: const Icon(
-              Icons.language_rounded,
-              color: AppColors.kIcon,
-              size: 30,
-            ),
-            itemBuilder: (_) => [
-              const PopupMenuItem(
-                value: FilterOption.arabic,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Text('🇸🇾'),
-                    Text("AR"),
-                  ],
-                ),
-              ),
-              const PopupMenuItem(
-                value: FilterOption.english,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Text('🇬🇧'),
-                    Text("EN"),
-                  ],
-                ),
-              )
-            ],
-          ),
-        ],
       ),
       body: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
@@ -233,35 +182,32 @@ class _AuthScreenState extends State<AuthScreen> {
                     SizedBox(
                       width: width * 0.34,
                       height: hieght * 0.22,
-                      child: const Image(
+                      child: Image(
+                        color: Theme.of(context).badgeTheme.backgroundColor,
                         fit: BoxFit.contain,
-                        color: Colors.black,
-                        image: AssetImage('assets/images/logo.png'),
+                        image: const AssetImage('assets/images/logo.png'),
                       ),
                     ),
                     SizedBox(
                       width: width * 0.8,
                       child: _field(
-                          localizations!,
-                          emailController,
-                          TextInputType.emailAddress,
-                          Icons.email_outlined,
-                          'email',
-                          'Email'),
+                        localizations!,
+                        emailController,
+                        TextInputType.emailAddress,
+                        Icons.email_outlined,
+                        'email',
+                        'Email',
+                      ),
                     ),
                     const SizedBox(
                       height: 20,
                     ),
                     if (_authMode == AuthMode.signup)
                       SizedBox(
-                          width: width * 0.8,
-                          child: _field(
-                              localizations,
-                              nameController,
-                              TextInputType.name,
-                              Icons.person,
-                              'name',
-                              'Name')),
+                        width: width * 0.8,
+                        child: _field(localizations, nameController,
+                            TextInputType.name, Icons.person, 'name', 'Name'),
+                      ),
                     if (_authMode == AuthMode.signup)
                       const SizedBox(
                         height: 20,
@@ -282,28 +228,29 @@ class _AuthScreenState extends State<AuthScreen> {
                         height: 20,
                       ),
                     SizedBox(
-                        width: width * 0.8,
-                        child: _field(
+                      width: width * 0.8,
+                      child: _field(
                           localizations,
                           _passwordController,
                           TextInputType.visiblePassword,
                           Icons.key,
                           'password',
-                          'Password',
-                        )),
+                          'Password'),
+                    ),
                     const SizedBox(
                       height: 20,
                     ),
                     if (_authMode == AuthMode.signup)
                       SizedBox(
-                          width: width * 0.8,
-                          child: _field(
-                              localizations,
-                              confirmpassController,
-                              TextInputType.visiblePassword,
-                              Icons.check_outlined,
-                              '',
-                              'Confirm Password')),
+                        width: width * 0.8,
+                        child: _field(
+                            localizations,
+                            confirmpassController,
+                            TextInputType.visiblePassword,
+                            Icons.check_outlined,
+                            'confirm',
+                            'Confirm Password'),
+                      ),
                     if (_authMode == AuthMode.signup)
                       const SizedBox(
                         height: 25,
@@ -315,7 +262,7 @@ class _AuthScreenState extends State<AuthScreen> {
                         } else {
                           return ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: color.AppColors.buttonColor,
+                              backgroundColor: AppColors.buttonColor,
                               fixedSize: const Size(184, 41),
                             ),
                             onPressed: _submit,
@@ -342,7 +289,7 @@ class _AuthScreenState extends State<AuthScreen> {
                         style: GoogleFonts.montserrat(
                             fontSize: 16,
                             fontWeight: FontWeight.w500,
-                            color: Colors.black),
+                            color: Theme.of(context).primaryColor),
                       ),
                     ),
                   ],
@@ -363,7 +310,11 @@ class _AuthScreenState extends State<AuthScreen> {
       String x,
       String hintText) {
     return TextFormField(
-      obscureText: x == 'password' || x == '' ? true : false,
+      onFieldSubmitted: x == 'password' && _authMode == AuthMode.login
+          ? (value) => _submit()
+          : null,
+      autofocus: true,
+      obscureText: x == 'password' || x == 'confirm' ? true : false,
       controller: controller,
       keyboardType: textInputType,
       inputFormatters: [
@@ -381,26 +332,24 @@ class _AuthScreenState extends State<AuthScreen> {
           ),
           prefixIcon: Icon(
             icon,
-            color: color.AppColors.sIcon,
+            color: AppColors.sIcon,
           ),
           hintText: hintText),
       validator: (value) {
-        if (x == 'email') {
-          if (_authMode == AuthMode.signup) {
+        if (_authMode == AuthMode.signup) {
+          if (x == 'email') {
             if (value!.isEmpty || !value.contains('@')) {
+              return localizations.invalidemail;
+            }
+          } else if (x == 'name') {
+            if (value!.isEmpty) {
               return localizations.invalidname;
             }
-          }
-        } else if (x == 'name') {
-          if (value!.isEmpty) {
-            return localizations.invalidname;
-          }
-        } else if (x == 'phone') {
-          if (value!.isEmpty || value.length < 10 && value.length > 10) {
-            return localizations.invalidphone;
-          }
-        } else if (x == 'password') {
-          if (_authMode == AuthMode.signup) {
+          } else if (x == 'phone') {
+            if (value!.isEmpty || value.length < 10 && value.length > 10) {
+              return localizations.invalidphone;
+            }
+          } else if (x == 'password') {
             if (value!.isEmpty || value.length < 8) {
               return 'Password most contain at least 8 characters';
             }
@@ -416,15 +365,15 @@ class _AuthScreenState extends State<AuthScreen> {
                 !value.contains('0')) {
               return "Password most contain numbers like (1 2 3 ..)";
             }
-          }
-        } else if (x == '') {
-          if (value!.isEmpty || value != _passwordController.text) {
-            localizations.passwordsdontmatch;
+          } else if (x == 'confirm') {
+            if (value!.isEmpty || value != _passwordController.text) {
+              return localizations.passwordsdontmatch;
+            }
           }
         }
       },
       onSaved: (newValue) {
-        if (x != '') {
+        if (x != 'confirm') {
           _authData[x] = newValue!;
         }
       },

@@ -1,11 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:loyalty_system_mobile/constant/app_colors.dart';
-import 'package:loyalty_system_mobile/data/models/charity_model.dart';
-import 'package:loyalty_system_mobile/logic/charity/bloc/charity_bloc.dart';
-import 'package:loyalty_system_mobile/presentation/widgets/charity_grid.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../../constant/imports.dart';
 
 class CharityScreen extends StatefulWidget {
   const CharityScreen({super.key});
@@ -78,8 +71,9 @@ class _CharityScreenState extends State<CharityScreen> {
                   decoration: BoxDecoration(
                     shape: BoxShape.rectangle,
                     border: Border.all(
-                        width: 1,
-                        color: Theme.of(context).primaryIconTheme.color!),
+                      width: 1,
+                      color: Theme.of(context).primaryColor,
+                    ),
                     borderRadius: BorderRadius.circular(15),
                   ),
                   width: width * 0.60,
@@ -89,7 +83,8 @@ class _CharityScreenState extends State<CharityScreen> {
                     keyboardType: TextInputType.emailAddress,
                     onChanged: (value) => _runFilter(value),
                     decoration: InputDecoration(
-                      contentPadding: EdgeInsets.zero,
+                      contentPadding: const EdgeInsets.symmetric(
+                          vertical: 12.0, horizontal: 10.0),
                       border: InputBorder.none,
                       prefixIcon: IconButton(
                         onPressed: () {},
@@ -106,8 +101,10 @@ class _CharityScreenState extends State<CharityScreen> {
             BlocBuilder<CharityBloc, CharityState>(
               builder: (context, state) {
                 if (state is CharityLoadingState) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
+                  return Center(
+                    child: CircularProgressIndicator(
+                      color: Theme.of(context).badgeTheme.backgroundColor,
+                    ),
                   );
                 } else if (state is CharityFailedState) {
                   return Center(
@@ -117,16 +114,24 @@ class _CharityScreenState extends State<CharityScreen> {
                         Text(
                           state.errorMessage,
                           style: GoogleFonts.montserrat(
-                              fontSize: 16, fontWeight: FontWeight.w500),
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                         ElevatedButton.icon(
-                          icon: const Icon(Icons.restart_alt_outlined),
+                          icon: const Icon(
+                            Icons.restart_alt_outlined,
+                            color: Colors.white,
+                          ),
                           onPressed: () {
                             charityBloc.add(
                               LoadCharityEvent(),
                             );
                           },
-                          label: const Text('Re Get Data'),
+                          label: Text(
+                            localizations.regetdata,
+                            style: const TextStyle(color: Colors.white),
+                          ),
                         )
                       ],
                     ),

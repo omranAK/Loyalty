@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+// ignore: depend_on_referenced_packages
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
@@ -29,7 +30,7 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
     if (response is String) {
       emit(HistoryFaildState(errorMessage: response));
     } else {
-      emit(HistoryLoaddedState(history_list: response));
+      emit(HistoryLoaddedState(historyList: response));
     }
   }
 }

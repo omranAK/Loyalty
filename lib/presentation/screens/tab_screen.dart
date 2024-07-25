@@ -1,13 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:loyalty_system_mobile/data/storage/cache_manager.dart';
-import 'package:loyalty_system_mobile/presentation/screens/charit_screen.dart';
-import 'package:loyalty_system_mobile/presentation/screens/history_screen.dart';
-import 'package:loyalty_system_mobile/presentation/screens/stores_screen.dart';
-import 'package:loyalty_system_mobile/presentation/screens/transfer_screen.dart';
-import '../Screens/home_screen.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+
+import '../../constant/imports.dart';
 
 class Tabs extends StatefulWidget {
   static const routename = '/tabs';
@@ -34,7 +27,7 @@ class _TabsState extends State<Tabs> {
   final screens = [
     const HomeScreen(),
     const StoresScreen(),
-    const TransferScreen(),
+    if (CacheManager.getUserModel()!.roleID == 4) const TransferScreen(),
     if (CacheManager.getUserModel()!.roleID == 4) const CharityScreen(),
     const HistoryScreen(),
   ];
@@ -50,17 +43,18 @@ class _TabsState extends State<Tabs> {
       BottomNavigationBarItem(
           icon: Icon(Icons.store_outlined, color: iconColor),
           label: localizations.stores),
-      BottomNavigationBarItem(
-          icon: SvgPicture.asset(
-            'assets/svg/transfer.svg',
-            colorFilter: ColorFilter.mode(iconColor!, BlendMode.srcIn),
-          ),
-          label: localizations.transferpoints),
+      if (CacheManager.getUserModel()!.roleID == 4)
+        BottomNavigationBarItem(
+            icon: SvgPicture.asset(
+              'assets/svg/transfer.svg',
+              colorFilter: ColorFilter.mode(iconColor!, BlendMode.srcIn),
+            ),
+            label: localizations.transferpoints),
       if (CacheManager.getUserModel()!.roleID == 4)
         BottomNavigationBarItem(
           icon: SvgPicture.asset(
             'assets/svg/charity.svg',
-            colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
+            colorFilter: ColorFilter.mode(iconColor!, BlendMode.srcIn),
           ),
           label: localizations.charity,
         ),
@@ -72,9 +66,10 @@ class _TabsState extends State<Tabs> {
     return PopScope(
       canPop: false,
       child: Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.background,
         body: screens[selectedIndex],
         bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+          backgroundColor: Theme.of(context).colorScheme.background,
           items: items,
           selectedLabelStyle: GoogleFonts.montserrat(
               textStyle: const TextStyle(fontWeight: FontWeight.w600)),

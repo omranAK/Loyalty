@@ -1,12 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:loyalty_system_mobile/constant/app_colors.dart';
-import 'package:loyalty_system_mobile/data/models/voucher_model.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:loyalty_system_mobile/logic/home/bloc/home_bloc.dart';
-import 'package:quickalert/quickalert.dart';
+
+import '../../constant/imports.dart';
 
 class VoucherItem extends StatelessWidget {
   final VoucherModel voucher;
@@ -18,7 +12,7 @@ class VoucherItem extends StatelessWidget {
     final Locale appLocale = Localizations.localeOf(context);
     Bloc homebloc = BlocProvider.of<HomeBloc>(context);
     return Padding(
-      padding: const EdgeInsets.only(top:8.0),
+      padding: const EdgeInsets.only(top: 8.0),
       child: Container(
         width: double.infinity,
         decoration: BoxDecoration(
@@ -36,7 +30,10 @@ class VoucherItem extends StatelessWidget {
                   Text(
                     voucher.name,
                     style: GoogleFonts.montserrat(
-                      textStyle: const TextStyle(fontWeight: FontWeight.w700),
+                      textStyle: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        color: Theme.of(context).primaryColor,
+                      ),
                     ),
                   ),
                   ElevatedButton(
@@ -53,14 +50,14 @@ class VoucherItem extends StatelessWidget {
                           backgroundColor:
                               Theme.of(context).dialogTheme.backgroundColor,
                           title: Text(
-                            'Consuming Voucher',
+                            localizations.consumevoucher,
                             style: GoogleFonts.montserrat(
                               textStyle:
                                   const TextStyle(fontWeight: FontWeight.bold),
                             ),
                           ),
                           content: Text(
-                            'Are you sure you want to consume the voucher',
+                            localizations.areyousureyouwanttoconsumethevoucher,
                             style: GoogleFonts.montserrat(
                               textStyle:
                                   const TextStyle(fontWeight: FontWeight.w400),
@@ -75,51 +72,20 @@ class VoucherItem extends StatelessWidget {
                                 homebloc.add(
                                   ConsumeVoucherEvent(voucherID: voucher.id),
                                 );
-                                // TransferRepository transferRepository =
-                                //     TransferRepository(
-                                //   ExternalService(),
-                                // );
-                                // String response =
-                                //     await transferRepository.useVoucher(
-                                //   {},
-                                //   'use_voucher/${voucher.id}',
-                                // );
-                                // if (response.contains('message')) {
-                                //   if (!context.mounted) return;
-                                //   Navigator.pop(context);
-                                //   QuickAlert.show(
-                                //       context: context,
-                                //       type: QuickAlertType.error,
-                                //       title: response,
-                                //       confirmBtnColor: AppColors.buttonColor,
-                                //       onConfirmBtnTap: () {
-                                //         Navigator.of(context).pop();
-                                //         bloc.add(GetHomeDateEvent());
-                                //       });
-                                // } else {
-                                //   if (!context.mounted) return;
-      
-                                //   Navigator.pop(context);
-                                //   QuickAlert.show(
-                                //       context: context,
-                                //       type: QuickAlertType.success,
-                                //       title: response,
-                                //       confirmBtnColor: AppColors.buttonColor,
-                                //       onConfirmBtnTap: () {
-                                //         Navigator.of(context).pop();
-                                //         bloc.add(GetHomeDateEvent());
-                                //       });
-                                // }
                               },
                               child: BlocConsumer<HomeBloc, HomeState>(
                                 buildWhen: (previous, current) =>
                                     current is ConsumingLoaadingState,
                                 builder: (context, state) {
                                   if (state is ConsumingLoaadingState) {
-                                    return const CircularProgressIndicator();
+                                    return CircularProgressIndicator(
+                                      color: Theme.of(context)
+                                          .badgeTheme
+                                          .backgroundColor,
+                                    );
                                   } else {
                                     return Text(
-                                      'yes',
+                                      localizations.yes,
                                       style: GoogleFonts.montserrat(
                                         textStyle: const TextStyle(
                                           color: Colors.white,
@@ -141,14 +107,13 @@ class VoucherItem extends StatelessWidget {
                                           Theme.of(context).cardColor,
                                       type: QuickAlertType.success,
                                       title: state.otp,
-                                      titleColor: Theme.of(context)
-                                          .primaryIconTheme
-                                          .color!,
-                                      text: 'Give this otp to the cashier',
-                                      textColor: Theme.of(context)
-                                          .primaryIconTheme
-                                          .color!,
+                                      titleColor:
+                                          Theme.of(context).primaryColor,
+                                      text:
+                                          localizations.givethisotptothecashier,
+                                      textColor: Theme.of(context).primaryColor,
                                       confirmBtnColor: AppColors.buttonColor,
+                                      confirmBtnText: localizations.done,
                                       onConfirmBtnTap: () {
                                         Navigator.pop(context);
                                         homebloc.add(GetHomeDateEvent());
@@ -158,24 +123,31 @@ class VoucherItem extends StatelessWidget {
                                   } else if (state is ConsumingFailedState) {
                                     Navigator.of(context).pop();
                                     QuickAlert.show(
-                                      context: context,
-                                      type: QuickAlertType.error,
-                                      title: 'Failed',
-                                      text: state.errorMessage,
-                                      confirmBtnColor: AppColors.buttonColor,
-                                    );
+                                        backgroundColor:
+                                            Theme.of(context).cardColor,
+                                        context: context,
+                                        type: QuickAlertType.error,
+                                        titleColor:
+                                            Theme.of(context).primaryColor,
+                                        title: localizations.failed,
+                                        textColor:
+                                            Theme.of(context).primaryColor,
+                                        text: state.errorMessage,
+                                        confirmBtnColor: AppColors.buttonColor,
+                                        confirmBtnText: localizations.done);
                                   }
                                 },
                               ),
                             ),
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                  backgroundColor: AppColors.darkGray),
+                                backgroundColor: AppColors.darkGray,
+                              ),
                               onPressed: () {
                                 Navigator.pop(context);
                               },
                               child: Text(
-                                localizations!.no,
+                                localizations.no,
                                 style: GoogleFonts.montserrat(
                                   textStyle: const TextStyle(
                                       color: Colors.white,
@@ -189,12 +161,12 @@ class VoucherItem extends StatelessWidget {
                       );
                     },
                     child: Text(
-                      'Use Voucher',
+                      localizations!.consumevoucher,
                       style: GoogleFonts.montserrat(
                         textStyle: const TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w700,
-                          fontSize: 16,
+                          fontSize: 14,
                         ),
                       ),
                     ),
@@ -218,9 +190,10 @@ class VoucherItem extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(5.0),
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       SizedBox(
-                        width: 85,
+                        width: 75,
                         height: 150,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -234,7 +207,8 @@ class VoucherItem extends StatelessWidget {
                                 ),
                               ),
                               child: Text(
-                                DateFormat('yyyy-MM-dd').format(voucher.expDate),
+                                DateFormat('yyyy-MM-dd')
+                                    .format(voucher.expDate),
                                 style: GoogleFonts.montserrat(
                                   textStyle: const TextStyle(
                                     fontSize: 12,
@@ -256,7 +230,7 @@ class VoucherItem extends StatelessWidget {
                                   ),
                                 ),
                                 Text(
-                                  localizations!.point,
+                                  localizations.point,
                                   style: GoogleFonts.montserrat(
                                     textStyle: const TextStyle(
                                         color: AppColors.green,
@@ -281,6 +255,7 @@ class VoucherItem extends StatelessWidget {
                                 Text(
                                   localizations.discount,
                                   style: const TextStyle(
+                                    color: Colors.black,
                                     fontSize: 10,
                                   ),
                                 ),
@@ -289,14 +264,15 @@ class VoucherItem extends StatelessWidget {
                           ],
                         ),
                       ),
-                      const SizedBox(
-                        width: 80,
-                      ),
+                      // const SizedBox(
+                      //   width: 80,
+                      // ),
                       SizedBox(
                         width: 150,
                         height: 100,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
                               voucher.storeNmae,

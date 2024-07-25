@@ -1,3 +1,4 @@
+// ignore: depend_on_referenced_packages
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:loyalty_system_mobile/data/models/voucher_model.dart';
@@ -31,29 +32,12 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     }
   }
 
-  // void _onGetHomeDateEvent(
-  //     GetHomeDateEvent event, Emitter<HomeState> emit) async {
-  //   emit(DataLoadingState());
-  //   print(CacheManager.getToken());
-  //   var response = await _homeRepo.getMyVoucher({}, 'show_my_bought_voucher');
-  //   var response1 = await _homeRepo
-  //       .getMyPoints({}, 'show_profile/${CacheManager.getUserModel()!.id}');
-  //   var response2 = await _homeRepo
-  //       .getMyEmail({}, 'show_profile/${CacheManager.getUserModel()!.id}');
-  //   if (response is String) {
-  //     emit(DataFaildState(response));
-  //   } else {
-  //     emit(DataLoadedState(response1, response, response2));
-  //   }
-  // }
-
   void _onGetHomeDateEvent(
       GetHomeDateEvent event, Emitter<HomeState> emit) async {
     emit(DataLoadingState());
     var response = await _homeRepo.getMyVoucher({}, 'show_my_bought_voucher');
-    var response1 = await _homeRepo.getMyPoints(
-        {"email": "omran.alakad@gmail.com", "password": "ammA1234"},
-        'auth/login');
+    var response1 = await _homeRepo
+        .getMyPoints({}, 'show_profile/${CacheManager.getUserModel()!.id}');
     var response2 = await _homeRepo
         .getMyEmail({}, 'show_profile/${CacheManager.getUserModel()!.id}');
     if (response is String) {
@@ -62,6 +46,22 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       emit(DataLoadedState(response1, response, response2));
     }
   }
+
+  // void _onGetHomeDateEvent(
+  //     GetHomeDateEvent event, Emitter<HomeState> emit) async {
+  //   emit(DataLoadingState());
+  //   var response = await _homeRepo.getMyVoucher({}, 'show_my_bought_voucher');
+  //   var response1 = await _homeRepo.getMyPoints(
+  //       {"email": "omran.alakad@gmail.com", "password": "ammA1234"},
+  //       'auth/login');
+  //   var response2 = await _homeRepo
+  //       .getMyEmail({}, 'show_profile/${CacheManager.getUserModel()!.id}');
+  //   if (response is String) {
+  //     emit(DataFaildState(response));
+  //   } else {
+  //     emit(DataLoadedState(response1, response, response2));
+  //   }
+  // }
 
   void _onConsumeVoucherEvent(
       ConsumeVoucherEvent event, Emitter<HomeState> emit) async {

@@ -1,13 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:loyalty_system_mobile/constant/app_colors.dart';
-import 'package:loyalty_system_mobile/data/storage/cache_manager.dart';
-import 'package:loyalty_system_mobile/logic/stores/bloc/stores_bloc.dart';
-import 'package:loyalty_system_mobile/presentation/screens/store_offer_screen.dart';
-import 'package:loyalty_system_mobile/presentation/screens/store_vouchers.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import '../../constant/imports.dart';
 
 class StoreDetailScreen extends StatefulWidget {
   final int storeID;
@@ -117,7 +109,7 @@ class _StoreDetailScreenState extends State<StoreDetailScreen> {
           textStyle: const TextStyle(fontWeight: FontWeight.bold),
         ),
         selectedItemColor: Theme.of(context).primaryIconTheme.color,
-        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+        backgroundColor: Theme.of(context).bottomNavigationBarTheme.backgroundColor,
         showSelectedLabels: true,
         currentIndex: selectedIndex,
         onTap: (value) {

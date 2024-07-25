@@ -1,12 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:loyalty_system_mobile/constant/app_colors.dart';
-import 'package:loyalty_system_mobile/data/models/store_voucher_model.dart';
-import 'package:loyalty_system_mobile/logic/stores/bloc/stores_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:quickalert/models/quickalert_type.dart';
-import 'package:quickalert/widgets/quickalert_dialog.dart';
+import '../../constant/imports.dart';
 
 class StoreVouchers extends StatefulWidget {
   final int storeID;
@@ -30,29 +22,20 @@ class _StoreVouchersState extends State<StoreVouchers> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
     return BlocListener<StoresBloc, StoresState>(
       listener: (context, state) {
         if (state is VouchersLoaddedState) {
           vouchers = state.vouchers;
         }
-        // } else if (state is BuyingSuccessState) {
-        //   QuickAlert.show(
-        //       context: context,
-        //       type: QuickAlertType.success,
-        //       title: 'Done',
-        //       confirmBtnColor: AppColors.buttonColor,
-        //       onConfirmBtnTap: () {
-        //         Navigator.of(context).pop();
-        //       });
-        // }
       },
       child: BlocBuilder<StoresBloc, StoresState>(
         buildWhen: (previous, current) => current is VouchersLoaddedState,
         builder: (context, state) {
           if (state is VouchersLoaddedState) {
             return vouchers.isEmpty
-                ? const Center(
-                    child: Text('This store does not have vouchers'),
+                ? Center(
+                    child: Text(localizations!.thisstoredoesnothavevouchers),
                   )
                 : ListView.builder(
                     itemCount: vouchers.length,
@@ -63,11 +46,36 @@ class _StoreVouchersState extends State<StoreVouchers> {
                   );
           } else if (state is VocuhersFailedState) {
             return Center(
-              child: Text(state.errorMessage),
-            );
+                child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  localizations!.somthingwentwrong,
+                  style: GoogleFonts.montserrat(
+                      fontSize: 16, fontWeight: FontWeight.w500),
+                ),
+                ElevatedButton.icon(
+                  icon: const Icon(
+                    Icons.restart_alt_outlined,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {
+                    storeBloc.add(
+                      LoadStoreVouchersEvent(storeID: widget.storeID),
+                    );
+                  },
+                  label: Text(
+                    localizations.regetdata,
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                )
+              ],
+            ));
           } else {
-            return const Center(
-              child: CircularProgressIndicator(),
+            return Center(
+              child: CircularProgressIndicator(
+                color: Theme.of(context).badgeTheme.backgroundColor,
+              ),
             );
           }
         },
@@ -148,10 +156,14 @@ class _StoreVouchersState extends State<StoreVouchers> {
                                     current is BuyingLoadingState,
                                 builder: (context, state) {
                                   if (state is BuyingLoadingState) {
-                                    return const CircularProgressIndicator();
+                                    return CircularProgressIndicator(
+                                      color: Theme.of(context)
+                                          .badgeTheme
+                                          .backgroundColor,
+                                    );
                                   } else {
                                     return Text(
-                                      'yes',
+                                      localizations.yes,
                                       style: GoogleFonts.montserrat(
                                         textStyle: const TextStyle(
                                             color: Colors.white,
@@ -167,22 +179,38 @@ class _StoreVouchersState extends State<StoreVouchers> {
                                   if (state is BuyingSuccessState) {
                                     Navigator.of(context).pop();
                                     QuickAlert.show(
-                                      context: context,
-                                      type: QuickAlertType.success,
-                                      title: 'Success',
-                                      text:
-                                          'You can use it within the valid period ',
-                                      confirmBtnColor: AppColors.buttonColor,
-                                    );
+                                        backgroundColor:
+                                            Theme.of(context).cardColor,
+                                        context: context,
+                                        type: QuickAlertType.success,
+                                        titleColor: Theme.of(context)
+                                            .primaryIconTheme
+                                            .color!,
+                                        title: localizations.success,
+                                        textColor: Theme.of(context)
+                                            .primaryIconTheme
+                                            .color!,
+                                        text:
+                                            'You can use it within the valid period ',
+                                        confirmBtnColor: AppColors.buttonColor,
+                                        confirmBtnText: localizations.done);
                                   } else if (state is BuyingFailedState) {
                                     Navigator.of(context).pop();
                                     QuickAlert.show(
-                                      context: context,
-                                      type: QuickAlertType.error,
-                                      title: 'Failed',
-                                      text: state.errorMessage,
-                                      confirmBtnColor: AppColors.buttonColor,
-                                    );
+                                        backgroundColor:
+                                            Theme.of(context).cardColor,
+                                        context: context,
+                                        type: QuickAlertType.error,
+                                        titleColor: Theme.of(context)
+                                            .primaryIconTheme
+                                            .color!,
+                                        title: localizations.failed,
+                                        textColor: Theme.of(context)
+                                            .primaryIconTheme
+                                            .color!,
+                                        text: state.errorMessage,
+                                        confirmBtnColor: AppColors.buttonColor,
+                                        confirmBtnText: localizations.done);
                                   }
                                 },
                               ),
@@ -274,7 +302,7 @@ class _StoreVouchersState extends State<StoreVouchers> {
                                 Text(
                                   '${voucher.discount}%',
                                   style: GoogleFonts.montserrat(
-                                    textStyle:const  TextStyle(
+                                    textStyle: const TextStyle(
                                         color: Colors.black,
                                         fontSize: 14,
                                         fontWeight: FontWeight.w700),
@@ -283,7 +311,10 @@ class _StoreVouchersState extends State<StoreVouchers> {
                                 Text(
                                   localizations.discount,
                                   style: const TextStyle(
-                                      fontSize: 10, fontWeight: FontWeight.w600),
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.black,
+                                  ),
                                 ),
                               ],
                             ),

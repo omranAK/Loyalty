@@ -1,12 +1,5 @@
-import 'dart:async';
 
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:loyalty_system_mobile/constant/app_colors.dart';
-import 'package:flutter/services.dart';
-import 'package:loyalty_system_mobile/constant/constant_data.dart';
-import 'package:loyalty_system_mobile/logic/auth/bloc/auth_bloc.dart';
+import '../../constant/imports.dart';
 
 class AuthOtp extends StatefulWidget {
   final String? data;
@@ -112,7 +105,10 @@ class _AuthOtpState extends State<AuthOtp> {
       otpBloc.add(
         ConfirmOtpButtonPressedEvent(otp: otp),
       );
-    } catch (e) {}
+    // ignore: empty_catches
+    } catch (e) {
+      
+    }
   }
 
   @override

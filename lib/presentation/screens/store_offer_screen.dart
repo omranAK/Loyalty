@@ -1,10 +1,4 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:loyalty_system_mobile/data/models/offer_model.dart';
-import 'package:loyalty_system_mobile/logic/stores/bloc/stores_bloc.dart';
-import 'package:loyalty_system_mobile/presentation/widgets/store_offer_item.dart';
+import '../../constant/imports.dart';
 
 class StoreOffer extends StatefulWidget {
   final int storeID;
@@ -26,6 +20,8 @@ class _StoreOfferState extends State<StoreOffer> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
+
     return BlocListener<StoresBloc, StoresState>(
       listener: (context, state) {
         if (state is OffersLoaddedState) {
@@ -36,8 +32,8 @@ class _StoreOfferState extends State<StoreOffer> {
         builder: (context, state) {
           if (state is OffersLoaddedState) {
             return offers.isEmpty
-                ? const Center(
-                    child: Text('This store does not have offers'),
+                ? Center(
+                    child: Text(localizations!.thisstoredoesnothaveoffers),
                   )
                 : ListView.builder(
                     itemCount: state.offers.length,
@@ -45,9 +41,38 @@ class _StoreOfferState extends State<StoreOffer> {
                       offer: offers[index],
                     ),
                   );
+          } else if (state is OffersFailedState) {
+            return Center(
+                child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  localizations!.somthingwentwrong,
+                  style: GoogleFonts.montserrat(
+                      fontSize: 16, fontWeight: FontWeight.w500),
+                ),
+                ElevatedButton.icon(
+                  icon: const Icon(
+                    Icons.restart_alt_outlined,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {
+                    storeBloc.add(
+                      LoadStoreOffersEvent(storeID: widget.storeID),
+                    );
+                  },
+                  label: Text(
+                    localizations.regetdata,
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                )
+              ],
+            ));
           } else {
-            return const Center(
-              child: CircularProgressIndicator(),
+            return Center(
+              child: CircularProgressIndicator(
+                color: Theme.of(context).badgeTheme.backgroundColor,
+              ),
             );
           }
         },

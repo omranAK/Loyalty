@@ -5,8 +5,10 @@ class User {
   final String name;
   final String email;
   final String phone;
-  final String? prof_img;
+  final String? profImg;
+  // ignore: prefer_typing_uninitialized_variables
   var points;
+  // ignore: prefer_typing_uninitialized_variables
   var spicialPoins;
   final String? about;
   final String? location;
@@ -17,7 +19,7 @@ class User {
       required this.name,
       required this.email,
       required this.phone,
-      required this.prof_img,
+      required this.profImg,
       required this.points,
       this.spicialPoins,
       this.about,
@@ -31,7 +33,7 @@ class User {
         name: json['name'],
         email: json['email'],
         phone: json['phone'],
-        prof_img: json['prof_img'],
+        profImg: json['prof_img'],
         points: CacheManager.getUserModel()!.roleID == 4
             ? json['client']['points']
             : json['charity']['points'],
@@ -51,7 +53,7 @@ class User {
         "name": name,
         "email": email,
         "phone": phone,
-        "prof_img": prof_img,
+        "prof_img": profImg,
         "points": points,
         "spicialPoins": spicialPoins
         // "points": points

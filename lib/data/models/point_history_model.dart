@@ -2,6 +2,7 @@
 class PointHistoryModel {
   final int id;
   final String operation;
+   // ignore: prefer_typing_uninitialized_variables
    var ammount;
   final DateTime time;
   final String otherSideName;

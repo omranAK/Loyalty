@@ -18,6 +18,7 @@ class CacheManager {
   static String roleIdKey = "roleId";
   static String spicialKey = 'spicial';
   static String themeKey = 'theme';
+  static String deviceTokenKey = 'deviceTokenKey';
 
   CacheManager() {
     init();
@@ -32,11 +33,15 @@ class CacheManager {
     await _preferences!.remove(userModellKey);
     await _preferences!.remove(tokenKey);
     await _preferences!.remove(pointsKey);
-
     await _preferences!.remove(spicialKey);
+    await _preferences!.remove(roleIdKey);
+    await _preferences!.remove(themeKey);
+    await _preferences!.remove(deviceTokenKey);
+    await _preferences!.remove(langKey);
   }
 
   static UserSetting? getUserModel() {
+    
     if (_preferences!.getString(userModellKey) != null) {
       Map<String, dynamic> json1 =
           json.decode(_preferences!.getString(userModellKey)!);
@@ -153,5 +158,13 @@ class CacheManager {
       return 'light';
     }
     return theme;
+  }
+
+  static Future? setdeviceToken(String data) async {
+    await _preferences!.setString(deviceTokenKey, data);
+  }
+
+  static String? getdeviceToken() {
+    return _preferences!.getString(deviceTokenKey);
   }
 }

@@ -18,12 +18,10 @@ class HomeRepository extends GeneralController {
 
     if (returnCodeFunc(response) == 'success') {
       list = response.the0;
-      list.forEach(
-        (element) {
+      for (var element in list) {
           voucher = VoucherModel.fromJson(element);
           voucherList.add(voucher);
-        },
-      );
+        }
       return voucherList;
     }
     return returnCodeFunc(response);
@@ -31,8 +29,7 @@ class HomeRepository extends GeneralController {
 
   Future getMyPoints(
       Map<String, dynamic> queryParameters, String urlService) async {
-    var response =
-        await externalService.postDataMap(queryParameters, urlService);
+    var response = await externalService.getData(queryParameters, urlService);
 
     if (returnCodeFunc(response) == 'success') {
       if (CacheManager.getUserModel()!.roleID == 5) {
@@ -59,7 +56,7 @@ class HomeRepository extends GeneralController {
     var response =
         await externalService.postDataMap1(queryParameters, urlService);
     if (returnCodeFunc(response) == 'success') {
-      CacheManager.clearSharedPreferences();
+      await CacheManager.clearSharedPreferences();
       return 'success';
     } else if (response.message.contains('Unauthenticated')) {
       return 'success';

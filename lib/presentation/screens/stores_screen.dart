@@ -1,11 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:loyalty_system_mobile/constant/app_colors.dart';
-import 'package:loyalty_system_mobile/data/models/store_model.dart';
-import 'package:loyalty_system_mobile/logic/stores/bloc/stores_bloc.dart';
-import 'package:loyalty_system_mobile/presentation/widgets/store_item.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../../constant/imports.dart';
 
 class StoresScreen extends StatefulWidget {
   const StoresScreen({super.key});
@@ -84,7 +77,7 @@ class _StoresScreenState extends State<StoresScreen> {
                       shape: BoxShape.rectangle,
                       border: Border.all(
                         width: 1,
-                        color: Theme.of(context).primaryIconTheme.color!,
+                        color: Theme.of(context).primaryColor,
                       ),
                       borderRadius: BorderRadius.circular(15),
                     ),
@@ -95,7 +88,8 @@ class _StoresScreenState extends State<StoresScreen> {
                       keyboardType: TextInputType.emailAddress,
                       onChanged: (value) => _runFilter(value),
                       decoration: InputDecoration(
-                        contentPadding: EdgeInsets.zero,
+                        contentPadding: const EdgeInsets.symmetric(
+                            vertical: 12.0, horizontal: 10.0),
                         border: InputBorder.none,
                         prefixIcon: IconButton(
                           onPressed: () {},
@@ -120,8 +114,10 @@ class _StoresScreenState extends State<StoresScreen> {
                   child: BlocBuilder<StoresBloc, StoresState>(
                     builder: (context, state) {
                       if (state is StoresLoadingState) {
-                        return const Center(
-                          child: CircularProgressIndicator(),
+                        return Center(
+                          child: CircularProgressIndicator(
+                            color: Theme.of(context).badgeTheme.backgroundColor,
+                          ),
                         );
                       } else if (state is StoresFailedState) {
                         return Center(
@@ -131,16 +127,24 @@ class _StoresScreenState extends State<StoresScreen> {
                               Text(
                                 localizations.somthingwentwrong,
                                 style: GoogleFonts.montserrat(
-                                    fontSize: 16, fontWeight: FontWeight.w500),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
                               ElevatedButton.icon(
-                                icon: const Icon(Icons.refresh),
+                                icon: const Icon(
+                                  Icons.refresh,
+                                  color: Colors.white,
+                                ),
                                 onPressed: () {
                                   storesBloc.add(
                                     LoadStoresEvent(),
                                   );
                                 },
-                                label: const Text('Re Get Data'),
+                                label: Text(
+                                  localizations.regetdata,
+                                  style: const TextStyle(color: Colors.white),
+                                ),
                               )
                             ],
                           ),

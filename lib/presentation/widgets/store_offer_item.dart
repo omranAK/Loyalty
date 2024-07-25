@@ -1,13 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:another_carousel_pro/another_carousel_pro.dart';
+
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:loyalty_system_mobile/data/models/offer_model.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:loyalty_system_mobile/data/web_services/server_config.dart';
+
+import '../../constant/imports.dart';
 
 class StoreOfferItem extends StatelessWidget {
   final OfferModel offer;
@@ -21,16 +16,14 @@ class StoreOfferItem extends StatelessWidget {
     final localizations = AppLocalizations.of(context);
     final height = MediaQuery.sizeOf(context).height;
     List<CachedNetworkImage> images = [];
-    offer.imageList.forEach(
-      (element) {
-        images.add(
-          CachedNetworkImage(
-            imageUrl: '${ServerConfig.mainApiUrlImage}$element',
-            fit: BoxFit.cover,
-          ),
-        );
-      },
-    );
+    for (var element in offer.imageList) {
+      images.add(
+        CachedNetworkImage(
+          imageUrl: '${ServerConfig.mainApiUrlImage}$element',
+          fit: BoxFit.cover,
+        ),
+      );
+    }
     return Padding(
       padding: const EdgeInsets.only(top: 8.0),
       child: Container(
