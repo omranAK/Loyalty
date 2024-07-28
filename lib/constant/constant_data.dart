@@ -9,3 +9,4 @@ const videoplayer = '/video';
 const notification = '/notification';
 const about = '/about';
 const barcode = '/barcode';
+const splash = '/splash';

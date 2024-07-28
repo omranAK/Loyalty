@@ -44,13 +44,33 @@ class InfoScren extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Image.asset('assets/images/logo.png'),
-            Text(
-              'sub' * 100,
-              style: GoogleFonts.montserrat(
-                  fontSize: 20, fontWeight: FontWeight.w700),
+            Image.asset(
+              'assets/images/logo.png',
+              scale: 0.5,
+              color: Theme.of(context).badgeTheme.backgroundColor,
             ),
+            Text(
+              localizations.abouttheapp,
+              style: GoogleFonts.montserrat(
+                  fontSize: 20, fontWeight: FontWeight.w400),
+            ),
+            Column(
+              children: [
+                Text(
+                  localizations.theappisdevelopedby,
+                  style: const TextStyle(
+                    color: AppColors.appBarColor,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const Text(
+                  'jaro Team',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ],
+            )
           ],
         ),
       ),

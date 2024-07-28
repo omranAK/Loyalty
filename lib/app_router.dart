@@ -10,6 +10,7 @@ import 'package:loyalty_system_mobile/presentation/screens/charity_detail_screen
 import 'package:loyalty_system_mobile/presentation/screens/info_screen.dart';
 import 'package:loyalty_system_mobile/presentation/screens/notifications_screen.dart';
 import 'package:loyalty_system_mobile/presentation/screens/profile_screen.dart';
+import 'package:loyalty_system_mobile/presentation/screens/splash_screen.dart';
 import 'package:loyalty_system_mobile/presentation/screens/store_detail_screen.dart';
 import 'package:loyalty_system_mobile/presentation/screens/tab_screen.dart';
 import 'package:loyalty_system_mobile/presentation/widgets/video_player.dart';
@@ -86,6 +87,8 @@ class AppRouter {
         );
       case barcode:
         return MaterialPageRoute(builder: (_) => const BarCodeScreen());
+      case splash:
+        return MaterialPageRoute(builder: (_) => const SplashScreen());
       default:
         return null;
     }

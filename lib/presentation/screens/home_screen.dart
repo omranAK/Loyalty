@@ -114,13 +114,12 @@ class _HomeScreenState extends State<HomeScreen> {
         child: BlocListener<HomeBloc, HomeState>(
           listener: (context, state) {
             if (state is LogoutSuccessState) {
-              Navigator.pushNamedAndRemoveUntil(
-                  context, authscreen, (route) => false);
+              Navigator.of(context).pushReplacementNamed(authscreen);
             } else if (state is DataLoadedState) {
               vouchers = state.vouchers;
               point = state.points;
               CacheManager.setPoint(point.toString());
-            }
+            } 
           },
           child: Padding(
             padding: const EdgeInsets.only(left: 10, right: 10, top: 15),

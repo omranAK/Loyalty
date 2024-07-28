@@ -165,8 +165,7 @@ class _AuthScreenState extends State<AuthScreen> {
             loginbloc.add(AuthIntialEvent());
             _showErrorDialog(state.errorMessage.toString());
           } else if (state is LoginSuccessState) {
-            Navigator.pushNamedAndRemoveUntil(
-                context, tabScreen, (Route<dynamic> route) => false);
+            Navigator.pushReplacementNamed(context, tabScreen);
           }
         },
         child: Center(

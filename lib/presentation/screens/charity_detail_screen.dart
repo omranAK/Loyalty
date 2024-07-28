@@ -127,31 +127,6 @@ class CharityDetailScreen extends StatelessWidget {
                         ammount: ammountController.text,
                       ),
                     );
-                    // var response = await charityRepository.donate(
-                    //   {
-                    //     'points': ammountController.text,
-                    //     'id': charity.id.toString(),
-                    //   },
-                    //   'donate_special_points',
-                    // );
-                    // if (response == 'success') {
-                    //   if (!context.mounted) return;
-                    //   Navigator.pop(context);
-                    //   ScaffoldMessenger.of(context).showSnackBar(
-                    //     const SnackBar(
-                    //       backgroundColor: Colors.green,
-                    //       content: Text('Done thank you for your generosity'),
-                    //     ),
-                    //   );
-                    // } else {
-                    //   if (!context.mounted) return;
-                    //   Navigator.pop(context);
-                    //   ScaffoldMessenger.of(context).showSnackBar(
-                    //     SnackBar(
-                    //       content: Text(response),
-                    //     ),
-                    //   );
-                    // }
                   },
                   child: BlocConsumer<CharityBloc, CharityState>(
                     listener: (context, state) {

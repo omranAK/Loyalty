@@ -3,7 +3,7 @@ import './constant/imports.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await CacheManager().init();
-  
+
   runApp(
     MyApp(appRouter: AppRouter()),
   );
@@ -86,16 +86,16 @@ class MyApp extends StatelessWidget {
                 supportedLocales: AppLocalizations.supportedLocales,
                 title: 'LoyaltySystem',
                 debugShowCheckedModeBanner: false,
-                //home:const  SplashScreen(),
+                initialRoute: splash,
 
-                initialRoute: CacheManager.getUserModel() == null
-                    ? authscreen
-                    : CacheManager.getToken() != null &&
-                                CacheManager.getUserModel()!.active == 1 &&
-                                CacheManager.getUserModel()!.roleID == 4 ||
-                            CacheManager.getUserModel()!.roleID == 5
-                        ? tabScreen
-                        : authscreen,
+                // initialRoute: CacheManager.getUserModel() == null
+                //     ? authscreen
+                //     : CacheManager.getToken() != null &&
+                //                 CacheManager.getUserModel()!.active == 1 &&
+                //                 CacheManager.getUserModel()!.roleID == 4 ||
+                //             CacheManager.getUserModel()!.roleID == 5
+                //         ? tabScreen
+                //         : authscreen,
                 onGenerateRoute: appRouter.generateRoute,
 
                 //   ),

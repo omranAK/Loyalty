@@ -78,30 +78,5 @@ class _StoreOfferState extends State<StoreOffer> {
         },
       ),
     );
-
-    // return Padding(
-    //   padding: const EdgeInsets.all(8.0),
-    //   child: GridView.custom(
-    //     gridDelegate: SliverWovenGridDelegate.count(
-    //       crossAxisCount: 2,
-    //       mainAxisSpacing: 0,
-    //       crossAxisSpacing: 0,
-    //       pattern: const [
-    //         WovenGridTile(1),
-    //         WovenGridTile(
-    //           5 / 7,
-    //           crossAxisRatio: 0.9,
-    //           alignment: AlignmentDirectional.centerEnd,
-    //         ),
-    //       ],
-    //     ),
-    //     childrenDelegate: SliverChildBuilderDelegate(
-    //       childCount: 10,
-    //       (context, index) => StoreOfferItem(
-    //         offer: offers[0],
-    //       ),
-    //     ),
-    //   ),
-    // );
   }
 }

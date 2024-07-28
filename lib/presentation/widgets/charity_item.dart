@@ -40,7 +40,7 @@ class CharityItem extends StatelessWidget {
                       image: DecorationImage(
                         image: charity.profImg != null
                             ? CachedNetworkImageProvider(
-                                'http://jamal.savoiacar.com/${charity.profImg}')
+                                '${ServerConfig.mainApiUrlImage}${charity.profImg}')
                             : const AssetImage('assets/images/EmptyCharity.jpg')
                                 as ImageProvider,
                         fit: BoxFit.cover,

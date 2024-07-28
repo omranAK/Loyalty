@@ -65,6 +65,7 @@
   "consumevoucher":"Consume Voucher",
   "areyousureyouwanttoconsumethevoucher":"Are you sure you want to consume the voucher",
   "done":"Done",
-  "toadvertise":"To advertise on the loyalty application, please contact us"
-
+  "toadvertise":"To advertise on the loyalty application, please contact us",
+  "abouttheapp":"The loyalty system is a system for gaining customer loyalty by providing gifts, offers and rewards to these customers when they purchase any of the products offered by the stores and companies within the application.",
+  "theappisdevelopedby":"The app is developed by:"
 }

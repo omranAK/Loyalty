@@ -11,17 +11,6 @@ class Tabs extends StatefulWidget {
 }
 
 class _TabsState extends State<Tabs> {
-  // var _isInit = true;
-  // void didChangeDependencies() {
-  //   if (_isInit) {
-  //     Provider.of<Products>(context, listen: false).fetchingdata();
-  //     Provider.of<Stores>(context, listen: false).fetchingData();
-  //     Provider.of<Profile>(context, listen: false).fetchingdata();
-  //     Provider.of<Orders>(context, listen: false).fetchingdata();
-  //   }
-  //   _isInit = false;
-  //   super.didChangeDependencies();
-  // }
 
   int selectedIndex = 0;
   final screens = [
@@ -64,7 +53,7 @@ class _TabsState extends State<Tabs> {
       ),
     ];
     return PopScope(
-      canPop: false,
+      //canPop: false,
       child: Scaffold(
         backgroundColor: Theme.of(context).colorScheme.background,
         body: screens[selectedIndex],

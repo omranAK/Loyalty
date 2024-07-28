@@ -36,7 +36,8 @@ class StoreItem extends StatelessWidget {
                       child: store.profImg == null
                           ? Image.asset(
                               'assets/images/logo.png',
-                              color: Colors.black,
+                              color:
+                                  Theme.of(context).badgeTheme.backgroundColor,
                             )
                           : Image.network(
                               fit: BoxFit.cover,
@@ -47,7 +48,9 @@ class StoreItem extends StatelessWidget {
                                 if (loadingProgress == null) return child;
                                 return Center(
                                   child: CircularProgressIndicator(
-                                    color: Theme.of(context).badgeTheme.backgroundColor,
+                                    color: Theme.of(context)
+                                        .badgeTheme
+                                        .backgroundColor,
                                     value: loadingProgress.expectedTotalBytes !=
                                             null
                                         ? loadingProgress
@@ -78,7 +81,6 @@ class StoreItem extends StatelessWidget {
                             children: [
                               const Icon(
                                 Icons.phone,
-                                color: Colors.black45,
                                 size: 18,
                               ),
                               Text(
@@ -91,7 +93,6 @@ class StoreItem extends StatelessWidget {
                             children: [
                               const Icon(
                                 Icons.category,
-                                color: Colors.black45,
                                 size: 18,
                               ),
                               Text(

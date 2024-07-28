@@ -1,4 +1,3 @@
-
 import '../../constant/imports.dart';
 
 class AuthOtp extends StatefulWidget {
@@ -105,10 +104,8 @@ class _AuthOtpState extends State<AuthOtp> {
       otpBloc.add(
         ConfirmOtpButtonPressedEvent(otp: otp),
       );
-    // ignore: empty_catches
-    } catch (e) {
-      
-    }
+      // ignore: empty_catches
+    } catch (e) {}
   }
 
   @override
@@ -128,8 +125,7 @@ class _AuthOtpState extends State<AuthOtp> {
             } else if (state is OtpFaildState) {
               _showErrorDialog("Wrong OTP Entered");
             } else if (state is OtpSuccessState) {
-              Navigator.pushNamedAndRemoveUntil(
-                  context, tabScreen, (Route<dynamic> route) => false);
+              Navigator.pushReplacementNamed(context, tabScreen);
             }
           },
           child: Padding(
