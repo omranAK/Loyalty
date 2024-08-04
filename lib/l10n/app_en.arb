@@ -67,5 +67,11 @@
   "done":"Done",
   "toadvertise":"To advertise on the loyalty application, please contact us",
   "abouttheapp":"The loyalty system is a system for gaining customer loyalty by providing gifts, offers and rewards to these customers when they purchase any of the products offered by the stores and companies within the application.",
-  "theappisdevelopedby":"The app is developed by:"
+  "theappisdevelopedby":"The app is developed by:",
+  "areyousureyouwanttochange":"Are you sure you want to change this information?",
+  "passwordmustcontainatleast8characters":"Password must contain at least 8 characters",
+  "passwordmustcontainnumbers":"Password must contain numbers like (1 2 3 ..)",
+  "passwordmustmatch":"Password must match",
+  "loyalty":"Loyalty"
+  
 }

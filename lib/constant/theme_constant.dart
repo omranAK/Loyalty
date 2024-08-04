@@ -1,6 +1,7 @@
 import 'package:loyalty_system_mobile/constant/imports.dart';
 
 ThemeData lightTheme = ThemeData(
+  shadowColor: Colors.grey.withOpacity(0.5),
     textTheme: const TextTheme(titleMedium: TextStyle(color: Colors.black)),
     toggleButtonsTheme: const ToggleButtonsThemeData(color: Colors.white),
     badgeTheme: const BadgeThemeData(backgroundColor: AppColors.appBarColor),
@@ -26,7 +27,7 @@ ThemeData lightTheme = ThemeData(
         backgroundColor: AppColors.buttonColor));
 
 ThemeData darkTheme = ThemeData(
-  
+    shadowColor: Colors.black.withOpacity(0.5),
     textTheme: const TextTheme(titleMedium: TextStyle(color: Colors.white)),
     toggleButtonsTheme:
         const ToggleButtonsThemeData(color: AppColors.buttonColor),

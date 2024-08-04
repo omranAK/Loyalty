@@ -41,7 +41,7 @@ class TransferScreen extends StatelessWidget {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: Text(
-          'Transfer Points',
+          localizations!.transferpoints,
           style: GoogleFonts.montserrat(
             textStyle: const TextStyle(
               color: Colors.white,
@@ -68,7 +68,7 @@ class TransferScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Text(
-                    localizations!.points,
+                    localizations.points,
                     style: GoogleFonts.cairo(
                       textStyle: const TextStyle(
                         fontSize: 20,
@@ -113,131 +113,137 @@ class TransferScreen extends StatelessWidget {
               ),
               Form(
                 key: formKey,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                child: Column(
                   children: [
-                    Text(
-                      localizations.reciveremail,
-                      style: GoogleFonts.cairo(
-                        textStyle: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                    Container(
-                      width: width * 0.6,
-                      height: height * 0.04,
-                      margin: const EdgeInsets.all(8),
-                      child: TextFormField(
-                        onSaved: (newValue) => tranferData['email'] = newValue!,
-                        cursorHeight: 5,
-                        controller: emailController,
-                        keyboardType: TextInputType.emailAddress,
-                        decoration: InputDecoration(
-                          isDense: true,
-                          //fillColor: AppColors.lightGray,
-                          //filled: true,
-                          contentPadding: const EdgeInsets.only(
-                              top: 0, bottom: 10, left: 10),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Theme.of(context).primaryColor),
-                            borderRadius: const BorderRadius.all(
-                              Radius.circular(15),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Text(
+                          localizations.reciveremail,
+                          style: GoogleFonts.cairo(
+                            textStyle: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
                         ),
-                        validator: (value) {
-                          if (value!.isEmpty || !value.contains('@')) {
-                            return 'invalidemail';
-                          } else {
-                            return null;
-                          }
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Text(
-                      '${localizations.ammount}                         ',
-                      style: GoogleFonts.cairo(
-                        textStyle: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
+                        Container(
+                          width: width * 0.6,
+                          height: height * 0.04,
+                          margin: const EdgeInsets.all(8),
+                          child: TextFormField(
+                            onSaved: (newValue) =>
+                                tranferData['email'] = newValue!,
+                            cursorHeight: 5,
+                            controller: emailController,
+                            keyboardType: TextInputType.emailAddress,
+                            decoration: InputDecoration(
+                              isDense: true,
+                              //fillColor: AppColors.lightGray,
+                              //filled: true,
+                              contentPadding: const EdgeInsets.only(
+                                  top: 0, bottom: 10, left: 10),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Theme.of(context).primaryColor),
+                                borderRadius: const BorderRadius.all(
+                                  Radius.circular(15),
+                                ),
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value!.isEmpty || !value.contains('@')) {
+                                return 'invalidemail';
+                              } else {
+                                return null;
+                              }
+                            },
+                          ),
                         ),
-                      ),
+                      ],
                     ),
-                    SizedBox(
-                      width: width * 0.36,
-                      height: height * 0.04,
-                      child: TextFormField(
-                          controller: ammountController,
-                          inputFormatters: <TextInputFormatter>[
-                            FilteringTextInputFormatter.digitsOnly
-                          ],
-                          keyboardType: TextInputType.emailAddress,
-                          decoration: InputDecoration(
-                            isDense: true,
-                            contentPadding: const EdgeInsets.only(
-                                top: 0, bottom: 10, left: 10),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Theme.of(context).primaryColor),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Text(
+                            '${localizations.ammount}                 ',
+                            style: GoogleFonts.cairo(
+                              textStyle: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
                           ),
-                          onSaved: (newValue) {
-                            tranferData['ammount'] = double.tryParse(newValue!);
-                          }),
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Text(
-                      localizations.reenterammount,
-                      style: GoogleFonts.cairo(
-                        textStyle: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      width: width * 0.36,
-                      height: height * 0.04,
-                      child: TextFormField(
-                        controller: confirmAmmountController,
-                        inputFormatters: <TextInputFormatter>[
-                          FilteringTextInputFormatter.digitsOnly
+                          SizedBox(
+                            width: width * 0.38,
+                            height: height * 0.04,
+                            child: TextFormField(
+                                controller: ammountController,
+                                inputFormatters: <TextInputFormatter>[
+                                  FilteringTextInputFormatter.digitsOnly
+                                ],
+                                keyboardType: TextInputType.emailAddress,
+                                decoration: InputDecoration(
+                                  isDense: true,
+                                  contentPadding: const EdgeInsets.only(
+                                      top: 0, bottom: 10, left: 10),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: Theme.of(context).primaryColor),
+                                  ),
+                                ),
+                                onSaved: (newValue) {
+                                  tranferData['ammount'] =
+                                      double.tryParse(newValue!);
+                                }),
+                          ),
                         ],
-                        keyboardType: TextInputType.emailAddress,
-                        decoration: InputDecoration(
-                          isDense: true,
-                          contentPadding: const EdgeInsets.only(
-                              top: 0, bottom: 10, left: 10),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Theme.of(context).primaryColor),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Text(
+                            localizations.reenterammount,
+                            style: GoogleFonts.cairo(
+                              textStyle: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
                           ),
-                        ),
-                        validator: (value) {
-                          if (value != ammountController.text) {
-                            return localizations.passwordsdontmatch;
-                          } else {
-                            return null;
-                          }
-                        },
+                          SizedBox(
+                            width: width * 0.38,
+                            height: height * 0.04,
+                            child: TextFormField(
+                              controller: confirmAmmountController,
+                              inputFormatters: <TextInputFormatter>[
+                                FilteringTextInputFormatter.digitsOnly
+                              ],
+                              keyboardType: TextInputType.emailAddress,
+                              decoration: InputDecoration(
+                                isDense: true,
+                                contentPadding: const EdgeInsets.only(
+                                    top: 0, bottom: 10, left: 10),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Theme.of(context).primaryColor),
+                                ),
+                              ),
+                              validator: (value) {
+                                if (value != ammountController.text) {
+                                  return localizations.passwordsdontmatch;
+                                } else {
+                                  return null;
+                                }
+                              },
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],

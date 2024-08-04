@@ -13,7 +13,7 @@ class NotificationItem extends StatelessWidget {
    // final width = MediaQuery.sizeOf(context).width;
     final height = MediaQuery.sizeOf(context).height;
     return Padding(
-      padding: const EdgeInsets.only(top: 8.0),
+      padding: const EdgeInsets.only(top: 8.0,right: 8.0,left: 8.0),
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),

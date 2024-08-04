@@ -58,6 +58,7 @@ class _TabsState extends State<Tabs> {
         backgroundColor: Theme.of(context).colorScheme.background,
         body: screens[selectedIndex],
         bottomNavigationBar: BottomNavigationBar(
+        
           backgroundColor: Theme.of(context).colorScheme.background,
           items: items,
           selectedLabelStyle: GoogleFonts.montserrat(

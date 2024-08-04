@@ -98,4 +98,12 @@ class AuthRepository extends GeneralController {
       return 'faild';
     }
   }
+  Future updateEmail( Map<String, dynamic> queryParameters, String urlService)async{
+    var response =await externalService.postDataMap1(queryParameters, urlService);
+    if(returnCodeFunc(response)=='success'){
+      return 'success';
+    }else {
+      return 'failed';
+    }
+  }
 }

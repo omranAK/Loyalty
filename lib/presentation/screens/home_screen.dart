@@ -114,12 +114,15 @@ class _HomeScreenState extends State<HomeScreen> {
         child: BlocListener<HomeBloc, HomeState>(
           listener: (context, state) {
             if (state is LogoutSuccessState) {
-              Navigator.of(context).pushReplacementNamed(authscreen);
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                authscreen,
+                (route) => false,
+              );
             } else if (state is DataLoadedState) {
               vouchers = state.vouchers;
               point = state.points;
               CacheManager.setPoint(point.toString());
-            } 
+            }
           },
           child: Padding(
             padding: const EdgeInsets.only(left: 10, right: 10, top: 15),
@@ -215,9 +218,16 @@ class _HomeScreenState extends State<HomeScreen> {
                       margin: const EdgeInsets.only(top: 15),
                       height: height * 0.1,
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: AppColors.lightGreen,
-                      ),
+                          borderRadius: BorderRadius.circular(20),
+                          color: AppColors.lightGreen,
+                          boxShadow: [
+                            BoxShadow(
+                              color: theme.shadowColor,
+                              spreadRadius: 5,
+                              blurRadius: 15,
+                              offset: const Offset(0, 3),
+                            )
+                          ]),
                       child: Row(
                         children: [
                           IconButton(
@@ -285,6 +295,14 @@ class _HomeScreenState extends State<HomeScreen> {
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(15),
                             color: AppColors.pointCardColor,
+                            boxShadow: [
+                              BoxShadow(
+                                color: theme.shadowColor,
+                                spreadRadius: 5,
+                                blurRadius: 15,
+                                offset: const Offset(0, 3),
+                              )
+                            ],
                           ),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -356,18 +374,21 @@ class _HomeScreenState extends State<HomeScreen> {
                   color: Colors.black,
                   thickness: 1,
                 ),
-                Row(
-                  children: [
-                    Text(
-                      localizations.myvouchers,
-                      style: GoogleFonts.montserrat(
-                        textStyle: const TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w800,
+                Padding(
+                  padding: const EdgeInsets.only(bottom:8.0),
+                  child: Row(
+                    children: [
+                      Text(
+                        localizations.myvouchers,
+                        style: GoogleFonts.montserrat(
+                          textStyle: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w800,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
                 SizedBox(
                   width: double.infinity,

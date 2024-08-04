@@ -35,11 +35,12 @@ class ExternalService {
 
     headerMap = {
       'Accept': 'application/json',
-      'Authorization': 'Bearer ${CacheManager.getToken()}2111',
+      'Authorization': 'Bearer ${CacheManager.getToken()}',
       'Connection': 'Keep-Alive'
     };
     try {
       var response = await http.get(uri, headers: headerMap);
+      
       if (response.statusCode != 500) {
         dynamic data = jsonDecode(response.body);
         return ResponseModel.fromJson(data);

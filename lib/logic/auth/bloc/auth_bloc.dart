@@ -14,6 +14,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<SignUpButtonPressedEvent>(_onSignUpButtonPressedEvent);
     on<ConfirmOtpButtonPressedEvent>(_onConfirmOtpButtonPressedEvent);
     on<ResendOtpButtonPressedEvent>(_onResendOtpButtonPressedEvent);
+    on<ChangeEmailEvent>(_onChangeEmailEvent);
   }
 
   void _onAuthIntialEvent(
@@ -72,5 +73,22 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   void _onResendOtpButtonPressedEvent(
       ResendOtpButtonPressedEvent event, Emitter<AuthState> emit) async {
     await _authRepository.sendOtp();
+  }
+
+  void _onChangeEmailEvent(
+      ChangeEmailEvent event, Emitter<AuthState> emit) async {
+    emit(ChangeEmailLoadingState());
+    var response = await _authRepository
+        .updateEmail({'email': event.newEmail}, 'update_email');
+    if (response == 'success') {
+      var response1 = await _authRepository.sendOtp();
+      if (response1 == 'success') {
+        emit(ChangeEmailSuccessState());
+      } else {
+        emit(const ChangeEmailFaildState(errorMessage: 'Failed to change'));
+      }
+    } else {
+      emit(const ChangeEmailFaildState(errorMessage: 'Failed to change'));
+    }
   }
 }

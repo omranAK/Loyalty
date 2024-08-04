@@ -61,12 +61,14 @@ class _HistoryScreenState extends State<HistoryScreen> {
                         '${localizations.numberoftransactions} ${historyList.length}',
                         style: GoogleFonts.montserrat(
                           textStyle: const TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.w600),
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
                     ),
                     SizedBox(
-                      height: height * 0.73,
+                      height: height * 0.78,
                       child: ListView.builder(
                         padding: const EdgeInsets.all(8),
                         scrollDirection: Axis.vertical,

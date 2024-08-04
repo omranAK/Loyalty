@@ -86,7 +86,7 @@ class MyApp extends StatelessWidget {
                 supportedLocales: AppLocalizations.supportedLocales,
                 title: 'LoyaltySystem',
                 debugShowCheckedModeBanner: false,
-                initialRoute: splash,
+                initialRoute: CacheManager.getUserModel()==null?authscreen:splash,
 
                 // initialRoute: CacheManager.getUserModel() == null
                 //     ? authscreen

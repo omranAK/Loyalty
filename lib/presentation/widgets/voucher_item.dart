@@ -1,5 +1,4 @@
 import 'package:easy_localization/easy_localization.dart';
-
 import '../../constant/imports.dart';
 
 class VoucherItem extends StatelessWidget {
@@ -190,11 +189,9 @@ class VoucherItem extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(5.0),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       SizedBox(
-                        width: 75,
-                        height: 150,
+                        width: MediaQuery.sizeOf(context).width * 0.2,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -264,34 +261,45 @@ class VoucherItem extends StatelessWidget {
                           ],
                         ),
                       ),
-                      // const SizedBox(
-                      //   width: 80,
-                      // ),
-                      SizedBox(
-                        width: 150,
-                        height: 100,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              voucher.storeNmae,
-                              style: GoogleFonts.montserrat(
-                                textStyle: const TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w700,
-                                  color: Color.fromRGBO(235, 197, 95, 1),
-                                ),
+                      Expanded(
+                        child: Padding(
+                          padding: appLocale == const Locale('ar')
+                              ? EdgeInsets.only(
+                                  left: MediaQuery.sizeOf(context).width * 0.05)
+                              : EdgeInsets.only(
+                                  right:
+                                      MediaQuery.sizeOf(context).width * 0.05),
+                          child: Align(
+                            alignment: appLocale == const Locale('ar')
+                                ? Alignment.centerLeft
+                                : Alignment.centerRight,
+                            child: SizedBox(
+                              width: MediaQuery.sizeOf(context).width * 0.4,
+                              height: 100,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    voucher.storeNmae,
+                                    style: GoogleFonts.montserrat(
+                                      textStyle: const TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w700,
+                                        color: Color.fromRGBO(235, 197, 95, 1),
+                                      ),
+                                    ),
+                                  ),
+                                  Text(
+                                    voucher.description,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 11,
+                                    ),
+                                  )
+                                ],
                               ),
                             ),
-                            Text(
-                              voucher.description,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 11,
-                              ),
-                            )
-                          ],
+                          ),
                         ),
                       )
                     ],

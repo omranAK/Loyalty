@@ -95,7 +95,6 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
       listener: (context, state) {
         if (state is AdLoaddedState) {
           initlizeVideo(state.ad.url);
-
           adID = state.ad.id;
         }
       },

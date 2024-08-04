@@ -16,7 +16,7 @@ class HistortyRepository extends GeneralController {
     List<PointHistoryModel> historyList = [];
     var response = await externalService.getData(queryParameters, urlService);
     
-    if (returnCodeFunc(response) == 'success') {
+    if (returnCodeFunc(response) == 'success' &&response.the0 !=null) {
       historyFrom = response.the0['histories_from'];
       historyTo = response.the0['histories_to'];
       for (var element in historyFrom) {

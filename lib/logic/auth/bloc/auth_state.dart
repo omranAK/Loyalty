@@ -37,3 +37,13 @@ final class OtpSuccessState extends AuthState {}
 final class OtpFaildState extends AuthState {}
 
 final class OtpLoadingState extends AuthState {}
+
+final class ChangeEmailSuccessState extends AuthState {}
+
+final class ChangeEmailFaildState extends AuthState {
+  final String errorMessage;
+
+  const ChangeEmailFaildState({required this.errorMessage});
+}
+
+final class ChangeEmailLoadingState extends AuthState {}

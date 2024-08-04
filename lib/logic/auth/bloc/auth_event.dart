@@ -42,3 +42,9 @@ final class ConfirmOtpButtonPressedEvent extends AuthEvent {
 final class ResendOtpButtonPressedEvent extends AuthEvent {}
 
 final class ActiveNowButtonPressedEvent extends AuthEvent {}
+
+final class ChangeEmailEvent extends AuthEvent {
+  final String newEmail;
+
+  const ChangeEmailEvent({required this.newEmail});
+}

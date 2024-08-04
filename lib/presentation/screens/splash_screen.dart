@@ -7,41 +7,58 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen>
-    with SingleTickerProviderStateMixin {
+class _SplashScreenState extends State<SplashScreen> {
+  Timer? _timer;
+  late int _start;
   @override
   void initState() {
-    startAnimation();
+    startTimer();
     super.initState();
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
-    Future.delayed(const Duration(seconds: 2), () {
-      CacheManager.getUserModel() == null
-          ? Navigator.of(context).pushReplacementNamed(authscreen)
-          : CacheManager.getUserModel()!.active == 1 &&
-                      CacheManager.getUserModel()!.roleID == 4 ||
-                  CacheManager.getUserModel()!.roleID == 5
-              ? Navigator.of(context).pushReplacementNamed(tabScreen)
-              : Navigator.of(context).pushReplacementNamed(authscreen);
-      Navigator.of(context).pushReplacementNamed(tabScreen);
+    Future.delayed(const Duration(seconds: 5), () {
+      CacheManager.getUserModel()!.active == 1 &&
+                  CacheManager.getUserModel()!.roleID == 4 ||
+              CacheManager.getUserModel()!.roleID == 5
+          ? Navigator.of(context)
+              .pushNamedAndRemoveUntil(tabScreen, (route) => false)
+          : Navigator.of(context).pushReplacementNamed(authscreen);
     });
+  }
+
+  void startTimer() {
+    _start = 2;
+    const oneSec = Duration(seconds: 1);
+    _timer = Timer.periodic(
+      oneSec,
+      (Timer timer) {
+        if (_start == 0) {
+          setState(() {
+            timer.cancel();
+          });
+        } else {
+          setState(() {
+            _start--;
+          });
+        }
+      },
+    );
   }
 
   @override
   void dispose() {
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-        overlays: SystemUiOverlay.values);
+    _timer!.cancel();
     super.dispose();
   }
 
   bool animate = false;
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
     return Scaffold(
       body: Container(
         width: double.infinity,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.white, Colors.white],
+            colors: [AppColors.appBarColor, AppColors.appBarColor],
             begin: Alignment.bottomLeft,
             end: Alignment.topRight,
           ),
@@ -49,31 +66,36 @@ class _SplashScreenState extends State<SplashScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset(
-              "assets/images/logo.png",
-              scale: 0.5,
-            ),
+            _start == 0
+                ? AnimatedCrossFade(
+                    firstChild: const Center(),
+                    secondChild: Image.asset(
+                      color: Colors.grey[400],
+                      "assets/images/logo.png",
+                      scale: 0.5,
+                    ),
+                    crossFadeState: CrossFadeState.showSecond,
+                    duration: const Duration(milliseconds: 800))
+                : const Center(),
+            //  _start==0? FadeInImage(placeholder: placeholder, image: AssetImage('assets/images/'),)  Image.asset(
+            //       color: Colors.grey[400],
+            //       "assets/images/logo.png",
+            //       scale: 0.5,
+            //     ):const Center(),
             const SizedBox(
               height: 20,
             ),
             Text(
-              'Loyalty',
+              localizations!.loyalty,
               style: GoogleFonts.montserrat(
                   fontSize: 32,
-                  color: Colors.black,
-                  fontStyle: FontStyle.italic),
+                  color: Colors.grey[400],
+                  fontStyle: FontStyle.italic,
+                  fontWeight: FontWeight.bold),
             )
           ],
         ),
       ),
     );
-  }
-
-  Future startAnimation() async {
-    await Future.delayed(const Duration(milliseconds: 500));
-    setState(() {
-      animate = true;
-    });
-    await Future.delayed(const Duration(milliseconds: 5000));
   }
 }

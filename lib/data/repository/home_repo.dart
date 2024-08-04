@@ -19,9 +19,9 @@ class HomeRepository extends GeneralController {
     if (returnCodeFunc(response) == 'success') {
       list = response.the0;
       for (var element in list) {
-          voucher = VoucherModel.fromJson(element);
-          voucherList.add(voucher);
-        }
+        voucher = VoucherModel.fromJson(element);
+        voucherList.add(voucher);
+      }
       return voucherList;
     }
     return returnCodeFunc(response);
@@ -30,7 +30,6 @@ class HomeRepository extends GeneralController {
   Future getMyPoints(
       Map<String, dynamic> queryParameters, String urlService) async {
     var response = await externalService.getData(queryParameters, urlService);
-
     if (returnCodeFunc(response) == 'success') {
       if (CacheManager.getUserModel()!.roleID == 5) {
         return response.the0['charity']['points'];

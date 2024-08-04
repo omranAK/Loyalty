@@ -1,6 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
-
 import '../../constant/imports.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -18,22 +17,39 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final TextEditingController newPasswordController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmpassController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey();
+
   late TextEditingController phoneController;
   late TextEditingController nameController;
-
   late TextEditingController locationController;
   late TextEditingController descriptionController;
   late TextEditingController emailController;
+  late String phoneNumber;
   late Bloc profileBloc;
+  void clearText() {
+    newPasswordController.clear();
+    passwordController.clear();
+    confirmpassController.clear();
+    phoneController.clear();
+    nameController.clear();
+    locationController.clear();
+    descriptionController.clear();
+    emailController.clear();
+  }
+
   void update() {
     setState(() {
+      clearText();
       active = !active;
+      passActive = false;
     });
   }
 
   void update1() {
     setState(() {
+      clearText();
       passActive = !passActive;
+      active = false;
     });
   }
 
@@ -50,6 +66,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final height = MediaQuery.sizeOf(context).height;
     final width = MediaQuery.sizeOf(context).width;
     final roleID = CacheManager.getUserModel()!.roleID;
+    Future<void> _submit() async {
+      if (!_formKey.currentState!.validate()) {
+        return;
+      }
+      _formKey.currentState!.save();
+      dialog(context, localizations!, passActive ? true : false);
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -84,6 +107,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             User user = state.user;
             nameController = TextEditingController(text: user.name);
             phoneController = TextEditingController(text: user.phone);
+            phoneNumber = phoneController.text;
             locationController = TextEditingController(text: user.location);
             descriptionController = TextEditingController(text: user.about);
             emailController = TextEditingController(text: user.email);
@@ -162,106 +186,128 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               Padding(
                                 padding: EdgeInsets.only(top: height / 20),
                                 child: SizedBox(
-                                  child: Column(
-                                    children: <Widget>[
-                                      infoChild(
-                                        width,
-                                        Icons.email,
-                                        user.email,
-                                        context,
-                                        active,
-                                        passActive,
-                                        'email',
-                                        emailController,
-                                      ),
-                                      infoChild(
+                                  child: Form(
+                                    key: _formKey,
+                                    child: Column(
+                                      children: <Widget>[
+                                        infoChild(
                                           width,
-                                          Icons.call,
-                                          user.phone,
+                                          Icons.email,
+                                          user.email,
                                           context,
                                           active,
                                           passActive,
-                                          'phone',
-                                          phoneController),
-                                      active
-                                          ? infoChild(
-                                              width,
-                                              Icons.person,
-                                              user.name,
-                                              context,
-                                              active,
-                                              passActive,
-                                              'name',
-                                              nameController,
-                                            )
-                                          : const Center(),
-                                      roleID == 5
-                                          ? infoChild(
-                                              width,
-                                              Icons.location_on,
-                                              user.location,
-                                              context,
-                                              active,
-                                              passActive,
-                                              'location',
-                                              locationController,
-                                            )
-                                          : const Center(),
-                                      roleID == 5
-                                          ? infoChild(
-                                              width,
-                                              Icons.description,
-                                              user.about,
-                                              context,
-                                              active,
-                                              passActive,
-                                              'description',
-                                              descriptionController,
-                                            )
-                                          : const Center(),
-                                      passActive
-                                          ? infoChild(
-                                              width,
-                                              Icons.key,
-                                              'New Password',
-                                              context,
-                                              active,
-                                              passActive,
-                                              'password',
-                                              newPasswordController,
-                                            )
-                                          : const Center(),
-                                      passActive
-                                          ? infoChild(
-                                              width,
-                                              Icons.check_outlined,
-                                              'Confirm Password',
-                                              context,
-                                              active,
-                                              passActive,
-                                              'password',
-                                              confirmpassController,
-                                            )
-                                          : const Center(),
-                                      active || passActive
-                                          ? ElevatedButton(
-                                              onPressed: () {
-                                                dialog(context, localizations);
-                                              },
-                                              style: ElevatedButton.styleFrom(
-                                                  backgroundColor:
-                                                      AppColors.buttonColor),
-                                              child: Text(
-                                                'submit',
-                                                style: GoogleFonts.montserrat(
-                                                  fontSize: 16,
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.w700,
+                                          'email',
+                                          emailController,
+                                          localizations
+                                        ),
+                                        infoChild(
+                                            width,
+                                            Icons.call,
+                                            user.phone,
+                                            context,
+                                            active,
+                                            passActive,
+                                            'phone',
+                                            phoneController,localizations),
+                                        active
+                                            ? infoChild(
+                                                width,
+                                                Icons.person,
+                                                user.name,
+                                                context,
+                                                active,
+                                                passActive,
+                                                'name',
+                                                nameController,
+                                                localizations
+                                              )
+                                            : const Center(),
+                                        roleID == 5
+                                            ? infoChild(
+                                                width,
+                                                Icons.location_on,
+                                                user.location,
+                                                context,
+                                                active,
+                                                passActive,
+                                                'location',
+                                                locationController,
+                                                localizations
+                                              )
+                                            : const Center(),
+                                        roleID == 5
+                                            ? infoChild(
+                                                width,
+                                                Icons.description,
+                                                user.about,
+                                                context,
+                                                active,
+                                                passActive,
+                                                'description',
+                                                descriptionController,
+                                                localizations
+                                              )
+                                            : const Center(),
+                                        passActive
+                                            ? infoChild(
+                                                width,
+                                                Icons.password,
+                                                'Current password',
+                                                context,
+                                                active,
+                                                passActive,
+                                                'currentpassword',
+                                                passwordController,
+                                                localizations
+                                              )
+                                            : const Center(),
+                                        passActive
+                                            ? infoChild(
+                                                width,
+                                                Icons.key,
+                                                'New Password',
+                                                context,
+                                                active,
+                                                passActive,
+                                                'newpassword',
+                                                newPasswordController,
+                                                localizations
+                                              )
+                                            : const Center(),
+                                        passActive
+                                            ? infoChild(
+                                                width,
+                                                Icons.check_outlined,
+                                                'Confirm Password',
+                                                context,
+                                                active,
+                                                passActive,
+                                                'confirmpassword',
+                                                confirmpassController,
+                                                localizations
+                                              )
+                                            : const Center(),
+                                        passActive || active
+                                            ? ElevatedButton(
+                                                onPressed: () {
+                                                  _submit();
+                                                },
+                                                style: ElevatedButton.styleFrom(
+                                                    backgroundColor:
+                                                        AppColors.buttonColor),
+                                                child: Text(
+                                                  'submit',
+                                                  style: GoogleFonts.montserrat(
+                                                    fontSize: 16,
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.w700,
+                                                  ),
                                                 ),
-                                              ),
-                                            )
-                                          : const SizedBox(),
-                                    ],
+                                              )
+                                            : const SizedBox(),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               )
@@ -316,7 +362,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
       bool active,
       bool passActive,
       String type,
-      TextEditingController controller) {
+      TextEditingController controller,
+      AppLocalizations localizations
+      ) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8.0),
       child: Row(
@@ -334,24 +382,51 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           Expanded(
             child: TextFormField(
+              autofocus: false,
               controller: controller,
-              obscureText: type == 'password' ? true : false,
-              readOnly: type == 'email'
+              obscureText: type.contains('password') ? true : false,
+              readOnly: type == 'phone' && active == false
                   ? true
-                  : passActive == true
-                      ? false
-                      : !active,
+                  : type == 'email'
+                      ? true
+                      : false,
               decoration: InputDecoration(
-                  hintText: type == 'password' ? data : null,
+                  hintText: type.contains('password') ? data : null,
                   hintStyle: const TextStyle(fontWeight: FontWeight.w400),
-                  border: type == 'email'
+                  border: type == 'phone' && passActive
                       ? InputBorder.none
-                      : active || passActive
-                          ? null
-                          : InputBorder.none),
+                      : type == 'email'
+                          ? InputBorder.none
+                          : active || passActive
+                              ? null
+                              : InputBorder.none),
               style: TextStyle(
                 color: Theme.of(context).primaryIconTheme.color,
               ),
+              // ignore: body_might_complete_normally_nullable
+              validator: (value) {
+                if (type == 'newpassword') {
+                  if (value!.isEmpty || value.length < 8) {
+                    return localizations.passwordmustcontainatleast8characters;
+                  }
+                  if (!value.contains('1') &
+                      !value.contains('2') &
+                      !value.contains('3') &
+                      !value.contains('4') &
+                      !value.contains('5') &
+                      !value.contains('6') &
+                      !value.contains('7') &
+                      !value.contains('8') &
+                      !value.contains('9') &
+                      !value.contains('0')) {
+                    return localizations.passwordmustcontainnumbers;
+                  }
+                } else if (type == 'confirmpassword') {
+                  if (value!.isEmpty || value != newPasswordController.text) {
+                    return localizations.passwordmustmatch;
+                  }
+                }
+              },
             ),
           ),
         ],
@@ -359,7 +434,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Future<dynamic> dialog(BuildContext context, AppLocalizations localizations) {
+  Future<dynamic> dialog(
+      BuildContext context, AppLocalizations localizations, bool passChange) {
     return showDialog(
       context: context,
       builder: (_) => AlertDialog(
@@ -369,43 +445,44 @@ class _ProfileScreenState extends State<ProfileScreen> {
             textStyle: const TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
-        content: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Text(
-              'Password:',
-              style: GoogleFonts.cairo(
-                textStyle: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-            Expanded(
-              child: SizedBox(
-                child: TextFormField(
-                  controller: passwordController,
-                  obscureText: true,
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: const InputDecoration(
-                    isDense: true,
-                    contentPadding:
-                        EdgeInsets.only(top: 0, bottom: 10, left: 10),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black),
+        content: !passChange
+            ? Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Text(
+                    'Password:',
+                    style: GoogleFonts.cairo(
+                      textStyle: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ),
-                ),
-              ),
-            ),
-          ],
-        ),
+                  Expanded(
+                    child: SizedBox(
+                      child: TextFormField(
+                        controller: passwordController,
+                        obscureText: true,
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: const InputDecoration(
+                          isDense: true,
+                          contentPadding:
+                              EdgeInsets.only(top: 0, bottom: 10, left: 10),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.black),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              )
+            : Text('Are you sure you want to change this information'),
         actions: [
           ElevatedButton(
             style:
                 ElevatedButton.styleFrom(backgroundColor: AppColors.darkGray),
             onPressed: () {
-              passwordController.clear();
               Navigator.pop(context);
             },
             child: Text(
@@ -423,7 +500,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             onPressed: () async {
               profileBloc.add(
                 UpdateUserDataEvent(
-                  phone: phoneController.text.isEmpty
+                  phone: phoneNumber == phoneController.text
                       ? null
                       : phoneController.text,
                   newPassword: newPasswordController.text.isEmpty
@@ -476,7 +553,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   current is ProfileUpdateLoadingState,
               builder: (context, state) {
                 if (state is ProfileUpdateLoadingState) {
-                  return  CircularProgressIndicator(color: Theme.of(context).badgeTheme.backgroundColor,);
+                  return CircularProgressIndicator(
+                    color: Theme.of(context).badgeTheme.backgroundColor,
+                  );
                 } else {
                   return Text(
                     'Procced',

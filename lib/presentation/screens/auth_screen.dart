@@ -50,12 +50,15 @@ class _AuthScreenState extends State<AuthScreen> {
         backgroundColor: AppColors.appBarColor,
         title: Text(
           'An Error Occurred!',
-          style: GoogleFonts.montserrat(color: Colors.white),
+          style: GoogleFonts.montserrat(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         content: Text(
           message,
           style: GoogleFonts.montserrat(
-              color: Colors.black, fontWeight: FontWeight.w600),
+              color: Colors.white, fontWeight: FontWeight.w600),
         ),
         actions: <Widget>[
           message == 'You are not active'
@@ -161,6 +164,7 @@ class _AuthScreenState extends State<AuthScreen> {
               authOtp,
               arguments: _authData['email'],
             );
+            cleartext();
           } else if (state is AuthFaildState) {
             loginbloc.add(AuthIntialEvent());
             _showErrorDialog(state.errorMessage.toString());
@@ -312,7 +316,6 @@ class _AuthScreenState extends State<AuthScreen> {
       onFieldSubmitted: x == 'password' && _authMode == AuthMode.login
           ? (value) => _submit()
           : null,
-      autofocus: true,
       obscureText: x == 'password' || x == 'confirm' ? true : false,
       controller: controller,
       keyboardType: textInputType,
