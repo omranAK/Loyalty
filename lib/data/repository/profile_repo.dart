@@ -1,3 +1,4 @@
+import 'package:loyalty_system_mobile/data/models/chart_model.dart';
 import 'package:loyalty_system_mobile/data/models/user_model.dart';
 import 'package:loyalty_system_mobile/data/models/user_setting_model.dart';
 import 'package:loyalty_system_mobile/data/storage/cache_manager.dart';
@@ -29,16 +30,28 @@ class ProfileRepository extends GeneralController {
     var response =
         await _externalService.postDataMap1(queryParameters, urlService);
     if (returnCodeFunc(response) == 'success') {
-      
       user = User.fromJson(response.the0['user']);
       // var response1 = await _externalService.getData(
       //     queryParameters, 'show_profile/${CacheManager.getUserModel()!.id}');
       // user = User.fromJson(response1.the0);
       UserSetting userSetting =
           CacheManager.getUserModel()!.copyWith(name: user.name);
-        
+
       await CacheManager.setUserModel(userSetting);
       return user;
+    } else {
+      return returnCodeFunc(response);
+    }
+  }
+
+  Future getchart(
+      Map<String, dynamic> queryParameters, String urlService) async {
+    var response =
+        await _externalService.postDataMap1(queryParameters, urlService);
+    ChartModel chartModel;
+    if (returnCodeFunc(response) == 'success') {
+      chartModel = ChartModel.fromJson(response.the0);
+      return chartModel;
     } else {
       return returnCodeFunc(response);
     }

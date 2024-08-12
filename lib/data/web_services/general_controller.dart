@@ -1,24 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:loyalty_system_mobile/constant/app_colors.dart';
-
 import '../models/response_model.dart';
 
 class GeneralController {
   String returnCodeFunc(ResponseModel generalModel) {
     switch (generalModel.status) {
-      case 401:
-        return generalModel.message;
-      case 403:
-        return generalModel.message;
-      case 400:
-        return generalModel.message;
-      case 500:
-        return generalModel.message;
-      case 404:
-        return generalModel.message;
+      case 200:
+        return 'success';
       default:
-        return "success";
+        String message1 = generalModel.message.replaceAll('"message":', '');
+       String message= message1.replaceAll('"status":${generalModel.status},', '');
+        return message;
     }
   }
 

@@ -1,6 +1,5 @@
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import '../../constant/imports.dart';
 
 class VideoPlayerScreen extends StatefulWidget {
@@ -14,13 +13,15 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
   VideoPlayerController? _controller;
   Future<void>? _video;
   Timer? _timer;
-  int _start = 10;
+  int counter = 0;
+  int? _start;
   late Bloc adBloc;
   late int adID;
   @override
   void initState() {
     adBloc = BlocProvider.of<AdBloc>(context);
     adBloc.add(LoadAdEvenet());
+
     //startTimer();
     super.initState();
   }
@@ -29,15 +30,34 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
     _controller = VideoPlayerController.networkUrl(
       Uri.parse('${ServerConfig.mainApiUrlImage}$url'),
     );
-    _video = _controller!.initialize();
-    await _controller!
-        .play()
-        .then((value) => Timer(const Duration(seconds: 2), () {
-              startTimer();
-            }));
+
+    _video = _controller!.initialize().then((_) {
+      setState(() {});
+      _controller!.addListener(checkVideo);
+    });
+    await _controller!.play();
   }
 
-  void startTimer() {
+  void checkVideo() {
+    // Implement your calls inside these conditions' bodies :
+    if (_controller!.value.position ==
+        const Duration(seconds: 0, minutes: 0, hours: 0)) {
+      counter++;
+      if (counter == 1) {
+        if (_controller!.value.duration >= const Duration(seconds: 15)) {
+          _start = 15;
+          _startTimer();
+        } else {
+          _start = _controller!.value.duration.inSeconds;
+          _startTimer();
+        }
+      }
+    }
+
+    // if (_controller!.value.position == _controller!.value.duration) {}
+  }
+
+  _startTimer() {
     const oneSec = Duration(seconds: 1);
     _timer = Timer.periodic(
       oneSec,
@@ -50,7 +70,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
         } else {
           setState(() {
             if (_controller!.value.isPlaying) {
-              _start--;
+              _start = _start! - 1;
             }
           });
         }
@@ -132,14 +152,14 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                                 : Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Container(
-                                      width: 25,
+                                      width: 100,
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(12),
                                         color: AppColors.buttonColor,
                                       ),
-                                      child: Center(
+                                      child:  Center(
                                         child: Text(
-                                          '$_start',
+                                          'skip in ${_start ?? ''}',
                                           style: const TextStyle(
                                             fontSize: 20,
                                             color: Colors.white,

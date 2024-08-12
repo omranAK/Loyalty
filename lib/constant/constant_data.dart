@@ -10,3 +10,4 @@ const notification = '/notification';
 const about = '/about';
 const barcode = '/barcode';
 const splash = '/splash';
+const bestseller='/bestseller';

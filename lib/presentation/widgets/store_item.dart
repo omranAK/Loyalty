@@ -11,6 +11,7 @@ class StoreItem extends StatelessWidget {
     final height = MediaQuery.of(context).size.height;
     return GestureDetector(
       onTap: () {
+        
         Navigator.pushNamed(context, storeDetail,
             arguments: {'storeID': store.id, 'name': store.name});
       },
@@ -33,34 +34,17 @@ class StoreItem extends StatelessWidget {
                     SizedBox(
                       width: 110,
                       height: 90,
-                      child: store.profImg == null
-                          ? Image.asset(
-                              'assets/images/logo.png',
-                              color:
-                                  Theme.of(context).badgeTheme.backgroundColor,
-                            )
-                          : Image.network(
-                              fit: BoxFit.cover,
-                              '${ServerConfig.mainApiUrlImage}${store.profImg}',
-                              loadingBuilder: (BuildContext context,
-                                  Widget child,
-                                  ImageChunkEvent? loadingProgress) {
-                                if (loadingProgress == null) return child;
-                                return Center(
-                                  child: CircularProgressIndicator(
-                                    color: Theme.of(context)
-                                        .badgeTheme
-                                        .backgroundColor,
-                                    value: loadingProgress.expectedTotalBytes !=
-                                            null
-                                        ? loadingProgress
-                                                .cumulativeBytesLoaded /
-                                            loadingProgress.expectedTotalBytes!
-                                        : null,
-                                  ),
-                                );
-                              },
-                            ),
+                      child: CachedNetworkImage(
+                        imageUrl:
+                            '${ServerConfig.mainApiUrlImage}${store.profImg}',
+                        placeholder: (context, url) =>
+                            Image.asset('assets/images/imageLoading.gif'),
+                        errorWidget: (context, url, error) =>  Icon(
+                          Icons.store,
+                          size: 80,
+                          color: Theme.of(context).badgeTheme.backgroundColor,
+                        ),
+                      ),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(left: 8.0),

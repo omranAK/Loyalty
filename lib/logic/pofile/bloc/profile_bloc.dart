@@ -2,7 +2,7 @@
 
 import 'package:equatable/equatable.dart';
 import 'package:loyalty_system_mobile/constant/imports.dart';
-
+import 'package:loyalty_system_mobile/data/models/chart_model.dart';
 
 part 'profile_event.dart';
 part 'profile_state.dart';
@@ -13,6 +13,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     on<ProfileInitialEvent>(_onProfileInitialEvent);
     on<GetProfileDataEvent>(_onGetProfileEvent);
     on<UpdateUserDataEvent>(_onUpdateUserDataEvent);
+    on<GetChartEvenet>(_onGetChartEvenet);
   }
   void _onProfileInitialEvent(
       ProfileInitialEvent event, Emitter<ProfileState> emit) async {
@@ -47,6 +48,18 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       emit(ProfileUpdateFailedState(errorMessage: response));
     } else {
       emit(ProfileloaddedState(response));
+    }
+  }
+
+  void _onGetChartEvenet(
+      GetChartEvenet evenet, Emitter<ProfileState> emit) async {
+    emit(ChartLoadingState());
+    var response = await _profileRepository.getchart(
+        {'user_id': CacheManager.getUserModel()!.id.toString()}, 'chart');
+    if (response is String) {
+      emit(ChartFailedState(errorMessage: response));
+    } else {
+      emit(ChartLoadedState(chart: response));
     }
   }
 }

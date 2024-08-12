@@ -20,6 +20,10 @@ class StoreOfferItem extends StatelessWidget {
       images.add(
         CachedNetworkImage(
           imageUrl: '${ServerConfig.mainApiUrlImage}$element',
+          placeholder: (context, url) =>
+              const Center(child: CircularProgressIndicator()),
+          errorWidget: (context, url, error) => Image.asset(
+             'assets/images/offer.png'),
           fit: BoxFit.cover,
         ),
       );

@@ -72,5 +72,11 @@
   "passwordmustcontainatleast8characters":"يجب أن تحتوي كلمة المرور على 8 أحرف على الأقل",
   "passwordmustcontainnumbers":"كلمة المرور يجب أن تحتوي على أرقام مثل (1 2 3 ..)",
   "passwordmustmatch":"يجب أن تتطابق كلمات المرور",
-  "loyalty":"ولاء"
+  "loyalty":"ولاء",
+  "youcanuseitwithinthevalidperiod":"يمكنك استخدامه خلال الفترة الصالحة",
+  "updateinformation":"تعديل معلوماتك",
+  "currentpassword":"كلمة المرور الحالية",
+  "newpassword":"كلمة المرور الجديدة",
+  "submit":"تأكيد",
+  "bestsellervoucher":"القسائم الأكثر مبيعا"
 }

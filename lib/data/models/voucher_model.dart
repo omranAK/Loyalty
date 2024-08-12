@@ -21,52 +21,6 @@ class VoucherModel {
       required this.storeNmae,
       required this.expDate});
 
-  // Voucher copyWith({
-  //   int? id,
-  //   int? isValid,
-  //   String? name,
-  //   String? description,
-  //   double? points,
-  //   int? discount,
-  //   String? storeNmae,
-  // }) {
-  //   return Voucher(
-  //     id: id ?? this.id,
-  //     isValid: isValid ?? this.isValid,
-  //     name: name ?? this.name,
-  //     description: description ?? this.description,
-  //     points: points ?? this.points,
-  //     discount: discount ?? this.discount,
-  //     storeNmae: storeNmae ?? this.storeNmae,
-  //   );
-  // }
-
-  // Map<String, dynamic> toMap() {
-  //   return <String, dynamic>{
-  //     'id': id,
-  //     'isValid': isValid,
-  //     'name': name,
-  //     'description': description,
-  //     'points': points,
-  //     'discount': discount,
-  //     'storeNmae': storeNmae,
-  //   };
-  // }
-
-  // factory Voucher.fromMap(Map<String, dynamic> map) {
-  //   return Voucher(
-  //     id: map['id'] as int,
-  //     isValid: map['isValid'] as int,
-  //     name: map['name'] as String,
-  //     description: map['description'] as String,
-  //     points: map['points'] as double,
-  //     discount: map['discount'] as int,
-  //     storeNmae: map['storeNmae'] as String,
-  //   );
-  // }
-
-  // String toJson() => json.encode(toMap());
-
   factory VoucherModel.fromJson(Map<String, dynamic> json) => VoucherModel(
       id: json['voucher']['id'],
       isValid: json['valid'],

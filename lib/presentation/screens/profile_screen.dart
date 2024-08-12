@@ -1,6 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-
+import 'package:easy_localization/easy_localization.dart';
+import 'package:loyalty_system_mobile/data/models/chart_model.dart';
 import '../../constant/imports.dart';
+import 'package:fl_chart/fl_chart.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({
@@ -57,7 +59,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     profileBloc = BlocProvider.of<ProfileBloc>(context);
     profileBloc.add(GetProfileDataEvent());
+    profileBloc.add(GetChartEvenet());
     super.initState();
+  }
+
+  Widget leftTitleWidgets(double value, TitleMeta meta) {
+    const style = TextStyle(fontSize: 10);
+
+    return SideTitleWidget(
+      axisSide: meta.axisSide,
+      child: Text(
+        ' ${value + 1}P',
+        style: style,
+      ),
+    );
   }
 
   @override
@@ -66,7 +81,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final height = MediaQuery.sizeOf(context).height;
     final width = MediaQuery.sizeOf(context).width;
     final roleID = CacheManager.getUserModel()!.roleID;
-    Future<void> _submit() async {
+    Future<void> submit() async {
       if (!_formKey.currentState!.validate()) {
         return;
       }
@@ -77,6 +92,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.appBarColor,
+        title: BlocBuilder<ProfileBloc, ProfileState>(
+          buildWhen: (previous, current) => current is ProfileloaddedState,
+          builder: (context, state) {
+            return Text(
+              CacheManager.getUserModel()!.name.toUpperCase(),
+              style: GoogleFonts.montserrat(
+                fontSize: 20,
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+              ),
+            );
+          },
+        ),
+        centerTitle: true,
         actions: [
           IconButton(
             onPressed: () {
@@ -96,101 +125,257 @@ class _ProfileScreenState extends State<ProfileScreen> {
           )
         ],
       ),
-      body: BlocBuilder<ProfileBloc, ProfileState>(
-        buildWhen: (previous, current) =>
-            current is ProfileLoadingState ||
-            current is ProfileInitial ||
-            current is ProfileFaildState ||
-            current is ProfileloaddedState,
-        builder: (context, state) {
-          if (state is ProfileloaddedState) {
-            User user = state.user;
-            nameController = TextEditingController(text: user.name);
-            phoneController = TextEditingController(text: user.phone);
-            phoneNumber = phoneController.text;
-            locationController = TextEditingController(text: user.location);
-            descriptionController = TextEditingController(text: user.about);
-            emailController = TextEditingController(text: user.email);
-            return Stack(
-              children: <Widget>[
-                Container(
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        AppColors.appBarColor,
-                        AppColors.green,
-                      ],
-                      begin: Alignment.topCenter,
-                      end: Alignment.center,
+      body: Stack(children: [
+        BlocBuilder<ProfileBloc, ProfileState>(
+          buildWhen: (previous, current) =>
+              current is ChartFailedState ||
+              current is ChartLoadedState ||
+              current is ChartLoadingState,
+          builder: (context, state) {
+            if (state is ChartFailedState) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      localizations!.somthingwentwrong,
+                      style: GoogleFonts.montserrat(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: Theme.of(context).textTheme.titleMedium!.color,
+                      ),
+                    ),
+                    ElevatedButton.icon(
+                      icon: const Icon(
+                        Icons.restart_alt_outlined,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {
+                        profileBloc.add(
+                          GetHomeDateEvent(),
+                        );
+                      },
+                      label: Text(
+                        localizations.regetdata,
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                    )
+                  ],
+                ),
+              );
+            } else if (state is ChartLoadedState) {
+              ChartModel chartModel = state.chart;
+
+              return Container(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      AppColors.appBarColor,
+                      AppColors.green,
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.center,
+                  ),
+                ),
+                child: AspectRatio(
+                  aspectRatio: 1.3,
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                      left: 10,
+                      right: 18,
+                      top: 10,
+                      bottom: 4,
+                    ),
+                    child: LineChart(
+                      LineChartData(
+                        lineTouchData: const LineTouchData(enabled: false),
+
+                        lineBarsData: [
+                          LineChartBarData(
+                            spots: [
+                              FlSpot(0,
+                                  (chartModel.points.values.toList()[0]) + .0),
+                              FlSpot(1,
+                                  (chartModel.points.values.toList()[1]) + .0),
+                              FlSpot(2,
+                                  (chartModel.points.values.toList()[2]) + .0),
+                              FlSpot(3,
+                                  (chartModel.points.values.toList()[3]) + .0),
+                              FlSpot(4,
+                                  (chartModel.points.values.toList()[4]) + .0),
+                            ],
+                            isCurved: false,
+                            barWidth: 3,
+                            color: Colors.black,
+                          ),
+                        ],
+
+                        //minY: 0,
+                        borderData: FlBorderData(
+                          show: true,
+                        ),
+                        titlesData: FlTitlesData(
+                          bottomTitles: AxisTitles(
+                            sideTitles: SideTitles(
+                              showTitles: true,
+                              interval: 1,
+                              reservedSize: 30,
+                              getTitlesWidget: (value, meta) {
+                                const style = TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                );
+                                String text;
+                                switch (value.toInt()) {
+                                  case 0:
+                                    DateTime one = DateTime.parse(
+                                        chartModel.points.keys.toList()[0]);
+                                    text = DateFormat('yyyy-MM-dd').format(one);
+                                    break;
+                                  case 1:
+                                    DateTime two = DateTime.parse(
+                                        chartModel.points.keys.toList()[1]);
+                                    text = DateFormat('yyyy-MM-dd').format(two);
+
+                                    break;
+                                  case 2:
+                                    DateTime three = DateTime.parse(
+                                        chartModel.points.keys.toList()[2]);
+                                    text =
+                                        DateFormat('yyyy-MM-dd').format(three);
+                                    break;
+                                  case 3:
+                                    DateTime four = DateTime.parse(
+                                        chartModel.points.keys.toList()[3]);
+                                    text =
+                                        DateFormat('yyyy-MM-dd').format(four);
+                                    break;
+                                  case 4:
+                                    text = 'now';
+                                  default:
+                                    return Container();
+                                }
+
+                                return SideTitleWidget(
+                                  axisSide: meta.axisSide,
+                                  space: 5,
+                                  child: Text(text, style: style),
+                                );
+                              },
+                            ),
+                          ),
+                          // leftTitles: AxisTitles(
+                          //   sideTitles: SideTitles(
+                          //     showTitles: true,
+                          //    // getTitlesWidget: leftTitleWidgets,
+
+                          //     reservedSize:40 ,
+                          //   ),
+                          // ),
+                          topTitles: const AxisTitles(
+                            sideTitles: SideTitles(showTitles: false),
+                          ),
+                          rightTitles: const AxisTitles(
+                            sideTitles: SideTitles(showTitles: false),
+                          ),
+                        ),
+                        gridData: FlGridData(
+                          show: true,
+                          drawVerticalLine: true,
+                          drawHorizontalLine: true,
+                          horizontalInterval: 1,
+                          checkToShowHorizontalLine: (double value) {
+                            return value == 1 ||
+                                value == 6 ||
+                                value == 4 ||
+                                value == 5;
+                          },
+                        ),
+                      ),
                     ),
                   ),
                 ),
-                Scaffold(
-                  backgroundColor: Colors.transparent,
-                  body: Stack(
-                    children: <Widget>[
-                      Align(
-                        alignment: Alignment.topCenter,
-                        child: Text(
-                          user.name.toUpperCase(),
-                          style: GoogleFonts.montserrat(
-                            fontSize: 20,
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                          ),
+              );
+            } else {
+              return const Padding(
+                padding: EdgeInsets.only(top: 15.0),
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            }
+          },
+        ),
+        BlocBuilder<ProfileBloc, ProfileState>(
+          buildWhen: (previous, current) =>
+              current is ProfileLoadingState ||
+              current is ProfileInitial ||
+              current is ProfileFaildState ||
+              current is ProfileloaddedState,
+          builder: (context, state) {
+            if (state is ProfileloaddedState) {
+              User user = state.user;
+              nameController = TextEditingController(text: user.name);
+              phoneController = TextEditingController(text: user.phone);
+              phoneNumber = phoneController.text;
+              locationController = TextEditingController(text: user.location);
+              descriptionController = TextEditingController(text: user.about);
+              emailController = TextEditingController(text: user.email);
+              return Scaffold(
+                backgroundColor: Colors.transparent,
+                body: Stack(
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.only(top: height / 2.2),
+                      child: Container(
+                          color: Theme.of(context).colorScheme.background),
+                    ),
+                    SingleChildScrollView(
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                          top: height / 2.6,
+                          left: width / 20,
+                          right: width / 20,
                         ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(top: height / 2.2),
-                        child: Container(
-                            color: Theme.of(context).colorScheme.background),
-                      ),
-                      SingleChildScrollView(
-                        child: Padding(
-                          padding: EdgeInsets.only(
-                            top: height / 2.6,
-                            left: width / 20,
-                            right: width / 20,
-                          ),
-                          child: Column(
-                            children: <Widget>[
-                              Container(
-                                decoration: BoxDecoration(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .background,
-                                    boxShadow: const [
-                                      BoxShadow(
-                                        color: Colors.black45,
-                                        blurRadius: 2.0,
-                                        offset: Offset(0.0, 2.0),
-                                      )
-                                    ]),
-                                child: Padding(
-                                  padding: EdgeInsets.all(width / 20),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      headerChild(
-                                          localizations!.point, user.points),
-                                      roleID == 4
-                                          ? headerChild(
-                                              localizations.spicialpoints,
-                                              user.spicialPoins,
-                                            )
-                                          : const Center()
-                                    ],
-                                  ),
+                        child: Column(
+                          children: <Widget>[
+                            Container(
+                              decoration: BoxDecoration(
+                                  color:
+                                      Theme.of(context).colorScheme.background,
+                                  boxShadow: const [
+                                    BoxShadow(
+                                      color: Colors.black45,
+                                      blurRadius: 2.0,
+                                      offset: Offset(0.0, 2.0),
+                                    )
+                                  ]),
+                              child: Padding(
+                                padding: EdgeInsets.all(width / 20),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    headerChild(
+                                        localizations!.point, user.points),
+                                    roleID == 4
+                                        ? headerChild(
+                                            localizations.spicialpoints,
+                                            user.spicialPoins,
+                                          )
+                                        : const Center()
+                                  ],
                                 ),
                               ),
-                              Padding(
-                                padding: EdgeInsets.only(top: height / 20),
-                                child: SizedBox(
-                                  child: Form(
-                                    key: _formKey,
-                                    child: Column(
-                                      children: <Widget>[
-                                        infoChild(
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(top: height / 20),
+                              child: SizedBox(
+                                child: Form(
+                                  key: _formKey,
+                                  child: Column(
+                                    children: <Widget>[
+                                      infoChild(
                                           width,
                                           Icons.email,
                                           user.email,
@@ -199,158 +384,151 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           passActive,
                                           'email',
                                           emailController,
-                                          localizations
-                                        ),
-                                        infoChild(
-                                            width,
-                                            Icons.call,
-                                            user.phone,
-                                            context,
-                                            active,
-                                            passActive,
-                                            'phone',
-                                            phoneController,localizations),
-                                        active
-                                            ? infoChild(
-                                                width,
-                                                Icons.person,
-                                                user.name,
-                                                context,
-                                                active,
-                                                passActive,
-                                                'name',
-                                                nameController,
-                                                localizations
-                                              )
-                                            : const Center(),
-                                        roleID == 5
-                                            ? infoChild(
-                                                width,
-                                                Icons.location_on,
-                                                user.location,
-                                                context,
-                                                active,
-                                                passActive,
-                                                'location',
-                                                locationController,
-                                                localizations
-                                              )
-                                            : const Center(),
-                                        roleID == 5
-                                            ? infoChild(
-                                                width,
-                                                Icons.description,
-                                                user.about,
-                                                context,
-                                                active,
-                                                passActive,
-                                                'description',
-                                                descriptionController,
-                                                localizations
-                                              )
-                                            : const Center(),
-                                        passActive
-                                            ? infoChild(
-                                                width,
-                                                Icons.password,
-                                                'Current password',
-                                                context,
-                                                active,
-                                                passActive,
-                                                'currentpassword',
-                                                passwordController,
-                                                localizations
-                                              )
-                                            : const Center(),
-                                        passActive
-                                            ? infoChild(
-                                                width,
-                                                Icons.key,
-                                                'New Password',
-                                                context,
-                                                active,
-                                                passActive,
-                                                'newpassword',
-                                                newPasswordController,
-                                                localizations
-                                              )
-                                            : const Center(),
-                                        passActive
-                                            ? infoChild(
-                                                width,
-                                                Icons.check_outlined,
-                                                'Confirm Password',
-                                                context,
-                                                active,
-                                                passActive,
-                                                'confirmpassword',
-                                                confirmpassController,
-                                                localizations
-                                              )
-                                            : const Center(),
-                                        passActive || active
-                                            ? ElevatedButton(
-                                                onPressed: () {
-                                                  _submit();
-                                                },
-                                                style: ElevatedButton.styleFrom(
-                                                    backgroundColor:
-                                                        AppColors.buttonColor),
-                                                child: Text(
-                                                  'submit',
-                                                  style: GoogleFonts.montserrat(
-                                                    fontSize: 16,
-                                                    color: Colors.white,
-                                                    fontWeight: FontWeight.w700,
-                                                  ),
+                                          localizations),
+                                      infoChild(
+                                          width,
+                                          Icons.call,
+                                          user.phone,
+                                          context,
+                                          active,
+                                          passActive,
+                                          'phone',
+                                          phoneController,
+                                          localizations),
+                                      active
+                                          ? infoChild(
+                                              width,
+                                              Icons.person,
+                                              user.name,
+                                              context,
+                                              active,
+                                              passActive,
+                                              'name',
+                                              nameController,
+                                              localizations)
+                                          : const Center(),
+                                      roleID == 5
+                                          ? infoChild(
+                                              width,
+                                              Icons.location_on,
+                                              user.location,
+                                              context,
+                                              active,
+                                              passActive,
+                                              'location',
+                                              locationController,
+                                              localizations)
+                                          : const Center(),
+                                      roleID == 5
+                                          ? infoChild(
+                                              width,
+                                              Icons.description,
+                                              user.about,
+                                              context,
+                                              active,
+                                              passActive,
+                                              'description',
+                                              descriptionController,
+                                              localizations)
+                                          : const Center(),
+                                      passActive
+                                          ? infoChild(
+                                              width,
+                                              Icons.password,
+                                              localizations.currentpassword,
+                                              context,
+                                              active,
+                                              passActive,
+                                              'currentpassword',
+                                              passwordController,
+                                              localizations)
+                                          : const Center(),
+                                      passActive
+                                          ? infoChild(
+                                              width,
+                                              Icons.key,
+                                              localizations.newpassword,
+                                              context,
+                                              active,
+                                              passActive,
+                                              'newpassword',
+                                              newPasswordController,
+                                              localizations)
+                                          : const Center(),
+                                      passActive
+                                          ? infoChild(
+                                              width,
+                                              Icons.check_outlined,
+                                              localizations.confirmpassword,
+                                              context,
+                                              active,
+                                              passActive,
+                                              'confirmpassword',
+                                              confirmpassController,
+                                              localizations)
+                                          : const Center(),
+                                      passActive || active
+                                          ? ElevatedButton(
+                                              onPressed: () {
+                                                submit();
+                                              },
+                                              style: ElevatedButton.styleFrom(
+                                                  backgroundColor:
+                                                      AppColors.buttonColor),
+                                              child: Text(
+                                                localizations.submit,
+                                                style: GoogleFonts.montserrat(
+                                                  fontSize: 16,
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.w700,
                                                 ),
-                                              )
-                                            : const SizedBox(),
-                                      ],
-                                    ),
+                                              ),
+                                            )
+                                          : const SizedBox(),
+                                    ],
                                   ),
                                 ),
-                              )
-                            ],
-                          ),
+                              ),
+                            )
+                          ],
                         ),
-                      )
-                    ],
-                  ),
+                      ),
+                    )
+                  ],
                 ),
-              ],
-            );
-          } else if (state is ProfileFaildState) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    localizations!.somthingwentwrong,
-                    style: GoogleFonts.montserrat(
-                        fontSize: 16, fontWeight: FontWeight.w500),
-                  ),
-                  ElevatedButton.icon(
-                    icon: const Icon(Icons.restart_alt_outlined),
-                    onPressed: () {
-                      profileBloc.add(
-                        GetProfileDataEvent(),
-                      );
-                    },
-                    label: Text(localizations.regetdata),
-                  )
-                ],
-              ),
-            );
-          } else {
-            return Center(
-              child: CircularProgressIndicator(
-                color: Theme.of(context).badgeTheme.backgroundColor,
-              ),
-            );
-          }
-        },
-      ),
+              );
+            } else if (state is ProfileFaildState) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      localizations!.somthingwentwrong,
+                      style: GoogleFonts.montserrat(
+                          fontSize: 16, fontWeight: FontWeight.w500),
+                    ),
+                    ElevatedButton.icon(
+                      icon: const Icon(Icons.restart_alt_outlined),
+                      onPressed: () {
+                        profileBloc.add(
+                          GetProfileDataEvent(),
+                        );
+                      },
+                      label: Text(localizations.regetdata),
+                    )
+                  ],
+                ),
+              );
+            } else {
+              return Center(
+                child: CircularProgressIndicator(
+                  color: Theme.of(context).badgeTheme.backgroundColor,
+                ),
+              );
+            }
+          },
+        ),
+      ]),
     );
   }
 
@@ -363,8 +541,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       bool passActive,
       String type,
       TextEditingController controller,
-      AppLocalizations localizations
-      ) {
+      AppLocalizations localizations) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8.0),
       child: Row(
@@ -440,7 +617,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       context: context,
       builder: (_) => AlertDialog(
         title: Text(
-          'Update information',
+          localizations.updateinformation,
           style: GoogleFonts.montserrat(
             textStyle: const TextStyle(fontWeight: FontWeight.bold),
           ),
@@ -450,7 +627,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Text(
-                    'Password:',
+                    localizations.password,
                     style: GoogleFonts.cairo(
                       textStyle: const TextStyle(
                         fontSize: 16,
@@ -477,7 +654,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ],
               )
-            : Text('Are you sure you want to change this information'),
+            : Text(localizations.areyousureyouwanttochange),
         actions: [
           ElevatedButton(
             style:
@@ -486,7 +663,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Navigator.pop(context);
             },
             child: Text(
-              'Cancel',
+              localizations.cancel,
               style: GoogleFonts.montserrat(
                 textStyle: const TextStyle(
                     color: Colors.white,
@@ -532,7 +709,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       context: context,
                       type: QuickAlertType.success,
                       titleColor: Theme.of(context).primaryIconTheme.color!,
-                      title: 'Success',
+                      title: localizations.success,
                       confirmBtnColor: AppColors.buttonColor,
                       confirmBtnText: localizations.done);
                 } else if (state is ProfileUpdateFailedState) {
@@ -543,7 +720,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       context: context,
                       type: QuickAlertType.error,
                       titleColor: Theme.of(context).primaryIconTheme.color!,
-                      title: 'Failed',
+                      title: localizations.failed,
                       text: state.errorMessage,
                       confirmBtnColor: AppColors.buttonColor,
                       confirmBtnText: localizations.done);
@@ -558,7 +735,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   );
                 } else {
                   return Text(
-                    'Procced',
+                    localizations.procced,
                     style: GoogleFonts.montserrat(
                       textStyle: const TextStyle(
                         color: Colors.white,

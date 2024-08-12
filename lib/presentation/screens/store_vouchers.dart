@@ -89,7 +89,7 @@ class _StoreVouchersState extends State<StoreVouchers> {
     final height = MediaQuery.sizeOf(context).height;
     final Locale appLocale = Localizations.localeOf(context);
     return Padding(
-      padding: const EdgeInsets.only(top: 8),
+      padding: const EdgeInsets.only(top: 8,left: 8.0,right: 8.0),
       child: Container(
         width: double.infinity,
         decoration: BoxDecoration(
@@ -191,7 +191,7 @@ class _StoreVouchersState extends State<StoreVouchers> {
                                             .primaryIconTheme
                                             .color!,
                                         text:
-                                            'You can use it within the valid period ',
+                                            'You can use it within the valid period',
                                         confirmBtnColor: AppColors.buttonColor,
                                         confirmBtnText: localizations.done);
                                   } else if (state is BuyingFailedState) {

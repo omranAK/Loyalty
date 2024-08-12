@@ -20,3 +20,5 @@ final class ConsumeVoucherEvent extends HomeEvent {
 }
 
 final class GenerateOtpEvent extends HomeEvent {}
+
+final class GetBestsellerEvent extends HomeEvent {}

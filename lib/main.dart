@@ -80,9 +80,7 @@ class MyApp extends StatelessWidget {
                 theme:
                     CacheManager.getTHeme() == 'light' ? lightTheme : darkTheme,
                 localizationsDelegates: AppLocalizations.localizationsDelegates,
-                locale: Locale(CacheManager.getLang() != null
-                    ? CacheManager.getLang()!
-                    : 'en'),
+                locale: value.locale,
                 supportedLocales: AppLocalizations.supportedLocales,
                 title: 'LoyaltySystem',
                 debugShowCheckedModeBanner: false,

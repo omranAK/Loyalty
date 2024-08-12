@@ -54,11 +54,11 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Icon(
-              Icons.nights_stay_outlined,
-              color: theme.primaryIconTheme.color,
-            ),
-            Text(localizations.light)
+            Icon(Icons.nights_stay_outlined,
+                color: theme.primaryIconTheme.color),
+            Text(CacheManager.getTHeme() == 'light'
+                ? localizations.light
+                : localizations.dark)
           ],
         ),
       ),
@@ -76,20 +76,16 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
       PopupMenuItem(
-        child: GestureDetector(
-          onTap: () {
-            homeBloc.add(LogoutButtonPressedEvent());
-          },
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Icon(
-                Icons.logout,
-                color: theme.primaryIconTheme.color,
-              ),
-              Text(localizations.logout),
-            ],
-          ),
+        onTap: () => homeBloc.add(LogoutButtonPressedEvent()),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Icon(
+              Icons.logout,
+              color: theme.primaryIconTheme.color,
+            ),
+            Text(localizations.logout),
+          ],
         ),
       ),
     ];
@@ -229,17 +225,21 @@ class _HomeScreenState extends State<HomeScreen> {
                             )
                           ]),
                       child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          IconButton(
-                            onPressed: () {
-                              // Navigator.pushNamed(context, barcode);
-                            },
-                            icon: const Icon(
-                              Icons.qr_code_scanner_outlined,
-                              size: 35,
-                              color: Colors.black,
+                          if (CacheManager.getUserModel()!.roleID == 4)
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: IconButton(
+                                onPressed: () {
+                                  Navigator.pushNamed(context, videoplayer);
+                                },
+                                icon: SvgPicture.asset(
+                                  'assets/svg/ad.svg',
+                                  width: 40,
+                                ),
+                              ),
                             ),
-                          ),
                           const SizedBox(
                             width: 20,
                           ),
@@ -343,31 +343,30 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ],
                 ),
-                if (CacheManager.getUserModel()!.roleID == 4)
-                  Padding(
-                    padding: const EdgeInsets.all(15),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, videoplayer);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: Size(width * 0.1, height * 0.06),
-                        backgroundColor: const Color.fromRGBO(46, 56, 56, 1),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
+                Padding(
+                  padding: const EdgeInsets.all(15),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, bestseller);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: Size(width * 0.1, height * 0.06),
+                      backgroundColor: const Color.fromRGBO(46, 56, 56, 1),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
                       ),
-                      child: Text(
-                        localizations.watchadd,
-                        style: GoogleFonts.montserrat(
-                          textStyle: const TextStyle(
-                            fontSize: 18,
-                            color: Colors.white,
-                          ),
+                    ),
+                    child: Text(
+                      localizations.bestsellervoucher,
+                      style: GoogleFonts.montserrat(
+                        textStyle: const TextStyle(
+                          fontSize: 18,
+                          color: Colors.white,
                         ),
                       ),
                     ),
                   ),
+                ),
                 const Divider(
                   endIndent: 50,
                   indent: 50,
@@ -375,7 +374,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   thickness: 1,
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(bottom:8.0),
+                  padding: const EdgeInsets.only(bottom: 8.0),
                   child: Row(
                     children: [
                       Text(

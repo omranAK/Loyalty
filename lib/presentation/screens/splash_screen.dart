@@ -57,6 +57,10 @@ class _SplashScreenState extends State<SplashScreen> {
       body: Container(
         width: double.infinity,
         decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/login_background.png'),
+            fit: BoxFit.cover,
+          ),
           gradient: LinearGradient(
             colors: [AppColors.appBarColor, AppColors.appBarColor],
             begin: Alignment.bottomLeft,

@@ -48,7 +48,7 @@
   "donenowyoucanuseyourvoucher":"Done Now you can use your voucher",
   "spicialpoints":"Spicial Points",
   "anerroroccurred":"An Error Occurred",
-  "regetdata":"Re Get Data",
+  "regetdata":"Reloade",
   "myspicialpoints":"My Spicial Points",
   "donate":"Donate",
   "cancel":"Cancel",
@@ -72,6 +72,13 @@
   "passwordmustcontainatleast8characters":"Password must contain at least 8 characters",
   "passwordmustcontainnumbers":"Password must contain numbers like (1 2 3 ..)",
   "passwordmustmatch":"Password must match",
-  "loyalty":"Loyalty"
+  "loyalty":"Loyalty",
+  "youcanuseitwithinthevalidperiod":"You can use it within the valid period",
+  "updateinformation":"Update Information",
+  "currentpassword":"Current password",
+  "newpassword":"New Password",
+  "submit":"Submit",
+  "bestsellervoucher":"Bestseller Vouchers"
+  
   
 }

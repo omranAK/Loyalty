@@ -58,3 +58,17 @@ final class GenerateOtpFailedState extends HomeState {
 }
 
 final class GenerateOtpLoadingState extends HomeState {}
+
+final class BestSellerLoadedState extends HomeState {
+  final List<BestSellerModel> vouchers;
+
+  const BestSellerLoadedState({required this.vouchers});
+}
+
+final class BestSellerLoadingState extends HomeState {}
+
+final class BestSellerFailedState extends HomeState {
+  final String errorMessage;
+
+  const BestSellerFailedState({required this.errorMessage});
+}

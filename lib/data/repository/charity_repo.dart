@@ -39,7 +39,7 @@ class CharityRepository extends GeneralController {
       CacheManager.setSpicialPoint(point.toString());
       return 'success';
     } else {
-      return response.message;
+      return returnCodeFunc(response);
     }
   }
 

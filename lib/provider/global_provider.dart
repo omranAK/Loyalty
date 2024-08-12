@@ -6,31 +6,27 @@ class GlobalProvider extends ChangeNotifier {
   String _phoneCode = '974';
   String _phoneNumber = '';
   String _nationality = 'Qatar';
-  ThemeData _theme = lightTheme;
-
-  Locale _locale = const Locale('ar');
-
+  ThemeData _theme =
+      CacheManager.getTHeme() != null && CacheManager.getTHeme() == 'light'
+          ? lightTheme
+          : darkTheme;
+  Locale _locale =
+      Locale(CacheManager.getLang() != null ? CacheManager.getLang()! : 'en');
   int _currentIndex = 0;
-
   bool _mainRoute = true;
   bool _secondRoute = false;
 
+//return language
   Locale get locale => _locale;
+  //return theme
+  ThemeData get theme => _theme;
 
   int get currentIndex => _currentIndex;
-
   String get phoneCode => _phoneCode;
   String get phoneNumber => _phoneNumber;
   String get nationality => _nationality;
-
   bool get mainRoute => _mainRoute;
   bool get secondRoute => _secondRoute;
-
-  //
-  // void switchLanguage(Locale newLocale) {
-  //   _locale = newLocale;
-  //   notifyListeners();
-  // }
 
   void updateLanguage() {
     if (_locale == const Locale('ar')) {

@@ -46,7 +46,7 @@ class HistortyRepository extends GeneralController {
       List<PointHistoryModel> finalList = historyList.reversed.toList();
       return finalList;
     } else {
-      return response.message;
+      return returnCodeFunc(response);
     }
   }
 }

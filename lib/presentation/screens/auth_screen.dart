@@ -353,7 +353,7 @@ class _AuthScreenState extends State<AuthScreen> {
             }
           } else if (x == 'password') {
             if (value!.isEmpty || value.length < 8) {
-              return 'Password most contain at least 8 characters';
+              return 'Password must contain at least 8 characters';
             }
             if (!value.contains('1') &
                 !value.contains('2') &
@@ -365,11 +365,17 @@ class _AuthScreenState extends State<AuthScreen> {
                 !value.contains('8') &
                 !value.contains('9') &
                 !value.contains('0')) {
-              return "Password most contain numbers like (1 2 3 ..)";
+              return "Password must contain numbers like (1 2 3 ..)";
             }
           } else if (x == 'confirm') {
             if (value!.isEmpty || value != _passwordController.text) {
-              return localizations.passwordsdontmatch;
+              return 'Password must match';
+            }
+          }
+        } else if (_authMode == AuthMode.login) {
+          if (x == 'password') {
+            if (value!.isEmpty || value.length < 8) {
+              return 'Password must contain at least 8 characters';
             }
           }
         }

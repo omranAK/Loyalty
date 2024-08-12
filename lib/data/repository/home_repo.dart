@@ -1,7 +1,5 @@
-import 'dart:async';
-import 'package:loyalty_system_mobile/data/models/voucher_model.dart';
-import 'package:loyalty_system_mobile/data/storage/cache_manager.dart';
-import 'package:loyalty_system_mobile/data/web_services/external_services.dart';
+import 'package:loyalty_system_mobile/constant/imports.dart';
+import 'package:loyalty_system_mobile/data/models/bestsellervoucher_model.dart';
 import 'package:loyalty_system_mobile/data/web_services/general_controller.dart';
 
 class HomeRepository extends GeneralController {
@@ -16,7 +14,7 @@ class HomeRepository extends GeneralController {
     List<VoucherModel> voucherList = [];
     var response = await externalService.getData(queryParameters, urlService);
 
-    if (returnCodeFunc(response) == 'success') {
+    if (returnCodeFunc(response) == 'success' && response.the0 != null) {
       list = response.the0;
       for (var element in list) {
         voucher = VoucherModel.fromJson(element);
@@ -84,5 +82,23 @@ class HomeRepository extends GeneralController {
     } else {
       return returnCodeFunc(response);
     }
+  }
+
+  Future getBestSeller(
+      Map<String, dynamic> queryParameters, String urlService) async {
+    BestSellerModel voucher;
+    List list = [];
+    List<BestSellerModel> voucherList = [];
+    var response = await externalService.getData(queryParameters, urlService);
+
+    if (returnCodeFunc(response) == 'success') {
+      list = response.the0;
+      for (var element in list) {
+        voucher = BestSellerModel.fromJson(element);
+        voucherList.add(voucher);
+      }
+      return voucherList;
+    }
+    return returnCodeFunc(response);
   }
 }

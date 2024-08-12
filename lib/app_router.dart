@@ -6,6 +6,7 @@ import 'package:loyalty_system_mobile/data/web_services/external_services.dart';
 import 'package:loyalty_system_mobile/presentation/screens/auth_otp_screen.dart';
 import 'package:loyalty_system_mobile/presentation/screens/auth_screen.dart';
 import 'package:loyalty_system_mobile/presentation/screens/barcode_screen.dart';
+import 'package:loyalty_system_mobile/presentation/screens/bestseller_vouchers.dart';
 import 'package:loyalty_system_mobile/presentation/screens/charity_detail_screen.dart';
 import 'package:loyalty_system_mobile/presentation/screens/info_screen.dart';
 import 'package:loyalty_system_mobile/presentation/screens/notifications_screen.dart';
@@ -89,6 +90,8 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const BarCodeScreen());
       case splash:
         return MaterialPageRoute(builder: (_) => const SplashScreen());
+      case bestseller:
+        return MaterialPageRoute(builder: (_) => const BestsellerVouchers());
       default:
         return null;
     }

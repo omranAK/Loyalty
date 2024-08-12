@@ -5,6 +5,8 @@ import 'package:loyalty_system_mobile/data/models/voucher_model.dart';
 import 'package:loyalty_system_mobile/data/repository/home_repo.dart';
 import 'package:loyalty_system_mobile/data/storage/cache_manager.dart';
 
+import '../../../data/models/bestsellervoucher_model.dart';
+
 part 'home_event.dart';
 part 'home_state.dart';
 
@@ -16,6 +18,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<GetHomeDateEvent>(_onGetHomeDateEvent);
     on<ConsumeVoucherEvent>(_onConsumeVoucherEvent);
     on<GenerateOtpEvent>(_onGenerateOtpEvent);
+    on<GetBestsellerEvent>(_onGetBestsellerEvent);
   }
   void _onHomeInitialEvent(
       HomeInitialEvent event, Emitter<HomeState> emit) async {
@@ -84,6 +87,17 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       emit(GenerateOtpFailedState(errorMessage: response));
     } else {
       emit(GenerateOtpSuccessState(otp: response));
+    }
+  }
+
+  void _onGetBestsellerEvent(
+      GetBestsellerEvent event, Emitter<HomeState> emit) async {
+    emit(BestSellerLoadingState());
+    var response = await _homeRepo.getBestSeller({}, 'most_bought_vouchers');
+    if (response is String) {
+      emit(BestSellerFailedState(errorMessage: response));
+    } else {
+      emit(BestSellerLoadedState(vouchers: response));
     }
   }
 }

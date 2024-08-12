@@ -28,3 +28,5 @@ final class UpdateUserDataEvent extends ProfileEvent {
       this.name,
       this.newPassword});
 }
+
+final class GetChartEvenet extends ProfileEvent {}

@@ -35,3 +35,19 @@ final class ProfileUpdateFailedState extends ProfileState {
 }
 
 final class ProfileUpdateLoadingState extends ProfileState {}
+
+final class ChartLoadedState extends ProfileState {
+  final ChartModel chart;
+
+  const ChartLoadedState({required this.chart});
+}
+
+final class ChartLoadingState extends ProfileState {}
+
+final class ChartFailedState extends ProfileState {
+  final String errorMessage;
+
+  const ChartFailedState({
+    required this.errorMessage,
+  });
+}

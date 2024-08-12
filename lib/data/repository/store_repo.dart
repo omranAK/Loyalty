@@ -19,9 +19,10 @@ class StoreRepository extends GeneralController {
     if (returnCodeFunc(response) == 'success') {
       list = response.the0;
       for (var element in list) {
-          storeModel = StoreModel.fromJson(element);
-          storesList.add(storeModel);
-        }
+
+        storeModel = StoreModel.fromJson(element);
+        storesList.add(storeModel);
+      }
       return storesList;
     }
     return returnCodeFunc(response);
@@ -38,21 +39,21 @@ class StoreRepository extends GeneralController {
       if (response.the0 != []) {
         list = response.the0;
         for (var element in list) {
-            List<String> img = [];
-            image = element['images'];
-            for (var element in image) {
-              img.add(element['name']);
-            }
-            offerModel = OfferModel(
-              id: element['id'],
-              name: element['title'],
-              description: element['description'],
-              points: element['points'],
-              endsIn: DateTime.parse(element['end_time']),
-              imageList: img,
-            );
-            offerList.add(offerModel);
+          List<String> img = [];
+          image = element['images'];
+          for (var element in image) {
+            img.add(element['name']);
           }
+          offerModel = OfferModel(
+            id: element['id'],
+            name: element['title'],
+            description: element['description'],
+            points: element['points'],
+            endsIn: DateTime.parse(element['end_time']),
+            imageList: img,
+          );
+          offerList.add(offerModel);
+        }
         return offerList;
       } else {
         return 'This store does not have offers ';
@@ -71,9 +72,9 @@ class StoreRepository extends GeneralController {
       if (response.the0 != []) {
         list = response.the0;
         for (var element in list) {
-            voucherModel = StoreVoucherModel.fromJson(element);
-            voucherList.add(voucherModel);
-          }
+          voucherModel = StoreVoucherModel.fromJson(element);
+          voucherList.add(voucherModel);
+        }
         voucherList.sort((a, b) => a.creatTime.compareTo(b.creatTime));
         List<StoreVoucherModel> finalList = voucherList.reversed.toList();
         return finalList;
@@ -94,7 +95,7 @@ class StoreRepository extends GeneralController {
       CacheManager.setPoint(point.toString());
       return 'success';
     } else {
-      return response.message;
+      return returnCodeFunc(response);
     }
   }
 }
