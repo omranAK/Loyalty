@@ -1,2 +1,3 @@
 # loyalty_system_mobile
-![](assets/images/StoreVouchers.png)![](assets/images/home.png)![](assets/images/stores.png)
+<img src="assets/images/StoreVouchers.png" alt="Description" width="100" height="200"/> <img src="assets/images/home.png" alt="Description" width="100" height="200"/> <img src="assets/images/stores.png" alt="Description" width="100" height="200"/>
+
